@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+﻿using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.CodeAnalysis;
@@ -15,32 +16,28 @@ namespace IDevice.NET.SourceGenerator
         const string PropName = "HandleName";
         public void Execute(GeneratorExecutionContext context)
         {
+            var compilation = context.Compilation;
             string attrSource = GetAttrSorce();
             context.AddSource("GenerateHandleAttribute.g.cs", attrSource);
-            /*var query = from typeSymbol in context.Compilation.SourceModule.GlobalNamespace.GetNamespaceTypes()
-                        from method in typeSymbol.GetMethods()
+            IEnumerable<SyntaxNode> allNodes = compilation.SyntaxTrees.SelectMany(s => s.GetRoot().DescendantNodes());
 
-                            // Find the attribute on the field
-                        let info = method.FindAttributeFlattened(_generatedPropertyAttributeSymbol)
-                        where info != null
-                        select method;
-            query*/
-
-
-            /*
-            IEnumerable<SyntaxNode> allNodes = context.Compilation.SyntaxTrees.SelectMany(s => s.GetRoot().DescendantNodes());
-            IEnumerable<ClassDeclarationSyntax> allClasses = allNodes
-    .Where(d => d.IsKind(SyntaxKind.ClassDeclaration))
-    .OfType<ClassDeclarationSyntax>();
-            foreach (var classDeclaration in allClasses)
+            IEnumerable<MethodDeclarationSyntax> allMethods = allNodes
+                .Where(d => d.IsKind(SyntaxKind.MethodDeclaration))
+                .OfType<MethodDeclarationSyntax>();
+            foreach (var method in allMethods)
             {
-                var method = GetHandleMethod(context.Compilation, classDeclaration);
-                if (method != null)
+                var info = TryGetHandleInfo(method);
+                if (info!= null)
                 {
-                    
+                    var source = info.BuildSource();
+                    if (source != null)
+                    {
+                        context.AddSource($"{info.HandleName}.g.cs", source);
+                    }
                 }
-            }*/
+            }
         }
+
 
         private string GetAttrSorce()
         {
@@ -80,13 +77,19 @@ namespace {0}
             var method = methods.FirstOrDefault(m => CheckIsFreeEntryPointOf(compilation, m, classDeclaration.Identifier.ToString()));
             return method;
         }
-        public bool CheckIsFreeEntryPointOf(Compilation compilation, MethodDeclarationSyntax methodDeclaration,string Name)
+        public HandleInfo TryGetHandleInfo(Compilation compilation, MethodDeclarationSyntax methodDeclaration)
         {
-            INamedTypeSymbol attributeSymbol = compilation.GetTypeByMetadataName($"System.Runtime.InteropServices.{nameof(DllImportAttribute)}");
-            var model = compilation.GetSemanticModel(methodDeclaration.SyntaxTree);
-            var methodSymbol= model.GetDeclaredSymbol(methodDeclaration);
-            var attr = methodSymbol.GetAttributes().FirstOrDefault(ad => ad.AttributeClass.Equals(attributeSymbol, SymbolEqualityComparer.Default));
-            return attr.NamedArguments.ToImmutableDictionary()["EntryPoint"].Value.ToString() == $"{Name}_free";
+            var attributes = methodDeclaration.AttributeLists
+    .SelectMany(x => x.Attributes);
+
+            var genAttr = attributes.FirstOrDefault(attr => attr.Name.ToString() == AttrName);
+            var semanticModel = compilation.GetSemanticModel(component.SyntaxTree);
+
+            var genArg = genAttr.ArgumentList.Arguments[0];
+            var genExpr = genArg.Expression;
+            var genName = semanticModel.GetConstantValue(genExpr).ToString();
+            var info = new HandleInfo(methodDeclaration, genName);
+            return info;
         }
     }
 }
