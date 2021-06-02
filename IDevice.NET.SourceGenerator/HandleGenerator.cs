@@ -22,27 +22,7 @@ namespace IDevice.NET.SourceGenerator
         const string PropName = "HandleName";
         public void Execute(GeneratorExecutionContext context)
         {
-            var argName = (string)(PropName[0].ToString()).ToLower() + PropName.Substring(1)
-            var source = @"using System;
-
-namespace " + AttrNamespace + @"
-{
-    public class " + AttrName  +@" : Attribute
-    {
-        public " + AttrName + @"() : base()
-        {
-
-        }
-
-        public " + AttrName + "(string "+ argName +@") : base()
-        {
-            this." + PropName +" = " + argName +@";
-        }
-
-        public string " + PropName + @" { get; set; }
-    }
-}";
-            context.AddSource("GenerateHandleAttribute.g.cs", source);
+            context.AddSource("GenerateHandleAttribute.g.cs", GetAttrSorce());
             /*var query = from typeSymbol in context.Compilation.SourceModule.GlobalNamespace.GetNamespaceTypes()
                         from method in typeSymbol.GetMethods()
 
@@ -66,6 +46,30 @@ namespace " + AttrNamespace + @"
                     
                 }
             }
+        }
+
+        private string GetAttrSorce()
+        {
+            var argName = (string)(PropName[0].ToString()).ToLower() + PropName.Substring(1);
+            return string.Format(@"using System;
+
+namespace {0}
+{{
+    public class {1} : Attribute
+    {{
+        public {1}() : base()
+        {{
+
+        }}
+
+        public {1}(string {3}) : base()
+        {{
+            this.{2} = {3};
+        }}
+
+        public string {2} {{ get; set; }}
+    }}
+}}", AttrNamespace, AttrName, PropName, argName);
         }
 
         public void Initialize(GeneratorInitializationContext context)
