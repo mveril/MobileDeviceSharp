@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Diagnostics;
+﻿using System.Collections.Immutable;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
-using Uno.RoslynHelpers;
 
 namespace IDevice.NET.SourceGenerator
 {
@@ -59,6 +52,8 @@ namespace {0}
     [AttributeUsage(AttributeTargets.Method)]
     public class {1} : Attribute
     {{
+        public string {2} {{ get; }}
+
         public {1}() : base()
         {{
 
@@ -66,10 +61,9 @@ namespace {0}
 
         public {1}(string {3}) : base()
         {{
-            this.{2} = {3};
+            {2} = {3};
         }}
 
-        public string {2} {{ get; set; }}
     }}
 }}", AttrNamespace, AttrName, PropName, argName);
         }
