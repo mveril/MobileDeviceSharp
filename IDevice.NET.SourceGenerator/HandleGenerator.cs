@@ -17,12 +17,13 @@ namespace IDevice.NET.SourceGenerator
     [Generator]
     public class HandleGenerator : ISourceGenerator
     {
-        const string AttrNamespace = "IDevice.NET.Generator";
+        const string AttrNamespace = "iDevice.NET.Generator";
         const string AttrName = "GenerateHandleAttribute";
         const string PropName = "HandleName";
         public void Execute(GeneratorExecutionContext context)
         {
-            context.AddSource("GenerateHandleAttribute.g.cs", GetAttrSorce());
+            string attrSource = GetAttrSorce();
+            context.AddSource("GenerateHandleAttribute.g.cs", attrSource);
             /*var query = from typeSymbol in context.Compilation.SourceModule.GlobalNamespace.GetNamespaceTypes()
                         from method in typeSymbol.GetMethods()
 
@@ -33,7 +34,7 @@ namespace IDevice.NET.SourceGenerator
             query*/
 
 
-
+            /*
             IEnumerable<SyntaxNode> allNodes = context.Compilation.SyntaxTrees.SelectMany(s => s.GetRoot().DescendantNodes());
             IEnumerable<ClassDeclarationSyntax> allClasses = allNodes
     .Where(d => d.IsKind(SyntaxKind.ClassDeclaration))
@@ -45,7 +46,7 @@ namespace IDevice.NET.SourceGenerator
                 {
                     
                 }
-            }
+            }*/
         }
 
         private string GetAttrSorce()
@@ -55,6 +56,7 @@ namespace IDevice.NET.SourceGenerator
 
 namespace {0}
 {{
+    [AttributeUsage(AttributeTargets.Method)]
     public class {1} : Attribute
     {{
         public {1}() : base()
@@ -74,7 +76,7 @@ namespace {0}
 
         public void Initialize(GeneratorInitializationContext context)
         {
-
+            //Debugger.Launch();
         }
         
         public MethodDeclarationSyntax GetHandleMethod(Compilation compilation, ClassDeclarationSyntax classDeclaration)
