@@ -1,0 +1,120 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31320.298
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IDevice.NET.Core", "IDevice.NET.Core\IDevice.NET.Core.csproj", "{47688532-DD3F-465C-814D-0E95AF5A657B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B8EC0832-DE19-472A-A2C4-1F05F32270EB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "runtimes", "runtimes", "{32F0CCFC-C33C-4B2E-87D8-F87A8ACD2ECD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "win-x64", "win-x64", "{16F35D75-3F7B-47C1-851B-C6A7017E7DDE}"
+	ProjectSection(SolutionItems) = preProject
+		runtimes\win-x64\bz2.dll = runtimes\win-x64\bz2.dll
+		runtimes\win-x64\getopt.dll = runtimes\win-x64\getopt.dll
+		runtimes\win-x64\iconv-2.dll = runtimes\win-x64\iconv-2.dll
+		runtimes\win-x64\ideviceactivation.dll = runtimes\win-x64\ideviceactivation.dll
+		runtimes\win-x64\imobiledevice-net-lighthouse.dll = runtimes\win-x64\imobiledevice-net-lighthouse.dll
+		runtimes\win-x64\imobiledevice.dll = runtimes\win-x64\imobiledevice.dll
+		runtimes\win-x64\irecovery.dll = runtimes\win-x64\irecovery.dll
+		runtimes\win-x64\libcrypto-1_1-x64.dll = runtimes\win-x64\libcrypto-1_1-x64.dll
+		runtimes\win-x64\libcurl.dll = runtimes\win-x64\libcurl.dll
+		runtimes\win-x64\libssl-1_1-x64.dll = runtimes\win-x64\libssl-1_1-x64.dll
+		runtimes\win-x64\libusb-1.0.dll = runtimes\win-x64\libusb-1.0.dll
+		runtimes\win-x64\libusb0.dll = runtimes\win-x64\libusb0.dll
+		runtimes\win-x64\libxml2.dll = runtimes\win-x64\libxml2.dll
+		runtimes\win-x64\lzma.dll = runtimes\win-x64\lzma.dll
+		runtimes\win-x64\pcre.dll = runtimes\win-x64\pcre.dll
+		runtimes\win-x64\pcreposix.dll = runtimes\win-x64\pcreposix.dll
+		runtimes\win-x64\plist.dll = runtimes\win-x64\plist.dll
+		runtimes\win-x64\pthreadVC3.dll = runtimes\win-x64\pthreadVC3.dll
+		runtimes\win-x64\readline.dll = runtimes\win-x64\readline.dll
+		runtimes\win-x64\usbmuxd.dll = runtimes\win-x64\usbmuxd.dll
+		runtimes\win-x64\vcruntime140.dll = runtimes\win-x64\vcruntime140.dll
+		runtimes\win-x64\zip.dll = runtimes\win-x64\zip.dll
+		runtimes\win-x64\zlib1.dll = runtimes\win-x64\zlib1.dll
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "win-x86", "win-x86", "{7F93A171-A22F-4ED5-9751-BBD8B689C0DA}"
+	ProjectSection(SolutionItems) = preProject
+		runtimes\win-x86\bz2.dll = runtimes\win-x86\bz2.dll
+		runtimes\win-x86\getopt.dll = runtimes\win-x86\getopt.dll
+		runtimes\win-x86\iconv-2.dll = runtimes\win-x86\iconv-2.dll
+		runtimes\win-x86\ideviceactivation.dll = runtimes\win-x86\ideviceactivation.dll
+		runtimes\win-x86\imobiledevice-net-lighthouse.dll = runtimes\win-x86\imobiledevice-net-lighthouse.dll
+		runtimes\win-x86\imobiledevice.dll = runtimes\win-x86\imobiledevice.dll
+		runtimes\win-x86\irecovery.dll = runtimes\win-x86\irecovery.dll
+		runtimes\win-x86\libcrypto-1_1.dll = runtimes\win-x86\libcrypto-1_1.dll
+		runtimes\win-x86\libcurl.dll = runtimes\win-x86\libcurl.dll
+		runtimes\win-x86\libssl-1_1.dll = runtimes\win-x86\libssl-1_1.dll
+		runtimes\win-x86\libusb-1.0.dll = runtimes\win-x86\libusb-1.0.dll
+		runtimes\win-x86\libusb0.dll = runtimes\win-x86\libusb0.dll
+		runtimes\win-x86\libxml2.dll = runtimes\win-x86\libxml2.dll
+		runtimes\win-x86\lzma.dll = runtimes\win-x86\lzma.dll
+		runtimes\win-x86\pcre.dll = runtimes\win-x86\pcre.dll
+		runtimes\win-x86\pcreposix.dll = runtimes\win-x86\pcreposix.dll
+		runtimes\win-x86\plist.dll = runtimes\win-x86\plist.dll
+		runtimes\win-x86\pthreadVC3.dll = runtimes\win-x86\pthreadVC3.dll
+		runtimes\win-x86\readline.dll = runtimes\win-x86\readline.dll
+		runtimes\win-x86\usbmuxd.dll = runtimes\win-x86\usbmuxd.dll
+		runtimes\win-x86\vcruntime140.dll = runtimes\win-x86\vcruntime140.dll
+		runtimes\win-x86\zip.dll = runtimes\win-x86\zip.dll
+		runtimes\win-x86\zlib1.dll = runtimes\win-x86\zlib1.dll
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "osx-x64", "osx-x64", "{C0F961A4-6E37-4981-8191-3366477A1905}"
+	ProjectSection(SolutionItems) = preProject
+		runtimes\osx-x64\libideviceactivation-1.0.2.dylib = runtimes\osx-x64\libideviceactivation-1.0.2.dylib
+		runtimes\osx-x64\libideviceactivation-1.0.dylib = runtimes\osx-x64\libideviceactivation-1.0.dylib
+		runtimes\osx-x64\libimobiledevice-1.0.6.dylib = runtimes\osx-x64\libimobiledevice-1.0.6.dylib
+		runtimes\osx-x64\libimobiledevice-1.0.dylib = runtimes\osx-x64\libimobiledevice-1.0.dylib
+		runtimes\osx-x64\libimobiledevice-net-lighthouse.dylib = runtimes\osx-x64\libimobiledevice-net-lighthouse.dylib
+		runtimes\osx-x64\libios_webkit_debug_proxy.0.dylib = runtimes\osx-x64\libios_webkit_debug_proxy.0.dylib
+		runtimes\osx-x64\libios_webkit_debug_proxy.dylib = runtimes\osx-x64\libios_webkit_debug_proxy.dylib
+		runtimes\osx-x64\libirecovery-1.0.3.dylib = runtimes\osx-x64\libirecovery-1.0.3.dylib
+		runtimes\osx-x64\libirecovery-1.0.dylib = runtimes\osx-x64\libirecovery-1.0.dylib
+		runtimes\osx-x64\libplist++-2.0.3.dylib = runtimes\osx-x64\libplist++-2.0.3.dylib
+		runtimes\osx-x64\libplist++-2.0.dylib = runtimes\osx-x64\libplist++-2.0.dylib
+		runtimes\osx-x64\libplist-2.0.3.dylib = runtimes\osx-x64\libplist-2.0.3.dylib
+		runtimes\osx-x64\libplist-2.0.dylib = runtimes\osx-x64\libplist-2.0.dylib
+		runtimes\osx-x64\libusbmuxd.6.dylib = runtimes\osx-x64\libusbmuxd.6.dylib
+		runtimes\osx-x64\libusbmuxd.dylib = runtimes\osx-x64\libusbmuxd.dylib
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", "{DE8E14B2-E9AE-477C-86B4-2F34E9A7799B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IDevice.NET.SourceGenerator", "IDevice.NET.SourceGenerator\IDevice.NET.SourceGenerator.csproj", "{F8A812B3-2683-4C7B-9BD2-C5A6A64E0410}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{47688532-DD3F-465C-814D-0E95AF5A657B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47688532-DD3F-465C-814D-0E95AF5A657B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47688532-DD3F-465C-814D-0E95AF5A657B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47688532-DD3F-465C-814D-0E95AF5A657B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE8E14B2-E9AE-477C-86B4-2F34E9A7799B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE8E14B2-E9AE-477C-86B4-2F34E9A7799B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE8E14B2-E9AE-477C-86B4-2F34E9A7799B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE8E14B2-E9AE-477C-86B4-2F34E9A7799B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8A812B3-2683-4C7B-9BD2-C5A6A64E0410}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8A812B3-2683-4C7B-9BD2-C5A6A64E0410}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8A812B3-2683-4C7B-9BD2-C5A6A64E0410}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8A812B3-2683-4C7B-9BD2-C5A6A64E0410}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{32F0CCFC-C33C-4B2E-87D8-F87A8ACD2ECD} = {B8EC0832-DE19-472A-A2C4-1F05F32270EB}
+		{16F35D75-3F7B-47C1-851B-C6A7017E7DDE} = {32F0CCFC-C33C-4B2E-87D8-F87A8ACD2ECD}
+		{7F93A171-A22F-4ED5-9751-BBD8B689C0DA} = {32F0CCFC-C33C-4B2E-87D8-F87A8ACD2ECD}
+		{C0F961A4-6E37-4981-8191-3366477A1905} = {32F0CCFC-C33C-4B2E-87D8-F87A8ACD2ECD}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D3FE3A7F-3AA1-4D52-95F5-45F272CB3C49}
+	EndGlobalSection
+EndGlobal

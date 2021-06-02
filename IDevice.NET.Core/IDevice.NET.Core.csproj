@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard20;net5.0;net6.0</TargetFrameworks>
+    <LangVersion>9</LangVersion>
+    <RuntimeIdentifiers>win-x64;win-x86;osx-x64;linux-x64</RuntimeIdentifiers>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../runtimes/osx-x64/**/*.dylib" Condition="'$(RuntimeIdentifier)'=='win-x64' or '$(RuntimeIdentifier)'==''" Link="/runtimes/osx-x64/%(RecursiveDir)%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="../runtimes/osx-x64/**/*.dylib" Condition="'$(RuntimeIdentifier)'=='win-x64' or '$(RuntimeIdentifier)'==''" Link="/runtimes/osx-x64/%(RecursiveDir)%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="../runtimes/win-x64/**/*.dll" Condition="'$(RuntimeIdentifier)'=='win-x64' or '$(RuntimeIdentifier)'==''" Link="/runtimes/win-x64/%(RecursiveDir)%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="../runtimes/win-x86/**/*.dll" Condition="'$(RuntimeIdentifier)'=='win-x64' or '$(RuntimeIdentifier)'==''" Link="/runtimes/win-x86/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="PlistSharp" Version="1.8.0" />
+    <PackageReference Condition="'$(TargetFramework)' != 'net6.0'" Include="TimeZoneConverter" Version="3.5.0" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\IDevice.NET.SourceGenerator\IDevice.NET.SourceGenerator.csproj" 
+			OutputItemType="Analyzer"
+			ReferenceOutputAssembly="false"/>
+  </ItemGroup>
+
+</Project>
