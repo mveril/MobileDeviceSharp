@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.CodeAnalysis;
@@ -11,7 +13,7 @@ namespace IDevice.NET.SourceGenerator
     [Generator]
     public class HandleGenerator : ISourceGenerator
     {
-        const string AttrNamespace = "iDevice.NET.Generator";
+        const string AttrNamespace = "IDevice.NET.Generator";
         const string AttrName = "GenerateHandleAttribute";
         const string PropName = "HandleName";
         public void Execute(GeneratorExecutionContext context)
@@ -26,7 +28,7 @@ namespace IDevice.NET.SourceGenerator
                 .OfType<MethodDeclarationSyntax>();
             foreach (var method in allMethods)
             {
-                var info = TryGetHandleInfo(method);
+                var info = TryGetHandleInfo(compilation,method);
                 if (info!= null)
                 {
                     var source = info.BuildSource();
@@ -67,24 +69,28 @@ namespace {0}
 
         public void Initialize(GeneratorInitializationContext context)
         {
-            //Debugger.Launch();
+            Debugger.Launch();
         }
-        
-        public MethodDeclarationSyntax GetHandleMethod(Compilation compilation, ClassDeclarationSyntax classDeclaration)
+
+        /*internal MethodDeclarationSyntax GetHandleMethod(Compilation compilation, ClassDeclarationSyntax classDeclaration)
         {
 
             var methods = classDeclaration.Members.OfType<MethodDeclarationSyntax>();
             var method = methods.FirstOrDefault(m => CheckIsFreeEntryPointOf(compilation, m, classDeclaration.Identifier.ToString()));
             return method;
-        }
-        public HandleInfo TryGetHandleInfo(Compilation compilation, MethodDeclarationSyntax methodDeclaration)
+        }*/
+        internal HandleInfo TryGetHandleInfo(Compilation compilation, MethodDeclarationSyntax methodDeclaration)
         {
+            var fullname =  $"{AttrNamespace}.{AttrName}";
             var attributes = methodDeclaration.AttributeLists
     .SelectMany(x => x.Attributes);
-
-            var genAttr = attributes.FirstOrDefault(attr => attr.Name.ToString() == AttrName);
-            var semanticModel = compilation.GetSemanticModel(component.SyntaxTree);
-
+            var fln = attributes.Select(a => a.Name.ToFullString());
+            var genAttr = attributes.FirstOrDefault(attr => attr.Name.ToFullString() == fullname);
+            if (genAttr==null)
+            {
+                return null;
+            }
+            var semanticModel = compilation.GetSemanticModel(methodDeclaration.SyntaxTree);
             var genArg = genAttr.ArgumentList.Arguments[0];
             var genExpr = genArg.Expression;
             var genName = semanticModel.GetConstantValue(genExpr).ToString();

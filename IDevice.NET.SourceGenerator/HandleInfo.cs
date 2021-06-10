@@ -1,6 +1,9 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace IDevice.NET.SourceGenerator
@@ -16,21 +19,9 @@ namespace IDevice.NET.SourceGenerator
         internal string HandleBaseName { get; }
         internal string HandleName => $"{HandleBaseName}Handle";
         internal string BuildSource()
-        {
-            NamespaceDeclarationSyntax namespaceDeclarationSyntax = null;
-            if (!SyntaxNodeHelper.TryGetParentSyntax(this.FreeMethod, out ClassDeclarationSyntax classDeclaration))
-            {
-                return null;
-            }
-            if (!SyntaxNodeHelper.TryGetParentSyntax(classDeclaration, out NamespaceDeclarationSyntax namespaceDeclaration))
-            {
-                return null;
-            }
-            
-            var namespaceName = namespaceDeclarationSyntax.Name.ToString();
-            var className = classDeclaration.Identifier.ToString();
-            var methodName = this.FreeMethod.Identifier.ToString();
-            var fullFreeMethodName = $"{namespaceName}.{className}.{fullMethodName";
+        {            
+            var namespaceName = this.FreeMethod.Ancestors().OfType<NamespaceDeclarationSyntax>().First().Name.NormalizeWhitespace().ToFullString();
+            var fullFreeMethodName = this.FreeMethod.Identifier.ToFullString();
             var source = @"using System;
 using System.Diagnostics;
 using System.Runtime.ConstrainedExecution;
@@ -39,14 +30,14 @@ using System.Security.Permissions;
 using Microsoft.Win32.SafeHandles;
 
 namespace {0}
-{
+{{
     /// <summary>
-    /// Represents a wrapper class for iDevice handles.
+    /// Represents a wrapper class for {1} handles.
     /// </summary>
     [SecurityPermission(SecurityAction.InheritanceDemand, UnmanagedCode=true)]
     [SecurityPermission(SecurityAction.Demand, UnmanagedCode=true)]
     public partial class {1} : SafeHandleZeroOrMinusOneIsInvalid
-    {
+    {{
         /// <summary>
         /// Initializes a new instance of the <see cref=""{1}""/> class.
         /// </summary>
@@ -119,7 +110,7 @@ namespace {0}
         /// <inheritdoc/>
         public override string ToString()
         {{
-            return $""{this.handle} ({1})"";
+            return $""{{this.handle}} ({1})"";
         }}
 
         /// <inheritdoc/>
