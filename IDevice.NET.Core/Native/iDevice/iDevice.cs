@@ -119,6 +119,7 @@ namespace IDevice.NET.Core.Native.iDevice
         /// <returns>
         /// IDEVICE_E_SUCCESS on success or an error value when an error occurred.
         /// </returns>
+        [IDevice.NET.Generator.GenerateHandleAttribute("iDeviceInfo")]
         [System.Runtime.InteropServices.DllImportAttribute(iDevice.LibraryName, EntryPoint = "idevice_device_list_extended_free", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
         public static extern iDeviceError idevice_device_list_extended_free(System.IntPtr devices);
 
