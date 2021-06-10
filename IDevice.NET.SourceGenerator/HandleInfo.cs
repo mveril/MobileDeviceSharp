@@ -41,7 +41,7 @@ namespace {0}
         /// <summary>
         /// Initializes a new instance of the <see cref=""{1}""/> class.
         /// </summary>
-        protected iDeviceHandle() :
+        protected {1}() :
                 base(true)
         {{
 
@@ -188,7 +188,7 @@ namespace {0}
     }}
 }}
 ";
-            return string.Format(source, namespaceName, HandleBaseName, fullFreeMethodName);
+            return string.Format(source, namespaceName, $"{HandleBaseName}Handle", fullFreeMethodName);
         }
     }
 }
