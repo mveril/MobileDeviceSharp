@@ -94,7 +94,7 @@ namespace {0}
             var genArg = genAttr.ArgumentList.Arguments[0];
             var genExpr = genArg.Expression;
             var genName = semanticModel.GetConstantValue(genExpr).ToString();
-            var info = new HandleInfo(methodDeclaration, genName);
+            var info = new HandleInfo(semanticModel, methodDeclaration, genName);
             return info;
         }
     }

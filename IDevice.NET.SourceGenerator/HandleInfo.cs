@@ -10,18 +10,24 @@ namespace IDevice.NET.SourceGenerator
 {
     internal class HandleInfo
     {
-        internal HandleInfo(MethodDeclarationSyntax freeMethod, string handleBaseName)
+        internal HandleInfo(SemanticModel semanticModel, MethodDeclarationSyntax freeMethod, string handleBaseName)
         {
             FreeMethod = freeMethod;
             HandleBaseName = handleBaseName;
+            _semanticModel = semanticModel;
         }
         internal MethodDeclarationSyntax FreeMethod { get; }
         internal string HandleBaseName { get; }
+
+        private SemanticModel _semanticModel;
+
         internal string HandleName => $"{HandleBaseName}Handle";
         internal string BuildSource()
         {            
             var namespaceName = this.FreeMethod.Ancestors().OfType<NamespaceDeclarationSyntax>().First().Name.NormalizeWhitespace().ToFullString();
-            var fullFreeMethodName = this.FreeMethod.Identifier.ToFullString();
+            var methodsymbol = _semanticModel.GetDeclaredSymbol(this.FreeMethod);
+            var format = new SymbolDisplayFormat(memberOptions: SymbolDisplayMemberOptions.IncludeContainingType);
+            var fullFreeMethodName = methodsymbol.ToDisplayString(format);
             var source = @"using System;
 using System.Diagnostics;
 using System.Runtime.ConstrainedExecution;
