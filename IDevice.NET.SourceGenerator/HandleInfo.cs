@@ -67,7 +67,7 @@ namespace {0}
         /// <summary>
         /// Gets a value which represents a pointer or handle that has been initialized to zero.
         /// </summary>
-        public static iDeviceHandle Zero
+        public static {1} Zero
         {{
             get
             {{
@@ -101,14 +101,14 @@ namespace {0}
         }}
 
         /// <summary>
-        /// Creates a new <see cref=""iDeviceHandle""/> from a <see cref=""IntPtr""/>.
+        /// Creates a new <see cref=""{1}""/> from a <see cref=""IntPtr""/>.
         /// </summary>
         /// <param name=""unsafeHandle"">
         /// The underlying <see cref=""IntPtr""/>
         /// </param>
         /// <returns>
         /// </returns>
-        public static {0} DangerousCreate(System.IntPtr unsafeHandle)
+        public static {1} DangerousCreate(System.IntPtr unsafeHandle)
         {{
             return {1}.DangerousCreate(unsafeHandle, true);
         }}
@@ -122,7 +122,7 @@ namespace {0}
         /// <inheritdoc/>
         public override bool Equals(object obj)
         {{
-            if (obj != null && obj.GetType() == typeof({0}))
+            if (obj != null && obj.GetType() == typeof({1}))
             {{
                 return (({1})obj).handle.Equals(this.handle);
             }}
@@ -177,7 +177,7 @@ namespace {0}
         /// <returns>
         /// <see langword=""true""/> if <paramref name=""value1""/> does not equal <paramref name=""value2""/>; otherwise, <see langword=""false""/>.
         /// </returns>
-        public static bool operator !=(iDeviceHandle value1, iDeviceHandle value2)
+        public static bool operator !=({1} value1, {1} value2)
         {{
             if (object.Equals(value1, null) && object.Equals(value2, null))
             {{
