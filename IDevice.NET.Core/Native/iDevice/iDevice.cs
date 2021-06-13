@@ -215,6 +215,7 @@ namespace IDevice.NET.Core.Native.iDevice
         /// <returns>
         /// IDEVICE_E_SUCCESS if ok, otherwise an error code.
         /// </returns>
+        [GenerateHandle("iDeviceConnection")]
         [System.Runtime.InteropServices.DllImportAttribute(iDevice.LibraryName, EntryPoint = "idevice_disconnect", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
         public static extern iDeviceError idevice_disconnect(System.IntPtr connection);
 
