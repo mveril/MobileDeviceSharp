@@ -80,6 +80,7 @@ namespace {0}
         protected override bool ReleaseHandle()
         {{
             return {2};
+            return ({2}) == iDeviceError.Success);
         }}
 
         /// <summary>
