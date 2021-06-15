@@ -10,13 +10,12 @@ namespace IDevice.NET.SourceGenerator
 {
     internal class HandleInfo
     {
-        internal HandleInfo(SemanticModel semanticModel, MethodDeclarationSyntax freeMethod, string handleBaseName)
+        internal HandleInfo(IMethodSymbol freeMethod, string handleBaseName)
         {
             FreeMethod = freeMethod;
             HandleBaseName = handleBaseName;
-            _semanticModel = semanticModel;
         }
-        internal MethodDeclarationSyntax FreeMethod { get; }
+        internal IMethodSymbol FreeMethod { get; }
         internal string HandleBaseName { get; }
 
         private SemanticModel _semanticModel;
@@ -24,10 +23,9 @@ namespace IDevice.NET.SourceGenerator
         internal string HandleName => $"{HandleBaseName}Handle";
         internal string BuildSource()
         {            
-            var namespaceName = this.FreeMethod.Ancestors().OfType<NamespaceDeclarationSyntax>().First().Name.NormalizeWhitespace().ToFullString();
-            var methodsymbol = _semanticModel.GetDeclaredSymbol(this.FreeMethod);
             var format = new SymbolDisplayFormat(memberOptions: SymbolDisplayMemberOptions.IncludeContainingType);
-            var fullFreeMethodName = methodsymbol.ToDisplayString(format);
+            var fullFreeMethodName = FreeMethod.ToDisplayString(format);
+            var namespaceName = FreeMethod.ContainingNamespace.ToDisplayString();
             var source = @"using System;
 using System.Diagnostics;
 using System.Runtime.ConstrainedExecution;
@@ -53,17 +51,18 @@ namespace {0}
 
         }}
 
-            /// <summary>
-            /// Initializes a new instance of the <see cref=""{1}""/> class, specifying whether the handle is to be reliably released.
-            /// </summary>
-            /// <param name=""ownsHandle"">
-            /// <see langword=""true""/> to reliably release the handle during the finalization phase; <see langword=""false""/> to prevent reliable release (not recommended).
-            /// </param>
-            protected {1}(bool ownsHandle) :
-                base(ownsHandle)
-            {{
-                
-            }}
+        /// <summary>
+        /// Initializes a new instance of the <see cref=""{1}""/> class, specifying whether the handle is to be reliably released.
+        /// </summary>
+        /// <param name=""ownsHandle"">
+        /// <see langword=""true""/> to reliably release the handle during the finalization phase; <see langword=""false""/> to prevent reliable release (not recommended).
+        /// </param>
+        protected {1}(bool ownsHandle) :
+                 base(true)
+        {{
+
+        }}
+
         /// <summary>
         /// Gets a value which represents a pointer or handle that has been initialized to zero.
         /// </summary>

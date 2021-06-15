@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Text;
+using System.Text;
 
 namespace IDevice.NET.SourceGenerator
 {
@@ -18,9 +17,8 @@ namespace IDevice.NET.SourceGenerator
         const string PropName = "HandleName";
         public void Execute(GeneratorExecutionContext context)
         {
-            var compilation = context.Compilation;
-            string attrSource = GetAttrSorce();
-            context.AddSource("GenerateHandleAttribute.g.cs", attrSource);
+            var attrSource = SourceText.From(GetAttrSorce(), Encoding.UTF8);
+            var compilation = context.AddSourceAndGetCompilation($"{AttrName}.g.cs", attrSource);
             IEnumerable<SyntaxNode> allNodes = compilation.SyntaxTrees.SelectMany(s => s.GetRoot().DescendantNodes());
 
             IEnumerable<MethodDeclarationSyntax> allMethods = allNodes
@@ -28,8 +26,8 @@ namespace IDevice.NET.SourceGenerator
                 .OfType<MethodDeclarationSyntax>();
             foreach (var method in allMethods)
             {
-                var info = TryGetHandleInfo(compilation,method);
-                if (info!= null)
+                var info = TryGetHandleInfo(compilation, method);
+                if (info != null)
                 {
                     var source = info.BuildSource();
                     if (source != null)
@@ -69,32 +67,19 @@ namespace {0}
 
         public void Initialize(GeneratorInitializationContext context)
         {
-            //Debugger.Launch();
         }
-
-        /*internal MethodDeclarationSyntax GetHandleMethod(Compilation compilation, ClassDeclarationSyntax classDeclaration)
-        {
-
-            var methods = classDeclaration.Members.OfType<MethodDeclarationSyntax>();
-            var method = methods.FirstOrDefault(m => CheckIsFreeEntryPointOf(compilation, m, classDeclaration.Identifier.ToString()));
-            return method;
-        }*/
         internal HandleInfo TryGetHandleInfo(Compilation compilation, MethodDeclarationSyntax methodDeclaration)
         {
-            var fullname =  $"{AttrNamespace}.{AttrName}";
-            var attributes = methodDeclaration.AttributeLists
-    .SelectMany(x => x.Attributes);
-            var fln = attributes.Select(a => a.Name.ToFullString());
-            var genAttr = attributes.FirstOrDefault(attr => attr.Name.ToFullString() == fullname);
+            var genAttrSymbol = compilation.GetTypeByMetadataName($"{AttrNamespace}.{AttrName}");
+            var semanticModel = compilation.GetSemanticModel(methodDeclaration.SyntaxTree);
+            var methodSymbol = semanticModel.GetDeclaredSymbol(methodDeclaration);
+            var genAttr = methodSymbol.GetAttributes().FirstOrDefault((attr) => attr.AttributeClass.Equals(genAttrSymbol, SymbolEqualityComparer.Default));
             if (genAttr==null)
             {
                 return null;
             }
-            var semanticModel = compilation.GetSemanticModel(methodDeclaration.SyntaxTree);
-            var genArg = genAttr.ArgumentList.Arguments[0];
-            var genExpr = genArg.Expression;
-            var genName = semanticModel.GetConstantValue(genExpr).ToString();
-            var info = new HandleInfo(semanticModel, methodDeclaration, genName);
+            var genName = (string)genAttr.ConstructorArguments[0].Value;
+            var info = new HandleInfo(methodSymbol, genName);
             return info;
         }
     }
