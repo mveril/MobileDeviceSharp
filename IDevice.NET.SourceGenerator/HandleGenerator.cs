@@ -6,6 +6,8 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using System.Text;
+using System.IO;
+using System;
 
 namespace IDevice.NET.SourceGenerator
 {
@@ -32,7 +34,22 @@ namespace IDevice.NET.SourceGenerator
                     var source = info.BuildSource();
                     if (source != null)
                     {
-                        context.AddSource($"{info.HandleName}.g.cs", source);
+                        info.AddTo(context);
+                    }
+                }
+            }
+
+            var file = context.AdditionalFiles.FirstOrDefault(p => Path.GetFileName(p.Path).Equals("GenrateHandle.txt", StringComparison.OrdinalIgnoreCase));
+            if (file != null)
+            {
+                var text = file.GetText();
+                foreach (var line in text.Lines)
+                {
+                    var span = line.Span;
+                    if (!span.IsEmpty)
+                    {
+                        var info = new HandleInfo(text.ToString(span));
+                        info.AddTo(context);
                     }
                 }
             }
@@ -67,6 +84,7 @@ namespace {0}
 
         public void Initialize(GeneratorInitializationContext context)
         {
+
         }
         internal HandleInfo TryGetHandleInfo(Compilation compilation, MethodDeclarationSyntax methodDeclaration)
         {

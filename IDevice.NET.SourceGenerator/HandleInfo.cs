@@ -14,19 +14,36 @@ namespace IDevice.NET.SourceGenerator
         {
             FreeMethod = freeMethod;
             HandleBaseName = handleBaseName;
+            namespaceName = FreeMethod.ContainingNamespace.ToDisplayString();
         }
 
-        internal HandleInfo(string FullClassName)
+        internal HandleInfo(string fullClassName)
+        {
+            var index = fullClassName.LastIndexOf(".");
+            namespaceName = fullClassName.Substring(0,index);
+            HandleBaseName = fullClassName.Substring(index+1);
+        }
 
         internal IMethodSymbol FreeMethod { get; }
+
+        private readonly string namespaceName;
+
+        internal readonly string className;
+
         internal string HandleBaseName { get; }
 
         internal string HandleName => $"{HandleBaseName}Handle";
+
+        internal void AddTo(GeneratorExecutionContext context)
+        {
+            context.AddSource($"{this.HandleName}.g.cs", this.BuildSource());
+        }
+
         internal string BuildSource()
         {            
-            var format = new SymbolDisplayFormat(memberOptions: SymbolDisplayMemberOptions.IncludeContainingType);
-            var fullFreeMethodName = FreeMethod.ToDisplayString(format);
-            var namespaceName = FreeMethod.ContainingNamespace.ToDisplayString();
+            var methodFormat = new SymbolDisplayFormat(memberOptions: SymbolDisplayMemberOptions.IncludeContainingType);
+            var returnFormat = new SymbolDisplayFormat(memberOptions: SymbolDisplayMemberOptions.IncludeType);
+            var freeCode = (FreeMethod == null ? "true" : $"({FreeMethod.ToDisplayString(methodFormat)}(this.handle) == {FreeMethod.ReturnType.ToDisplayString(returnFormat)}.Success)");
             var source = @"using System;
 using System.Diagnostics;
 using System.Runtime.ConstrainedExecution;
@@ -80,7 +97,6 @@ namespace {0}
         protected override bool ReleaseHandle()
         {{
             return {2};
-            return ({2}) == iDeviceError.Success);
         }}
 
         /// <summary>
@@ -195,7 +211,7 @@ namespace {0}
     }}
 }}
 ";
-            return string.Format(source, namespaceName, $"{HandleBaseName}Handle", fullFreeMethodName);
+            return string.Format(source, namespaceName, $"{HandleBaseName}Handle", freeCode);
         }
     }
 }
