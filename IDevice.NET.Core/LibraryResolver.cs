@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using IDevice.NET.Core.Native;
 
-namespace IDevice.NET.Core
+
+namespace IDevice.NET.Core.Native
 {
     internal static class LibraryResolver
     {
         static LibraryResolver()
         {
-#if !NETCOREAPP2_0 && !NETSTANDARD2_0 && !NET45
+#if !NETCOREAPP2_0 && !NETSTANDARD2_1 && !NET45
             NativeLibrary.SetDllImportResolver(Assembly.GetExecutingAssembly(), DllImportResolver);
 #endif
         }
@@ -19,7 +19,7 @@ namespace IDevice.NET.Core
             // Dummy call to trigger the static constructor
         }
 
-#if !NETSTANDARD2_0
+#if !NETSTANDARD2_1
         private static IntPtr DllImportResolver(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
         {
             //if (libraryName == Plist.PlistNativeMethods.LibraryName)
