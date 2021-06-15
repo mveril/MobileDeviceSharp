@@ -15,10 +15,11 @@ namespace IDevice.NET.SourceGenerator
             FreeMethod = freeMethod;
             HandleBaseName = handleBaseName;
         }
+
+        internal HandleInfo(string FullClassName)
+
         internal IMethodSymbol FreeMethod { get; }
         internal string HandleBaseName { get; }
-
-        private SemanticModel _semanticModel;
 
         internal string HandleName => $"{HandleBaseName}Handle";
         internal string BuildSource()
@@ -78,7 +79,7 @@ namespace {0}
         [ReliabilityContractAttribute(Consistency.WillNotCorruptState, Cer.MayFail)]
         protected override bool ReleaseHandle()
         {{
-            return ({2}(this.handle) == iDeviceError.Success);
+            return {2};
         }}
 
         /// <summary>
