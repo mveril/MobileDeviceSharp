@@ -9,7 +9,7 @@ namespace IDevice.NET.Core.Native
     {
         static LibraryResolver()
         {
-#if !NETCOREAPP2_0 && !NETSTANDARD2_1 && !NET45
+#if !NETCOREAPP2_0 && !NETSTANDARD2_0 && !NET45
             NativeLibrary.SetDllImportResolver(Assembly.GetExecutingAssembly(), DllImportResolver);
 #endif
         }
@@ -19,7 +19,7 @@ namespace IDevice.NET.Core.Native
             // Dummy call to trigger the static constructor
         }
 
-#if !NETSTANDARD2_1
+#if !NETSTANDARD2_0
         private static IntPtr DllImportResolver(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
         {
             //if (libraryName == Plist.PlistNativeMethods.LibraryName)
@@ -32,7 +32,7 @@ namespace IDevice.NET.Core.Native
                 return LoadUsbmuxdLibrary();
             }
 
-            if (libraryName == iDevice.LibraryName)
+            if (libraryName == iDevice.iDevice.LibraryName)
             {
                 return LoadMobileDeviceLibrary();
             }
