@@ -4,6 +4,7 @@ using System.Text;
 using IDevice.NET.Generator;
 using IDevice.NET.Core.Native.iDevice;
 using PlistSharp;
+using System.Runtime.InteropServices;
 
 namespace IDevice.NET.Core.Native.Lockdown
 {
@@ -38,8 +39,8 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// for more than 10 seconds. Make sure to call lockdownd_client_free() as soon
         /// as the connection is no longer needed.
         /// </remarks>
-        [System.Runtime.InteropServices.DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_client_new", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern LockdownError lockdownd_client_new(iDeviceHandle device, out LockdownClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string label);
+        [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_client_new", CallingConvention = CallingConvention.Cdecl)]
+        public static extern LockdownError lockdownd_client_new(iDeviceHandle device, out LockdownClientHandle client, [MarshalAs(UnmanagedType.LPStr)] string label);
 
         /// <summary>
         /// Creates a new lockdownd client for the device and starts initial handshake.
@@ -65,8 +66,8 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// for more than 10 seconds. Make sure to call lockdownd_client_free() as soon
         /// as the connection is no longer needed.
         /// </remarks>
-        [System.Runtime.InteropServices.DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_client_new_with_handshake", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern LockdownError lockdownd_client_new_with_handshake(iDeviceHandle device, out LockdownClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string label);
+        [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_client_new_with_handshake", CallingConvention = CallingConvention.Cdecl)]
+        public static extern LockdownError lockdownd_client_new_with_handshake(iDeviceHandle device, out LockdownClientHandle client, [MarshalAs(UnmanagedType.LPStr)] string label);
 
         /// <summary>
         /// Closes the lockdownd client session if one is running and frees up the
@@ -79,7 +80,7 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// LOCKDOWN_E_SUCCESS on success, LOCKDOWN_E_INVALID_ARG when client is NULL
         /// </returns>
         [GenerateHandleAttribute("LockdownClient")]
-        [System.Runtime.InteropServices.DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_client_free", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
+        [DllImport(Lockdown.LibraryName, EntryPoint = "lockdownd_client_free", CallingConvention = CallingConvention.Cdecl)]
         public static extern LockdownError lockdownd_client_free(System.IntPtr client);
 
         /// <summary>
@@ -95,8 +96,8 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// <returns>
         /// LOCKDOWN_E_SUCCESS on success, LOCKDOWN_E_INVALID_ARG when client is NULL
         /// </returns>
-        [System.Runtime.InteropServices.DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_query_type", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern LockdownError lockdownd_query_type(LockdownClientHandle client, out System.IntPtr type);
+        [DllImport(Lockdown.LibraryName, EntryPoint = "lockdownd_query_type", CallingConvention = CallingConvention.Cdecl)]
+        public static extern LockdownError lockdownd_query_type(LockdownClientHandle client, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(UTF8Marshaler))]  out string type);
 
         /// <summary>
         /// Retrieves a preferences plist using an optional domain and/or key name.
@@ -116,8 +117,8 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// <returns>
         /// LOCKDOWN_E_SUCCESS on success, LOCKDOWN_E_INVALID_ARG when client is NULL
         /// </returns>
-        [System.Runtime.InteropServices.DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_get_value", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern LockdownError lockdownd_get_value(LockdownClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string domain, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string key, out plist_t value);
+        [DllImport(Lockdown.LibraryName, EntryPoint = "lockdownd_get_value", CallingConvention = CallingConvention.Cdecl)]
+        public static extern LockdownError lockdownd_get_value(LockdownClientHandle client, [MarshalAsAttribute(UnmanagedType.LPStr)] string domain, [MarshalAsAttribute(UnmanagedType.LPStr)] string key, out PlistNode value);
 
         /// <summary>
         /// Sets a preferences value using a plist and optional by domain and/or key name.
@@ -138,8 +139,8 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// LOCKDOWN_E_SUCCESS on success, LOCKDOWN_E_INVALID_ARG when client or
         /// value is NULL
         /// </returns>
-        [System.Runtime.InteropServices.DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_set_value", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern LockdownError lockdownd_set_value(LockdownClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string domain, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string key, plist_t value);
+        [DllImport(Lockdown.LibraryName, EntryPoint = "lockdownd_set_value", CallingConvention = CallingConvention.Cdecl)]
+        public static extern LockdownError lockdownd_set_value(LockdownClientHandle client, [MarshalAsAttribute(UnmanagedType.LPStr)] string domain, [MarshalAsAttribute(UnmanagedType.LPStr)] string key, PlistNode value);
 
         /// <summary>
         /// Removes a preference node by domain and/or key name.
@@ -159,8 +160,8 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// <remarks>
         /// : Use with caution as this could remove vital information on the device
         /// </remarks>
-        [System.Runtime.InteropServices.DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_remove_value", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern LockdownError lockdownd_remove_value(LockdownClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string domain, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string key);
+        [DllImport(Lockdown.LibraryName, EntryPoint = "lockdownd_remove_value", CallingConvention = CallingConvention.Cdecl)]
+        public static extern LockdownError lockdownd_remove_value(LockdownClientHandle client, [MarshalAsAttribute(UnmanagedType.LPStr)] string domain, [MarshalAsAttribute(UnmanagedType.LPStr)] string key);
 
         /// <summary>
         /// Requests to start a service and retrieve it's port on success.
@@ -180,8 +181,8 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// by the device, LOCKDOWN_E_START_SERVICE_FAILED if the service could not be
         /// started by the device
         /// </returns>
-        [System.Runtime.InteropServices.DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_start_service", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern LockdownError lockdownd_start_service(LockdownClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string identifier, out LockdownServiceDescriptorHandle service);
+        [DllImport(Lockdown.LibraryName, EntryPoint = "lockdownd_start_service", CallingConvention = CallingConvention.Cdecl)]
+        public static extern LockdownError lockdownd_start_service(LockdownClientHandle client, [MarshalAsAttribute(UnmanagedType.LPStr)] string identifier, out LockdownServiceDescriptorHandle service);
 
         /// <summary>
         /// Requests to start a service and retrieve it's port on success.
@@ -203,8 +204,8 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// started by the device, LOCKDOWN_E_INVALID_CONF if the host id or escrow bag are
         /// missing from the device record.
         /// </returns>
-        [System.Runtime.InteropServices.DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_start_service_with_escrow_bag", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern LockdownError lockdownd_start_service_with_escrow_bag(LockdownClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string identifier, out LockdownServiceDescriptorHandle service);
+        [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_start_service_with_escrow_bag", CallingConvention = CallingConvention.Cdecl)]
+        public static extern LockdownError lockdownd_start_service_with_escrow_bag(LockdownClientHandle client, [MarshalAsAttribute(UnmanagedType.LPStr)] string identifier, out LockdownServiceDescriptorHandle service);
 
         /// <summary>
         /// Opens a session with lockdownd and switches to SSL mode if device wants it.
@@ -227,8 +228,8 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// LOCKDOWN_E_INVALID_HOST_ID if the device does not know the supplied HostID,
         /// LOCKDOWN_E_SSL_ERROR if enabling SSL communication failed
         /// </returns>
-        [System.Runtime.InteropServices.DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_start_session", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern LockdownError lockdownd_start_session(LockdownClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string hostId, out System.IntPtr sessionId, ref int sslEnabled);
+        [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_start_session", CallingConvention = CallingConvention.Cdecl)]
+        public static extern LockdownError lockdownd_start_session(LockdownClientHandle client, [MarshalAsAttribute(UnmanagedType.LPStr)] string hostId, out System.IntPtr sessionId, ref int sslEnabled);
 
         /// <summary>
         /// Closes the lockdownd session by sending the StopSession request.
@@ -242,8 +243,8 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// <returns>
         /// LOCKDOWN_E_SUCCESS on success, LOCKDOWN_E_INVALID_ARG when client is NULL
         /// </returns>
-        [System.Runtime.InteropServices.DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_stop_session", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern LockdownError lockdownd_stop_session(LockdownClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string sessionId);
+        [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_stop_session", CallingConvention = CallingConvention.Cdecl)]
+        public static extern LockdownError lockdownd_stop_session(LockdownClientHandle client, [MarshalAsAttribute(UnmanagedType.LPStr)] string sessionId);
 
         /// <summary>
         /// Sends a plist to lockdownd.
@@ -262,8 +263,8 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// This function is low-level and should only be used if you need to send
         /// a new type of message.
         /// </remarks>
-        [System.Runtime.InteropServices.DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_send", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern LockdownError lockdownd_send(LockdownClientHandle client, plist_t plist);
+        [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_send", CallingConvention = CallingConvention.Cdecl)]
+        public static extern LockdownError lockdownd_send(LockdownClientHandle client, PlistNode plist);
 
         /// <summary>
         /// Receives a plist from lockdownd.
@@ -278,8 +279,8 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// LOCKDOWN_E_SUCCESS on success, LOCKDOWN_E_INVALID_ARG when client or
         /// plist is NULL
         /// </returns>
-        [System.Runtime.InteropServices.DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_receive", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern LockdownError lockdownd_receive(LockdownClientHandle client, out plist_t plist);
+        [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_receive", CallingConvention = CallingConvention.Cdecl)]
+        public static extern LockdownError lockdownd_receive(LockdownClientHandle client, out PlistNode plist);
 
         /// <summary>
         /// Pairs the device using the supplied pair record.
@@ -299,7 +300,7 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// LOCKDOWN_E_PASSWORD_PROTECTED if the device is password protected,
         /// LOCKDOWN_E_INVALID_HOST_ID if the device does not know the caller's host id
         /// </returns>
-        [System.Runtime.InteropServices.DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_pair", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
+        [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_pair", CallingConvention = CallingConvention.Cdecl)]
         public static extern LockdownError lockdownd_pair(LockdownClientHandle client, LockdownPairRecordHandle pairRecord);
 
         /// <summary>
@@ -327,8 +328,8 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// LOCKDOWN_E_PASSWORD_PROTECTED if the device is password protected,
         /// LOCKDOWN_E_INVALID_HOST_ID if the device does not know the caller's host id
         /// </returns>
-        [System.Runtime.InteropServices.DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_pair_with_options", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern LockdownError lockdownd_pair_with_options(LockdownClientHandle client, LockdownPairRecordHandle pairRecord, plist_t options, out plist_t response);
+        [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_pair_with_options", CallingConvention = CallingConvention.Cdecl)]
+        public static extern LockdownError lockdownd_pair_with_options(LockdownClientHandle client, LockdownPairRecordHandle pairRecord, PlistNode options, out PlistNode response);
 
         /// <summary>
         /// Validates if the device is paired with the given HostID. If successful the
@@ -351,7 +352,7 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// LOCKDOWN_E_PASSWORD_PROTECTED if the device is password protected,
         /// LOCKDOWN_E_INVALID_HOST_ID if the device does not know the caller's host id
         /// </returns>
-        [System.Runtime.InteropServices.DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_validate_pair", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
+        [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_validate_pair", CallingConvention = CallingConvention.Cdecl)]
         public static extern LockdownError lockdownd_validate_pair(LockdownClientHandle client, LockdownPairRecordHandle pairRecord);
 
         /// <summary>
@@ -372,7 +373,7 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// LOCKDOWN_E_PASSWORD_PROTECTED if the device is password protected,
         /// LOCKDOWN_E_INVALID_HOST_ID if the device does not know the caller's host id
         /// </returns>
-        [System.Runtime.InteropServices.DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_unpair", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
+        [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_unpair", CallingConvention = CallingConvention.Cdecl)]
         public static extern LockdownError lockdownd_unpair(LockdownClientHandle client, LockdownPairRecordHandle pairRecord);
 
         /// <summary>
@@ -394,8 +395,8 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// LOCKDOWN_E_INVALID_ACTIVATION_RECORD if the device reports that the
         /// activation_record is invalid
         /// </returns>
-        [System.Runtime.InteropServices.DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_activate", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern LockdownError lockdownd_activate(LockdownClientHandle client, plist_t activationRecord);
+        [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_activate", CallingConvention = CallingConvention.Cdecl)]
+        public static extern LockdownError lockdownd_activate(LockdownClientHandle client, PlistNode activationRecord);
 
         /// <summary>
         /// Deactivates the device, returning it to the locked “Activate with iTunes”
@@ -409,7 +410,7 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// LOCKDOWN_E_NO_RUNNING_SESSION if no session is open,
         /// LOCKDOWN_E_PLIST_ERROR if the received plist is broken
         /// </returns>
-        [System.Runtime.InteropServices.DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_deactivate", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
+        [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_deactivate", CallingConvention = CallingConvention.Cdecl)]
         public static extern LockdownError lockdownd_deactivate(LockdownClientHandle client);
 
         /// <summary>
@@ -421,7 +422,7 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// <returns>
         /// LOCKDOWN_E_SUCCESS on success, LOCKDOWN_E_INVALID_ARG when client is NULL
         /// </returns>
-        [System.Runtime.InteropServices.DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_enter_recovery", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
+        [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_enter_recovery", CallingConvention = CallingConvention.Cdecl)]
         public static extern LockdownError lockdownd_enter_recovery(LockdownClientHandle client);
 
         /// <summary>
@@ -435,7 +436,7 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// is NULL, LOCKDOWN_E_PLIST_ERROR if the device did not acknowledge the
         /// request
         /// </returns>
-        [System.Runtime.InteropServices.DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_goodbye", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
+        [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_goodbye", CallingConvention = CallingConvention.Cdecl)]
         public static extern LockdownError lockdownd_goodbye(LockdownClientHandle client);
 
         /// <summary>
@@ -447,8 +448,8 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// <param name="label">
         /// The label to set or NULL to disable sending a label
         /// </param>
-        [System.Runtime.InteropServices.DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_client_set_label", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern void lockdownd_client_set_label(LockdownClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string label);
+        [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_client_set_label", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void lockdownd_client_set_label(LockdownClientHandle client, [MarshalAsAttribute(UnmanagedType.LPStr)] string label);
 
         /// <summary>
         /// Returns the unique id of the device from lockdownd.
@@ -463,8 +464,8 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// <returns>
         /// LOCKDOWN_E_SUCCESS on success
         /// </returns>
-        [System.Runtime.InteropServices.DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_get_device_udid", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern LockdownError lockdownd_get_device_udid(LockdownClientHandle client, out System.IntPtr udid);
+        [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_get_device_udid", CallingConvention = CallingConvention.Cdecl)]
+        public static extern LockdownError lockdownd_get_device_udid(LockdownClientHandle client, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(UTF8Marshaler))] out string udid);
 
         /// <summary>
         /// Retrieves the name of the device from lockdownd set by the user.
@@ -479,8 +480,8 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// <returns>
         /// LOCKDOWN_E_SUCCESS on success
         /// </returns>
-        [System.Runtime.InteropServices.DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_get_device_name", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern LockdownError lockdownd_get_device_name(LockdownClientHandle client, out System.IntPtr deviceName);
+        [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_get_device_name", CallingConvention = CallingConvention.Cdecl)]
+        public static extern LockdownError lockdownd_get_device_name(LockdownClientHandle client, [MarshalAsAttribute(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(UTF8Marshaler))] out string deviceName);
 
         /// <summary>
         /// Calculates and returns the data classes the device supports from lockdownd.
@@ -501,7 +502,7 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// LOCKDOWN_E_NO_RUNNING_SESSION if no session is open,
         /// LOCKDOWN_E_PLIST_ERROR if the received plist is broken
         /// </returns>
-        [System.Runtime.InteropServices.DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_get_sync_data_classes", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
+        [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_get_sync_data_classes", CallingConvention = CallingConvention.Cdecl)]
         public static extern LockdownError lockdownd_get_sync_data_classes(LockdownClientHandle client, out System.IntPtr classes, ref int count);
 
         /// <summary>
@@ -513,7 +514,7 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// <returns>
         /// LOCKDOWN_E_SUCCESS on success
         /// </returns>
-        [System.Runtime.InteropServices.DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_data_classes_free", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
+        [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_data_classes_free", CallingConvention = CallingConvention.Cdecl)]
         public static extern LockdownError lockdownd_data_classes_free(System.IntPtr classes);
 
         /// <summary>
@@ -526,7 +527,7 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// LOCKDOWN_E_SUCCESS on success
         /// </returns>
         [GenerateHandle("LockdownServiceDescriptor")]
-        [System.Runtime.InteropServices.DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_service_descriptor_free", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
+        [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_service_descriptor_free", CallingConvention = CallingConvention.Cdecl)]
         public static extern LockdownError lockdownd_service_descriptor_free(System.IntPtr service);
 
         /// <summary>
@@ -535,7 +536,7 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// <param name="err">
         /// A lockdownd error code
         /// </param>
-        [System.Runtime.InteropServices.DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_strerror", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
+        [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_strerror", CallingConvention = CallingConvention.Cdecl)]
         public static extern System.IntPtr lockdownd_strerror(LockdownError err);
     }
 }

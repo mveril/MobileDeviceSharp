@@ -14,16 +14,10 @@ namespace IDevice.NET.Core.Native.iDevice
 
         public iDeviceEventType @event;
 
-        public System.IntPtr udid;
+        [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(UTF8Marshaler))]
+        public string udid;
 
         public iDeviceConnectionType conn_type;
 
-        public string udidString
-        {
-            get
-            {
-                return Marshal.PtrToStringUTF8(this.udid);
-            }
-        }
     }
 }
