@@ -1,4 +1,4 @@
-﻿namespace IDevice.NET.Core.Native.iDevice
+﻿namespace IOSLib.Native
 {
     /// <summary>
     /// The event type for device add or removal 

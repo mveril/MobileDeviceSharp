@@ -1,1 +1,0 @@
-﻿IDevice.NET.Core.Native.Lockdown.LockdownPairRecord

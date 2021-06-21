@@ -5,7 +5,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace IDevice.NET.Core.Native
+namespace IOSLib.Native
 {
     public class UTF8Marshaler : ICustomMarshaler
     {
@@ -13,19 +13,26 @@ namespace IDevice.NET.Core.Native
 
         public unsafe IntPtr MarshalManagedToNative(object managedObj)
         {
-            if (managedObj == null)
-                return IntPtr.Zero;
             if (!(managedObj is string))
                 throw new MarshalDirectiveException(
                        "UTF8Marshaler must be used on a string.");
-
+            string str = (managedObj as string)!;
             // not null terminated
-            ReadOnlySpan<byte> strbuf = Encoding.UTF8.GetBytes((string)managedObj);
-            var buffer = Marshal.AllocHGlobal(strbuf.Length + 1);
-            var uspan = new Span<byte>(buffer.ToPointer(),strbuf.Length+1);
-            strbuf.CopyTo(uspan);
-            uspan[strbuf.Length] = 0;
-            return buffer;
+            int nb = Encoding.UTF8.GetMaxByteCount(str.Length);
+
+            IntPtr ptr = Marshal.AllocHGlobal(nb + 1);
+
+            int nbWritten;
+            byte* pbMem = (byte*)ptr;
+
+            fixed (char* firstChar = str)
+            {
+                nbWritten = Encoding.UTF8.GetBytes(firstChar, str.Length, pbMem, nb);
+            }
+
+            pbMem[nbWritten] = 0;
+
+            return ptr;
         }
 
         public object MarshalNativeToManaged(IntPtr pNativeData)
@@ -46,10 +53,9 @@ namespace IDevice.NET.Core.Native
                 // skip the trailing null
                 string data = Encoding.UTF8.GetString((byte*)pNativeData, length);
                 return data;
-
             }
 #else
-            return Marshal.PtrToStringUTF8(pNativeData);
+            return Marshal.PtrToStringUTF8(pNativeData)!;
 #endif
         }
 

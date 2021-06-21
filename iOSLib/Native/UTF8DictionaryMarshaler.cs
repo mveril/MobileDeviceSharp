@@ -1,4 +1,4 @@
-﻿using IDevice.NET.Core.Native;
+﻿using IOSLib.Native;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 using System.Text;
 using System.Linq;
 
-namespace IDevice.NET.Core
+namespace IOSLib
 {
     public class UTF8DictionaryMarshaler : ICustomMarshaler
     {
@@ -42,9 +42,7 @@ namespace IDevice.NET.Core
         public object MarshalNativeToManaged(IntPtr pNativeData)
         {
             var array = (string[])UTF8ArrayMarshaler.GetInstance().MarshalNativeToManaged(pNativeData);
-            if (array!= null)
-            {
-                var dic = new Dictionary<string, string>();
+            var dic = new Dictionary<string, string>();
                 var enumerator = array.GetEnumerator();
                 while (enumerator.MoveNext())
                 {
@@ -58,8 +56,6 @@ namespace IDevice.NET.Core
                     dic.Add(key, value);
                 }
                 return new ReadOnlyDictionary<string, string>(dic);
-            }
-            return null;
         }
 
         public static ICustomMarshaler GetInstance(string cookie)

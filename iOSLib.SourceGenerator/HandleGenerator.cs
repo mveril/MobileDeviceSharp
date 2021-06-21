@@ -9,12 +9,12 @@ using System.Text;
 using System.IO;
 using System;
 
-namespace IDevice.NET.SourceGenerator
+namespace IOSLib.SourceGenerator
 {
     [Generator]
     public class HandleGenerator : ISourceGenerator
     {
-        const string AttrNamespace = "IDevice.NET.Generator";
+        const string AttrNamespace = "IOSLib.Generator";
         const string AttrName = "GenerateHandleAttribute";
         const string PropName = "HandleName";
         public void Execute(GeneratorExecutionContext context)

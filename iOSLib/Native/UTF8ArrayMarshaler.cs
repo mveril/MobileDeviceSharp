@@ -5,7 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
-namespace IDevice.NET.Core.Native
+namespace IOSLib.Native
 {
     public class UTF8ArrayMarshaler : ICustomMarshaler
     {

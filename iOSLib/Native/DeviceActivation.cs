@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace IDevice.NET.Core.Native
+namespace IOSLib.Native
 {
     class DeviceActivation
     {

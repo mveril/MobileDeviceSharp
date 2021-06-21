@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using IDevice.NET.Generator;
-using IDevice.NET.Core.Native.iDevice;
+using IOSLib.Generator;
 using PlistSharp;
 using System.Runtime.InteropServices;
 
-namespace IDevice.NET.Core.Native.Lockdown
+namespace IOSLib.Native
 {
     public static class Lockdown
     {
@@ -40,7 +39,7 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// as the connection is no longer needed.
         /// </remarks>
         [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_client_new", CallingConvention = CallingConvention.Cdecl)]
-        public static extern LockdownError lockdownd_client_new(iDeviceHandle device, out LockdownClientHandle client, [MarshalAs(UnmanagedType.LPStr)] string label);
+        public static extern LockdownError lockdownd_client_new(IDeviceHandle device, out LockdownClientHandle client, [MarshalAs(UnmanagedType.LPStr)] string? label);
 
         /// <summary>
         /// Creates a new lockdownd client for the device and starts initial handshake.
@@ -67,7 +66,7 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// as the connection is no longer needed.
         /// </remarks>
         [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_client_new_with_handshake", CallingConvention = CallingConvention.Cdecl)]
-        public static extern LockdownError lockdownd_client_new_with_handshake(iDeviceHandle device, out LockdownClientHandle client, [MarshalAs(UnmanagedType.LPStr)] string label);
+        public static extern LockdownError lockdownd_client_new_with_handshake(IDeviceHandle device, out LockdownClientHandle client, [MarshalAs(UnmanagedType.LPStr)] string? label);
 
         /// <summary>
         /// Closes the lockdownd client session if one is running and frees up the
@@ -118,7 +117,7 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// LOCKDOWN_E_SUCCESS on success, LOCKDOWN_E_INVALID_ARG when client is NULL
         /// </returns>
         [DllImport(Lockdown.LibraryName, EntryPoint = "lockdownd_get_value", CallingConvention = CallingConvention.Cdecl)]
-        public static extern LockdownError lockdownd_get_value(LockdownClientHandle client, [MarshalAsAttribute(UnmanagedType.LPStr)] string domain, [MarshalAsAttribute(UnmanagedType.LPStr)] string key, out PlistNode value);
+        public static extern LockdownError lockdownd_get_value(LockdownClientHandle client, [MarshalAsAttribute(UnmanagedType.LPStr)] string? domain, [MarshalAsAttribute(UnmanagedType.LPStr)] string? key, out PlistNode value);
 
         /// <summary>
         /// Sets a preferences value using a plist and optional by domain and/or key name.
@@ -140,7 +139,7 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// value is NULL
         /// </returns>
         [DllImport(Lockdown.LibraryName, EntryPoint = "lockdownd_set_value", CallingConvention = CallingConvention.Cdecl)]
-        public static extern LockdownError lockdownd_set_value(LockdownClientHandle client, [MarshalAsAttribute(UnmanagedType.LPStr)] string domain, [MarshalAsAttribute(UnmanagedType.LPStr)] string key, PlistNode value);
+        public static extern LockdownError lockdownd_set_value(LockdownClientHandle client, [MarshalAsAttribute(UnmanagedType.LPStr)] string? domain, [MarshalAsAttribute(UnmanagedType.LPStr)] string key, PlistNode value);
 
         /// <summary>
         /// Removes a preference node by domain and/or key name.
@@ -301,7 +300,7 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// LOCKDOWN_E_INVALID_HOST_ID if the device does not know the caller's host id
         /// </returns>
         [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_pair", CallingConvention = CallingConvention.Cdecl)]
-        public static extern LockdownError lockdownd_pair(LockdownClientHandle client, LockdownPairRecordHandle pairRecord);
+        public static extern LockdownError lockdownd_pair(LockdownClientHandle client, LockdownPairRecordHandle? pairRecord);
 
         /// <summary>
         /// Pairs the device using the supplied pair record and passing the given options.
@@ -353,7 +352,7 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// LOCKDOWN_E_INVALID_HOST_ID if the device does not know the caller's host id
         /// </returns>
         [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_validate_pair", CallingConvention = CallingConvention.Cdecl)]
-        public static extern LockdownError lockdownd_validate_pair(LockdownClientHandle client, LockdownPairRecordHandle pairRecord);
+        public static extern LockdownError lockdownd_validate_pair(LockdownClientHandle client, LockdownPairRecordHandle? pairRecord);
 
         /// <summary>
         /// Unpairs the device with the given HostID and removes the pairing records
@@ -374,7 +373,7 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// LOCKDOWN_E_INVALID_HOST_ID if the device does not know the caller's host id
         /// </returns>
         [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_unpair", CallingConvention = CallingConvention.Cdecl)]
-        public static extern LockdownError lockdownd_unpair(LockdownClientHandle client, LockdownPairRecordHandle pairRecord);
+        public static extern LockdownError lockdownd_unpair(LockdownClientHandle client, LockdownPairRecordHandle? pairRecord);
 
         /// <summary>
         /// Activates the device. Only works within an open session.
@@ -449,7 +448,7 @@ namespace IDevice.NET.Core.Native.Lockdown
         /// The label to set or NULL to disable sending a label
         /// </param>
         [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_client_set_label", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void lockdownd_client_set_label(LockdownClientHandle client, [MarshalAsAttribute(UnmanagedType.LPStr)] string label);
+        public static extern void lockdownd_client_set_label(LockdownClientHandle client, [MarshalAsAttribute(UnmanagedType.LPStr)] string? label);
 
         /// <summary>
         /// Returns the unique id of the device from lockdownd.

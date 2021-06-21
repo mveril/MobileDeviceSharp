@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace IDevice.NET.Core.Native.iDevice
+namespace IOSLib.Native
 {
     [System.Runtime.InteropServices.UnmanagedFunctionPointerAttribute(System.Runtime.InteropServices.CallingConvention.Cdecl)]
     public delegate void iDeviceEventCallBack(ref iDeviceEvent @event, System.IntPtr userData);

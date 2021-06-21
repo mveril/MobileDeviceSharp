@@ -1,4 +1,4 @@
-﻿namespace IDevice.NET.Core.Native.Lockdown
+﻿namespace IOSLib.Native
 {
     /// <summary>
     /// Error Codes 
