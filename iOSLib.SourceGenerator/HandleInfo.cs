@@ -3,12 +3,13 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
 namespace IOSLib.SourceGenerator
 {
-    internal class HandleInfo
+    internal class HandleInfo : SourceCodeInfoBase
     {
         internal HandleInfo(IMethodSymbol freeMethod, string handleBaseName)
         {
@@ -34,17 +35,12 @@ namespace IOSLib.SourceGenerator
 
         internal string HandleName => $"{HandleBaseName}Handle";
 
-        internal void AddTo(GeneratorExecutionContext context)
-        {
-            context.AddSource($"{this.HandleName}.g.cs", this.BuildSource());
-        }
-
-        internal string BuildSource()
+        override internal IReadOnlyDictionary<string,string> BuildSource()
         {            
             var methodFormat = new SymbolDisplayFormat(memberOptions: SymbolDisplayMemberOptions.IncludeContainingType);
             var returnFormat = new SymbolDisplayFormat(memberOptions: SymbolDisplayMemberOptions.IncludeType);
             var freeCode = (FreeMethod == null ? "true" : $"({FreeMethod.ToDisplayString(methodFormat)}(this.handle) == {FreeMethod.ReturnType.ToDisplayString(returnFormat)}.Success)");
-            var source = @"using System;
+            var sourceFormat = @"using System;
 using System.Diagnostics;
 using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
@@ -133,7 +129,7 @@ namespace {0}
         /// <inheritdoc/>
         public override string ToString()
         {{
-            return $""{{this.handle}} ({1})"";
+            return $""{{this.handle}} (nameof({1}))"";
         }}
 
         /// <inheritdoc/>
@@ -211,7 +207,8 @@ namespace {0}
     }}
 }}
 ";
-            return string.Format(source, namespaceName, $"{HandleBaseName}Handle", freeCode);
+            var source = string.Format(sourceFormat, namespaceName, $"{HandleBaseName}Handle", freeCode);
+            return new ReadOnlyDictionary<string, string>(new Dictionary<string, string> { { $"{HandleName}.g.cs", source } });
         }
     }
 }
