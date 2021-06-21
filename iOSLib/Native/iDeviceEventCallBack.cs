@@ -5,10 +5,10 @@ using System.Text;
 
 namespace IOSLib.Native
 {
-    [System.Runtime.InteropServices.UnmanagedFunctionPointerAttribute(System.Runtime.InteropServices.CallingConvention.Cdecl)]
+    [UnmanagedFunctionPointerAttribute(CallingConvention.Cdecl)]
     public delegate void iDeviceEventCallBack(ref iDeviceEvent @event, System.IntPtr userData);
 
-    [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
+    [StructLayoutAttribute(LayoutKind.Sequential)]
     public struct iDeviceEvent
     {
 

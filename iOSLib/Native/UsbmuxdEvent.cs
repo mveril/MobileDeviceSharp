@@ -2,7 +2,7 @@
 
 namespace IOSLib.Native
 {
-    [StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
+    [StructLayoutAttribute(LayoutKind.Sequential)]
     public struct UsbmuxdEvent
     {
 

@@ -6,6 +6,6 @@ using System.Text;
 namespace IOSLib.Native
 {
 
-    [UnmanagedFunctionPointerAttribute(System.Runtime.InteropServices.CallingConvention.Cdecl)]
+    [UnmanagedFunctionPointerAttribute(CallingConvention.Cdecl)]
     public delegate void iDeviceDebugCallBack(IntPtr message);
 }
