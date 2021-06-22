@@ -370,7 +370,28 @@ namespace IOSLib
             }
         }
 
+        public DateTimeOffset DeviceTime
+        {
+            get
+            {
+                double offset;
+                using (var lockdown = new Lockdown(this))
+                {
+                    using (var intervalNode = (PlistReal)lockdown.GetValue("TimeIntervalSince1970"))
+                    {
+                        offset = intervalNode.Value;
+                    }
+                }
+#if NETSTANDARD2_0
+                DateTimeOffset unix = DateTimeOffset.FromUnixTimeSeconds(0);
 
+#else
+                DateTimeOffset unix = DateTimeOffset.UnixEpoch;
+#endif
+                var utctime = unix.AddSeconds(offset);
+                return TimeZoneInfo.ConvertTime(utctime, TimeZone);
+            }
+        }
 
         public string CPUArchitecture
         {
