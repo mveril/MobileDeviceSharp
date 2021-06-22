@@ -6,6 +6,8 @@ using TimeZoneConverter;
 using System.Net.NetworkInformation;
 using PlistSharp;
 using IOSLib.Native;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace IOSLib
 {
@@ -30,6 +32,28 @@ namespace IOSLib
                 throw ex;
             }
             Handle = deviceHandle;
+        }
+
+        public static IEnumerable<IDevice> List()
+        {
+            int count = 0;
+            var ex = Native.IDevice.idevice_get_device_list(out var udids, ref count).GetException();
+            if (ex != null)
+            {
+                throw ex;
+            }
+            return udids.Select(id => new IDevice(id));
+        }
+
+        public static IEnumerable<IDevice> ListExtended()
+        {
+            int count = 0;
+            var ex = Native.IDevice.idevice_get_device_list_extended(out var udids, ref count).GetException();
+            if (ex != null)
+            {
+                throw ex;
+            }
+            return udids.Select(id => new IDevice(id));
         }
 
         public IDeviceHandle Handle { get; }
