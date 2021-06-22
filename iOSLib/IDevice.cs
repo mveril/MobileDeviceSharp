@@ -90,9 +90,15 @@ namespace IOSLib
         {
             get
             {
-                using var lockdown = new Lockdown(this);
-                using var deviceClassNode = (PlistString)lockdown.GetValue("DeviceClass");
-                return (DeviceClass)Enum.Parse(typeof(DeviceClass), deviceClassNode.Value);
+                string strClass = string.Empty;
+                using (var lockdown = new Lockdown(this))
+                {
+                    using (PlistString deviceClassNode = (PlistString)lockdown.GetValue("DeviceClass"))
+                    {
+                        strClass = deviceClassNode.Value;
+                    }
+                }
+                return (DeviceClass)Enum.Parse(typeof(DeviceClass), strClass);
             }
         }
 
@@ -230,9 +236,15 @@ namespace IOSLib
         {
             get
             {
-                using var lockdown = new Lockdown(this);
-                using var pValue = (PlistString)lockdown.GetValue("com.apple.international", "Language");
-                return new CultureInfo(pValue.Value);
+                string strLang = string.Empty;
+                using (var lockdown = new Lockdown(this))
+                {
+                    using (PlistString deviceClassNode = (PlistString)lockdown.GetValue("com.apple.international", "Language"))
+                    {
+                        strLang = deviceClassNode.Value;
+                    }
+                }
+                return new CultureInfo(strLang);
             }
         }
 
@@ -240,9 +252,15 @@ namespace IOSLib
         {
             get
             {
-                using var lockdown = new Lockdown(this);
-                using var pValue = (PlistString)lockdown.GetValue("com.apple.international", "Locale");
-                return new RegionInfo(pValue.Value);
+                string strReg = string.Empty;
+                using (var lockdown = new Lockdown(this))
+                {
+                    using (PlistString deviceClassNode = (PlistString)lockdown.GetValue("com.apple.international", "Locale"))
+                    {
+                        strReg = deviceClassNode.Value;
+                    }
+                }
+                return new RegionInfo(strReg);
             }
         }
 
@@ -281,9 +299,15 @@ namespace IOSLib
         {
             get
             {
-                using var lockdown = new Lockdown(this);
-                using var pValue = (PlistString)lockdown.GetValue(nameof(WiFiAddress));
-                return PhysicalAddress.Parse(pValue.Value.Replace(":", string.Empty).ToUpperInvariant());
+                string strAdress = string.Empty;
+                using (var lockdown = new Lockdown(this))
+                {
+                    using (PlistString deviceClassNode = (PlistString)lockdown.GetValue(nameof(WiFiAddress)))
+                    {
+                        strAdress = deviceClassNode.Value;
+                    }
+                }
+                return ParsePhyAdress(strAdress);
             }
         }
 
@@ -291,19 +315,36 @@ namespace IOSLib
         {
             get
             {
-                using var lockdown = new Lockdown(this);
-                using var pValue = (PlistString)lockdown.GetValue(nameof(EthernetAddress));
-                return PhysicalAddress.Parse(pValue.Value.Replace(":", string.Empty).ToUpperInvariant());
+                string strAdress = string.Empty;
+                using (var lockdown = new Lockdown(this))
+                {
+                    using (PlistString deviceClassNode = (PlistString)lockdown.GetValue(nameof(EthernetAddress)))
+                    {
+                        strAdress = deviceClassNode.Value;
+                    }
+                }
+                return ParsePhyAdress(strAdress);
             }
+        }
+
+        private static PhysicalAddress ParsePhyAdress(string strAdress)
+        {
+            return PhysicalAddress.Parse(strAdress.Replace(":", string.Empty).ToUpperInvariant());
         }
 
         public PhysicalAddress BluetoothAddress
         {
             get
             {
-                using var lockdown = new Lockdown(this);
-                using var pValue = (PlistString)lockdown.GetValue(nameof(BluetoothAddress));
-                return PhysicalAddress.Parse(pValue.Value.Replace(":", string.Empty).ToUpperInvariant());
+                string strAdress = string.Empty;
+                using (var lockdown = new Lockdown(this))
+                {
+                    using (PlistString deviceClassNode = (PlistString)lockdown.GetValue(nameof(BluetoothAddress)))
+                    {
+                        strAdress = deviceClassNode.Value;
+                    }
+                }
+                return ParsePhyAdress(strAdress);
             }
         }
 
@@ -313,15 +354,24 @@ namespace IOSLib
             get
             {
 
-                using var lockdown = new Lockdown(this);
-                using var pValue = (PlistString)lockdown.GetValue(nameof(TimeZone));
+                string strTZ = string.Empty;
+                using (var lockdown = new Lockdown(this))
+                {
+                    using (PlistString deviceClassNode = (PlistString)lockdown.GetValue(nameof(TimeZone)))
+                    {
+                        strTZ = deviceClassNode.Value;
+                    }
+                }
 #if NET6_0
-                    return TimeZoneInfo.FindSystemTimeZoneById(pValue.Value);
+                    return TimeZoneInfo.FindSystemTimeZoneById(strTZ);
 #else
-                return TZConvert.GetTimeZoneInfo(pValue.Value);
+                return TZConvert.GetTimeZoneInfo(strTZ);
 #endif
             }
         }
+
+
+
         public string CPUArchitecture
         {
             get
