@@ -74,12 +74,12 @@ namespace IOSLib
             }
         }
 
-        public string DeviceUdid
+        public Ulid DeviceUdid
         {
             get
             {
                 Native.Lockdown.lockdownd_get_device_udid(Handle, out var udid);
-                return udid;
+                return Ulid.Parse(udid);
             }
         }
 
