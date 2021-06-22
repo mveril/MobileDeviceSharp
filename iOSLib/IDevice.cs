@@ -67,28 +67,6 @@ namespace IOSLib
         //    DiagnosticsRelay.diagnostics_relay_restart(diagnosticsRelay, DiagnosticsRelay.DiagnosticsRelayAction.ActionFlagDisplayFail);
         //}
 
-        private LockdownError TryGetLockdownValue(string? domain, string key, out PlistNode plistNode)
-        {
-            using var lockdown = new Lockdown(this);
-            return lockdown.TryGetValue(domain, key, out plistNode);
-        }
-        private LockdownError TryGetLockdownValue(string key, out PlistNode? plistNode)
-        {
-            using var lockdown = new Lockdown(this);
-            return lockdown.TryGetValue(key, out plistNode);
-        }
-        private PlistNode GetLockdownValue(string? domain, string key)
-        {
-            using var lockdown = new Lockdown(this);
-            return lockdown.GetValue(domain, key);
-        }
-
-        private PlistNode GetLockdownValue(string key)
-        {
-            using var lockdown = new Lockdown(this);
-            return lockdown.GetValue(key);
-        }
-
         public void Dispose()
         {
             ((IDisposable)Handle).Dispose();
@@ -112,7 +90,8 @@ namespace IOSLib
         {
             get
             {
-                using var deviceClassNode = (PlistString)GetLockdownValue("DeviceClass");
+                using var lockdown = new Lockdown(this);
+                using var deviceClassNode = (PlistString)lockdown.GetValue("DeviceClass");
                 return (DeviceClass)Enum.Parse(typeof(DeviceClass), deviceClassNode.Value);
             }
         }
@@ -121,7 +100,8 @@ namespace IOSLib
         {
             get
             {
-                using var pValue = (PlistString)GetLockdownValue("ProductType");
+                using var lockdown = new Lockdown(this);
+                using var pValue = (PlistString)lockdown.GetValue("ProductType");
                 return pValue.Value;
             }
         }
@@ -240,8 +220,8 @@ namespace IOSLib
         {
             get
             {
-
-                using var pValue = (PlistString)GetLockdownValue("SerialNumber");
+                using var lockdown = new Lockdown(this);
+                using var pValue = (PlistString)lockdown.GetValue("SerialNumber");
                 return pValue.Value;
             }
         }
@@ -250,7 +230,8 @@ namespace IOSLib
         {
             get
             {
-                using var pValue = (PlistString)GetLockdownValue("com.apple.international", "Language");
+                using var lockdown = new Lockdown(this);
+                using var pValue = (PlistString)lockdown.GetValue("com.apple.international", "Language");
                 return new CultureInfo(pValue.Value);
             }
         }
@@ -259,7 +240,8 @@ namespace IOSLib
         {
             get
             {
-                using var pValue = (PlistString)GetLockdownValue("com.apple.international", "Locale");
+                using var lockdown = new Lockdown(this);
+                using var pValue = (PlistString)lockdown.GetValue("com.apple.international", "Locale");
                 return new RegionInfo(pValue.Value);
             }
         }
@@ -269,7 +251,8 @@ namespace IOSLib
         {
             get
             {
-                using var pValue = (PlistInteger)GetLockdownValue("com.apple.disk_usage", "TotalDiskCapacity");
+                using var lockdown = new Lockdown(this);
+                using var pValue = (PlistInteger)lockdown.GetValue("com.apple.disk_usage", "TotalDiskCapacity");
                 return pValue.Value;
             }
         }
@@ -278,7 +261,8 @@ namespace IOSLib
         {
             get
             {
-                using var pValue = (PlistString)GetLockdownValue(nameof(PhoneNumber));
+                using var lockdown = new Lockdown(this);
+                using var pValue = (PlistString)lockdown.GetValue(nameof(PhoneNumber));
                 return pValue.Value;
             }
         }
@@ -288,7 +272,8 @@ namespace IOSLib
         {
             get
             {
-                using var pValue = (PlistBoolean)GetLockdownValue(nameof(HasTelephonyCapability));
+                using var lockdown = new Lockdown(this);
+                using var pValue = (PlistBoolean)lockdown.GetValue(nameof(HasTelephonyCapability));
                 return pValue.Value;
             }
         }
@@ -296,7 +281,8 @@ namespace IOSLib
         {
             get
             {
-                using var pValue = (PlistString)GetLockdownValue(nameof(WiFiAddress));
+                using var lockdown = new Lockdown(this);
+                using var pValue = (PlistString)lockdown.GetValue(nameof(WiFiAddress));
                 return PhysicalAddress.Parse(pValue.Value.Replace(":", string.Empty).ToUpperInvariant());
             }
         }
@@ -305,7 +291,8 @@ namespace IOSLib
         {
             get
             {
-                using var pValue = (PlistString)GetLockdownValue(nameof(EthernetAddress));
+                using var lockdown = new Lockdown(this);
+                using var pValue = (PlistString)lockdown.GetValue(nameof(EthernetAddress));
                 return PhysicalAddress.Parse(pValue.Value.Replace(":", string.Empty).ToUpperInvariant());
             }
         }
@@ -314,7 +301,8 @@ namespace IOSLib
         {
             get
             {
-                using var pValue = (PlistString)GetLockdownValue(nameof(BluetoothAddress));
+                using var lockdown = new Lockdown(this);
+                using var pValue = (PlistString)lockdown.GetValue(nameof(BluetoothAddress));
                 return PhysicalAddress.Parse(pValue.Value.Replace(":", string.Empty).ToUpperInvariant());
             }
         }
@@ -325,7 +313,8 @@ namespace IOSLib
             get
             {
 
-                using var pValue = (PlistString)GetLockdownValue(nameof(TimeZone));
+                using var lockdown = new Lockdown(this);
+                using var pValue = (PlistString)lockdown.GetValue(nameof(TimeZone));
 #if NET6_0
                     return TimeZoneInfo.FindSystemTimeZoneById(pValue.Value);
 #else
@@ -337,7 +326,8 @@ namespace IOSLib
         {
             get
             {
-                using var pValue = (PlistString)GetLockdownValue(nameof(CPUArchitecture));
+                using var lockdown = new Lockdown(this);
+                using var pValue = (PlistString)lockdown.GetValue(nameof(CPUArchitecture));
                 return pValue.Value;
             }
         }
