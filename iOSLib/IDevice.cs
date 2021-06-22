@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Globalization;
-#if !NET6_0
+#if !NET6_0_OR_GREATER
 using TimeZoneConverter;
 #endif
 using System.Net.NetworkInformation;
@@ -386,8 +386,8 @@ namespace IOSLib
                         strTZ = deviceClassNode.Value;
                     }
                 }
-#if NET6_0
-                    return TimeZoneInfo.FindSystemTimeZoneById(strTZ);
+#if NET6_0_OR_GREATER
+                return TimeZoneInfo.FindSystemTimeZoneById(strTZ);
 #else
                 return TZConvert.GetTimeZoneInfo(strTZ);
 #endif
@@ -406,11 +406,11 @@ namespace IOSLib
                         offset = intervalNode.Value;
                     }
                 }
-#if NETSTANDARD2_0
-                DateTimeOffset unix = DateTimeOffset.FromUnixTimeSeconds(0);
+#if NETSTANDARD2_1_OR_GREATER  || NETCOREAPP2_1_OR_GREATER
+                DateTimeOffset unix = DateTimeOffset.UnixEpoch;
 
 #else
-                DateTimeOffset unix = DateTimeOffset.UnixEpoch;
+                DateTimeOffset unix = DateTimeOffset.FromUnixTimeSeconds(0);
 #endif
                 var utctime = unix.AddSeconds(offset);
                 return TimeZoneInfo.ConvertTime(utctime, TimeZone);

@@ -9,7 +9,7 @@ namespace IOSLib.Native
     {
         static LibraryResolver()
         {
-#if !NETSTANDARD2_0 && !NETSTANDARD2_1
+#if NETCOREAPP3_0_OR_GREATER
             NativeLibrary.SetDllImportResolver(Assembly.GetExecutingAssembly(), DllImportResolver);
 #endif
         }
@@ -19,7 +19,7 @@ namespace IOSLib.Native
             // Dummy call to trigger the static constructor
         }
 
-#if !NETSTANDARD2_0 && !NETSTANDARD2_1
+#if NETCOREAPP3_0_OR_GREATER
         private static IntPtr DllImportResolver(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
         {
             //if (libraryName == Plist.PlistNativeMethods.LibraryName)
