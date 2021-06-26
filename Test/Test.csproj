@@ -1,13 +1,18 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net5.0;net6.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.0;netcoreapp2.1;netcoreapp3.0;netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\IDevice.NET.Core\IDevice.NET.Core.csproj" />
+    <None Include="../runtimes/$(RuntimeIdentifier)/native/*.*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\iOSLib\IOSLib.csproj" />
+  </ItemGroup>
 </Project>
