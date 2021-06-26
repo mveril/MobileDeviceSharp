@@ -24,9 +24,9 @@ namespace IOSLib
             }
             var version = Version.Parse(sversion);
             var deviceClass = idevice.DeviceClass;
-            return new OSVersion(version, deviceClass, buildNumber);
+            return new OSVersion(version, deviceClass, new BuildNumber(buildNumber));
         }
-        private OSVersion(Version version, IOSLib.DeviceClass deviceClass, string buildNumber)
+        private OSVersion(Version version, IOSLib.DeviceClass deviceClass, BuildNumber buildNumber)
         {
             Version = version;
             BuildNumber = buildNumber;
@@ -53,7 +53,7 @@ namespace IOSLib
 
         public string OSDisplayName { get; }
         public Version Version { get; }
-        public string BuildNumber { get; }
+        public BuildNumber BuildNumber { get; }
         public override string ToString()
         {
             return $"{OSDisplayName} {Version}";
