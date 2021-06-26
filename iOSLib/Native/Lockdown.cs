@@ -117,7 +117,7 @@ namespace IOSLib.Native
         /// LOCKDOWN_E_SUCCESS on success, LOCKDOWN_E_INVALID_ARG when client is NULL
         /// </returns>
         [DllImport(Lockdown.LibraryName, EntryPoint = "lockdownd_get_value", CallingConvention = CallingConvention.Cdecl)]
-        public static extern LockdownError lockdownd_get_value(LockdownClientHandle client, [MarshalAsAttribute(UnmanagedType.LPStr)] string? domain, [MarshalAsAttribute(UnmanagedType.LPStr)] string? key, out PlistNode value);
+        public static extern LockdownError lockdownd_get_value(LockdownClientHandle client, [MarshalAsAttribute(UnmanagedType.LPStr)] string? domain, [MarshalAsAttribute(UnmanagedType.LPStr)] string? key, out plist_t value);
 
         /// <summary>
         /// Sets a preferences value using a plist and optional by domain and/or key name.
@@ -300,7 +300,7 @@ namespace IOSLib.Native
         /// LOCKDOWN_E_INVALID_HOST_ID if the device does not know the caller's host id
         /// </returns>
         [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_pair", CallingConvention = CallingConvention.Cdecl)]
-        public static extern LockdownError lockdownd_pair(LockdownClientHandle client, LockdownPairRecordHandle? pairRecord);
+        public static extern LockdownError lockdownd_pair(LockdownClientHandle client, LockdownPairRecordHandle pairRecord);
 
         /// <summary>
         /// Pairs the device using the supplied pair record and passing the given options.
@@ -352,7 +352,31 @@ namespace IOSLib.Native
         /// LOCKDOWN_E_INVALID_HOST_ID if the device does not know the caller's host id
         /// </returns>
         [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_validate_pair", CallingConvention = CallingConvention.Cdecl)]
-        public static extern LockdownError lockdownd_validate_pair(LockdownClientHandle client, LockdownPairRecordHandle? pairRecord);
+        public static extern LockdownError lockdownd_validate_pair(LockdownClientHandle client, LockdownPairRecordHandle pairRecord);
+
+        /// <summary>
+        /// Validates if the device is paired with the given HostID. If successful the
+        /// specified host will become trusted host of the device indicated by the
+        /// lockdownd preference named TrustedHostAttached. Otherwise the host must be
+        /// paired using lockdownd_pair() first.
+        /// </summary>
+        /// <param name="client">
+        /// The lockdown client
+        /// </param>
+        /// <param name="pair_record">
+        /// The pair record to validate pairing with. If NULL is
+        /// passed, then the pair record is read from the internal pairing record
+        /// management.
+        /// </param>
+        /// <returns>
+        /// LOCKDOWN_E_SUCCESS on success, LOCKDOWN_E_INVALID_ARG when client is NULL,
+        /// LOCKDOWN_E_PLIST_ERROR if the pair_record certificates are wrong,
+        /// LOCKDOWN_E_PAIRING_FAILED if the pairing failed,
+        /// LOCKDOWN_E_PASSWORD_PROTECTED if the device is password protected,
+        /// LOCKDOWN_E_INVALID_HOST_ID if the device does not know the caller's host id
+        /// </returns>
+        [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_validate_pair", CallingConvention = CallingConvention.Cdecl)]
+        public static unsafe extern LockdownError lockdownd_validate_pair_intptr(LockdownClientHandle client, void* pairRecord);
 
         /// <summary>
         /// Unpairs the device with the given HostID and removes the pairing records
@@ -373,7 +397,7 @@ namespace IOSLib.Native
         /// LOCKDOWN_E_INVALID_HOST_ID if the device does not know the caller's host id
         /// </returns>
         [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_unpair", CallingConvention = CallingConvention.Cdecl)]
-        public static extern LockdownError lockdownd_unpair(LockdownClientHandle client, LockdownPairRecordHandle? pairRecord);
+        public static extern LockdownError lockdownd_unpair(LockdownClientHandle client, LockdownPairRecordHandle pairRecord);
 
         /// <summary>
         /// Activates the device. Only works within an open session.
