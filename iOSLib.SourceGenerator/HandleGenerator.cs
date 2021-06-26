@@ -84,7 +84,7 @@ namespace {0}
 
         public void Initialize(GeneratorInitializationContext context)
         {
-
+            //Debugger.Launch();  
         }
         internal HandleInfo TryGetHandleInfo(Compilation compilation, MethodDeclarationSyntax methodDeclaration)
         {

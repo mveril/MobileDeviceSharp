@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Linq;
 
 namespace IOSLib.SourceGenerator
 {
@@ -35,11 +36,39 @@ namespace IOSLib.SourceGenerator
 
         internal string HandleName => $"{HandleBaseName}Handle";
 
+        private string GetFreeCode()
+        {
+            if (FreeMethod == null)
+            {
+                return "true";
+            }
+            else
+            {
+                var methodFormat = new SymbolDisplayFormat(memberOptions: SymbolDisplayMemberOptions.IncludeContainingType);
+                var returnFormat = new SymbolDisplayFormat(memberOptions: SymbolDisplayMemberOptions.IncludeContainingType);
+                var argFormat = new SymbolDisplayFormat(typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces);
+                var freeReturn = FreeMethod.ReturnType;
+                string retval = "0";
+                if (freeReturn.TypeKind == TypeKind.Enum)
+                {
+                    var field = freeReturn.GetMembers().OfType<IFieldSymbol>().FirstOrDefault(f => f.HasConstantValue && f.ConstantValue.Equals(0));
+                    if (field != null)
+                    {
+                        retval = field.ToDisplayString(returnFormat);
+                    }
+                }
+                var argType = FreeMethod.Parameters.First().Type;
+                var freeArg = "this";
+                if (argType.ToDisplayString(argFormat) == "System.IntPtr")
+                {
+                    freeArg = "this.handle";
+                }
+                return (FreeMethod == null ? "true" : $"({FreeMethod.ToDisplayString(methodFormat)}({freeArg}) == {retval})");
+            }
+        }
+
         override internal IReadOnlyDictionary<string,string> BuildSource()
         {            
-            var methodFormat = new SymbolDisplayFormat(memberOptions: SymbolDisplayMemberOptions.IncludeContainingType);
-            var returnFormat = new SymbolDisplayFormat(memberOptions: SymbolDisplayMemberOptions.IncludeType);
-            var freeCode = (FreeMethod == null ? "true" : $"({FreeMethod.ToDisplayString(methodFormat)}(this.handle) == {FreeMethod.ReturnType.ToDisplayString(returnFormat)}.Success)");
             var sourceFormat = @"using System;
 using System.Diagnostics;
 using System.Runtime.ConstrainedExecution;
@@ -207,7 +236,7 @@ namespace {0}
     }}
 }}
 ";
-            var source = string.Format(sourceFormat, namespaceName, $"{HandleBaseName}Handle", freeCode);
+            var source = string.Format(sourceFormat, namespaceName, $"{HandleBaseName}Handle", GetFreeCode());
             return new ReadOnlyDictionary<string, string>(new Dictionary<string, string> { { $"{HandleName}.g.cs", source } });
         }
     }

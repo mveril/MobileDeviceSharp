@@ -54,7 +54,7 @@ namespace iOSLib.SourceGenerator
         {{
             if(error.IsError())
             {{
-                return new {2}(message, (int)error);
+                return new {2}(message, error);
             }}
             return null;
         }}
