@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-
+#if !NETCOREAPP3_0_OR_GREATER
+using NativeLibraryLoader;
+#endif
 
 namespace IOSLib.Native
 {
@@ -11,12 +15,30 @@ namespace IOSLib.Native
         {
 #if NETCOREAPP3_0_OR_GREATER
             NativeLibrary.SetDllImportResolver(Assembly.GetExecutingAssembly(), DllImportResolver);
+#else
+            LoadMobileDeviceLibrary();
+            LoadUsbmuxdLibrary();
 #endif
         }
 
         public static void EnsureRegistered()
         {
             // Dummy call to trigger the static constructor
+        }
+
+        public static void EnsureRegistered(string LibraryName)
+        {
+
+        }
+
+        private static bool TryLoad(string name, out IntPtr lib)
+        {
+#if NETCOREAPP3_0_OR_GREATER
+            return NativeLibrary.TryLoad(name, Assembly.GetExecutingAssembly(), null, out lib);
+#else
+            lib = LibraryLoader.GetPlatformDefaultLoader().LoadNativeLibrary(name, new DllResolver());
+            return lib != IntPtr.Zero;
+#endif
         }
 
 #if NETCOREAPP3_0_OR_GREATER
@@ -44,6 +66,7 @@ namespace IOSLib.Native
 
             return IntPtr.Zero;
         }
+#endif
 
         private static IntPtr LoadPlistLibrary()
         {
@@ -51,19 +74,19 @@ namespace IOSLib.Native
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                if (NativeLibrary.TryLoad("libplist-2.0.so.3", Assembly.GetExecutingAssembly(), null, out lib))
+                if (TryLoad("libplist-2.0.so.3", out lib))
                 {
                     return lib;
                 }
-                else if (NativeLibrary.TryLoad("libplist-2.0.so", Assembly.GetExecutingAssembly(), null, out lib))
+                else if (TryLoad("libplist-2.0.so", out lib))
                 {
                     return lib;
                 }
-                else if (NativeLibrary.TryLoad("libplist.so.3", Assembly.GetExecutingAssembly(), null, out lib))
+                else if (TryLoad("libplist.so.3", out lib))
                 {
                     return lib;
                 }
-                else if (NativeLibrary.TryLoad("libplist.so", Assembly.GetExecutingAssembly(), null, out lib))
+                else if (TryLoad("libplist.so", out lib))
                 {
                     return lib;
                 }
@@ -71,11 +94,11 @@ namespace IOSLib.Native
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
-                if (NativeLibrary.TryLoad("libplist-2.0.dylib", Assembly.GetExecutingAssembly(), null, out lib))
+                if (TryLoad("libplist-2.0.dylib", out lib))
                 {
                     return lib;
                 }
-                else if (NativeLibrary.TryLoad("libplist.dylib", Assembly.GetExecutingAssembly(), null, out lib))
+                else if (TryLoad("libplist.dylib", out lib))
                 {
                     return lib;
                 }
@@ -90,16 +113,16 @@ namespace IOSLib.Native
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                if (NativeLibrary.TryLoad("libusbmuxd.so.6", Assembly.GetExecutingAssembly(), null, out lib))
+                if (TryLoad("libusbmuxd.so.6", out lib))
                 {
                     return lib;
                 }
-                else if (NativeLibrary.TryLoad("libusbmuxd.so.4", Assembly.GetExecutingAssembly(), null, out lib))
+                else if (TryLoad("libusbmuxd.so.4", out lib))
                 {
                     // Not all symbols will be available in libusbmuxd.so.4
                     return lib;
                 }
-                else if (NativeLibrary.TryLoad("libusbmuxd.so", Assembly.GetExecutingAssembly(), null, out lib))
+                else if (TryLoad("libusbmuxd.so", out lib))
                 {
                     return lib;
                 }
@@ -107,11 +130,13 @@ namespace IOSLib.Native
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
-                if (NativeLibrary.TryLoad("libusbmuxd.dylib", Assembly.GetExecutingAssembly(), null, out lib))
+                if (TryLoad("libusbmuxd.dylib", out lib))
                 {
                     return lib;
                 }
             }
+
+
 
             return IntPtr.Zero;
         }
@@ -122,19 +147,19 @@ namespace IOSLib.Native
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                if (NativeLibrary.TryLoad("libimobiledevice-1.0.so.6", Assembly.GetExecutingAssembly(), null, out lib))
+                if (TryLoad("libimobiledevice-1.0.so.6", out lib))
                 {
                     return lib;
                 }
-                else if (NativeLibrary.TryLoad("libimobiledevice-1.0.so", Assembly.GetExecutingAssembly(), null, out lib))
+                else if (TryLoad("libimobiledevice-1.0.so", out lib))
                 {
                     return lib;
                 }
-                else if (NativeLibrary.TryLoad("libimobiledevice.so.6", Assembly.GetExecutingAssembly(), null, out lib))
+                else if (TryLoad("libimobiledevice.so.6", out lib))
                 {
                     return lib;
                 }
-                else if (NativeLibrary.TryLoad("libimobiledevice.so", Assembly.GetExecutingAssembly(), null, out lib))
+                else if (TryLoad("libimobiledevice.so", out lib))
                 {
                     return lib;
                 }
@@ -142,16 +167,22 @@ namespace IOSLib.Native
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
-                if (NativeLibrary.TryLoad("libimobiledevice-1.0.dylib", Assembly.GetExecutingAssembly(), null, out lib))
+                if (TryLoad("libimobiledevice-1.0.dylib", out lib))
                 {
                     return lib;
                 }
-                else if (NativeLibrary.TryLoad("libimobiledevice.dylib", Assembly.GetExecutingAssembly(), null, out lib))
+                else if (TryLoad("libimobiledevice.dylib", out lib))
                 {
                     return lib;
                 }
             }
-
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                if (TryLoad("libimobiledevice.dll", out lib))
+                {
+                    return lib;
+                }
+            }
             return IntPtr.Zero;
         }
 
@@ -161,19 +192,19 @@ namespace IOSLib.Native
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                if (NativeLibrary.TryLoad("libideviceactivation-1.0.so.2", Assembly.GetExecutingAssembly(), null, out lib))
+                if (TryLoad("libideviceactivation-1.0.so.2", out lib))
                 {
                     return lib;
                 }
-                else if (NativeLibrary.TryLoad("libideviceactivation-1.0.so", Assembly.GetExecutingAssembly(), null, out lib))
+                else if (TryLoad("libideviceactivation-1.0.so", out lib))
                 {
                     return lib;
                 }
-                else if (NativeLibrary.TryLoad("libideviceactivation.so.2", Assembly.GetExecutingAssembly(), null, out lib))
+                else if (TryLoad("libideviceactivation.so.2", out lib))
                 {
                     return lib;
                 }
-                else if (NativeLibrary.TryLoad("libideviceactivation.so", Assembly.GetExecutingAssembly(), null, out lib))
+                else if (TryLoad("libideviceactivation.so", out lib))
                 {
                     return lib;
                 }
@@ -181,11 +212,11 @@ namespace IOSLib.Native
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
-                if (NativeLibrary.TryLoad("libideviceactivation-1.0.dylib", Assembly.GetExecutingAssembly(), null, out lib))
+                if (TryLoad("libideviceactivation-1.0.dylib", out lib))
                 {
                     return lib;
                 }
-                else if (NativeLibrary.TryLoad("libideviceactivation.dylib", Assembly.GetExecutingAssembly(), null, out lib))
+                else if (TryLoad("libideviceactivation.dylib", out lib))
                 {
                     return lib;
                 }
@@ -193,6 +224,55 @@ namespace IOSLib.Native
 
             return IntPtr.Zero;
         }
-#endif
     }
+#if !NETCOREAPP3_0_OR_GREATER
+    class DllResolver : PathResolver
+    {
+        public override IEnumerable<string> EnumeratePossibleLibraryLoadTargets(string name)
+        {
+            foreach (var item in PathResolver.Default.EnumeratePossibleLibraryLoadTargets(name))
+            {
+                yield return item;
+            }
+            string? path = null;
+            try
+            {
+                path = System.IO.Path.Combine(getRuntimeIdentifier(), "native");
+            }
+            catch (Exception)
+            {
+
+            }
+
+            if (path != null)
+            {
+                yield return path;
+            }
+        }
+
+        private string getRuntimeIdentifier()
+        {
+            string? OS = null;
+            string? archi = null;
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                OS = "win";
+            }
+            else if(RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                OS = "osx";
+            }
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                return "linux";
+            }
+            archi = RuntimeInformation.OSArchitecture.ToString().ToLower();
+            if (OS== null)
+            {
+                throw new PlatformNotSupportedException();
+            }
+            return OS + "-" + archi;
+        }
+    }
+#endif
 }
