@@ -1,33 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Text;
-using IOSLib;
-using IOSLib.Native;
+﻿using IOSLib.Native;
 using PlistSharp;
+using System;
+using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
+using static IOSLib.Native.Lockdown;
 
 namespace IOSLib
 {
 
     public class Lockdown : IDisposable
     {
+        private readonly IDevice device;
+
         public LockdownClientHandle Handle { get; } = LockdownClientHandle.Zero;
 
         public Lockdown(IDevice device,string? label, bool WithHandShake)
         {
             var handle = LockdownClientHandle.Zero;
+            this.device = device;
             LockdownException? ex;
             if (WithHandShake)
             {
-                ex = Native.Lockdown.lockdownd_client_new_with_handshake(device.Handle, out handle, label).GetException();
+                ex = lockdownd_client_new_with_handshake(device.Handle, out handle, label).GetException();
             }
             else
             {
-                ex = Native.Lockdown.lockdownd_client_new(device.Handle, out handle, label).GetException();
+                ex = lockdownd_client_new(device.Handle, out handle, label).GetException();
             }
             if (ex != null)
             {
                 throw ex;
+            }
+            if (WithHandShake)
+            {
+                device.IsPaired = true;
             }
             Handle = handle;
         }
@@ -47,7 +54,7 @@ namespace IOSLib
         {
             get
             {
-                Native.Lockdown.lockdownd_query_type(Handle, out var type);
+                lockdownd_query_type(Handle, out var type);
                 return type;
             }
         }
@@ -61,7 +68,7 @@ namespace IOSLib
             }
             set
             {
-                Native.Lockdown.lockdownd_client_set_label(Handle, value);
+                lockdownd_client_set_label(Handle, value);
             }
         }
 
@@ -69,7 +76,7 @@ namespace IOSLib
         {
             get
             {
-                Native.Lockdown.lockdownd_get_device_name(Handle, out var name);
+                lockdownd_get_device_name(Handle, out var name);
                 return name;
             }
         }
@@ -78,15 +85,19 @@ namespace IOSLib
         {
             get
             {
-                Native.Lockdown.lockdownd_get_device_udid(Handle, out var udid);
+                lockdownd_get_device_udid(Handle, out var udid);
                 return Ulid.Parse(udid);
             }
         }
 
         public PlistNode GetValue(string? domain,string key)
         {
-            Native.Lockdown.lockdownd_get_value(Handle, domain, key, out var plistNode);
-            return plistNode;
+            var ex = lockdownd_get_value(Handle, domain, key, out var nodet).GetException();
+            if (ex != null)
+            {
+                throw ex;
+            }
+            return PlistNode.FromPlist(nodet);
         }
 
         public PlistNode GetValue(string value)
@@ -94,13 +105,16 @@ namespace IOSLib
             return GetValue(null, value);
         }
 
-        public LockdownError TryGetValue(string? domain, string key, out PlistNode node)
+        public LockdownError TryGetValue(string? domain, string key, out PlistNode? node)
         {
-            var err = Native.Lockdown.lockdownd_get_value(Handle, domain, key, out node);
-            if (err == LockdownError.GetProhibited)
+            var err = lockdownd_get_value(Handle, domain, key, out var nodet);
+            if (err == LockdownError.Success)
             {
-                Pair();
-                err = Native.Lockdown.lockdownd_get_value(Handle, domain, key, out node);
+                node = PlistNode.FromPlist(nodet);
+            }
+            else
+            {
+                node = null;
             }
             return err;
         }
@@ -110,10 +124,10 @@ namespace IOSLib
             return TryGetValue(null, value, out node);
         }
 
-        public PlistNode GetValues(string? domain)
+        public PlistNode GetValues(string? domain,bool Elevate = true)
         {
-            Native.Lockdown.lockdownd_get_value(Handle, domain, null, out var plistNode);
-            return plistNode;
+            lockdownd_get_value(Handle, domain, null, out var nodet);
+            return PlistNode.FromPlist(nodet);
         }
 
         public PlistNode GetValues()
@@ -123,12 +137,8 @@ namespace IOSLib
 
         public LockdownError TryGetValues(string? domain, out PlistNode node)
         {
-            var err = Native.Lockdown.lockdownd_get_value(Handle, domain, null, out node);
-            if (err == LockdownError.GetProhibited)
-            {
-                Pair();
-                err = Native.Lockdown.lockdownd_get_value(Handle, domain, null, out node);
-            }
+            var err = lockdownd_get_value(Handle, domain, null, out var nodet);
+            node = PlistNode.FromPlist(nodet);
             return err;
         }
 
@@ -139,7 +149,7 @@ namespace IOSLib
 
         public void SetValue(string? domain, string key, PlistNode node)
         {
-            Native.Lockdown.lockdownd_set_value(Handle, domain, key, node);
+            lockdownd_set_value(Handle, domain, key, node);
         }
 
         public void SetValue(string value,PlistNode node)
@@ -149,7 +159,7 @@ namespace IOSLib
 
         public LockdownServiceDescriptorHandle StartService(string identifier)
         {
-            var ex = Native.Lockdown.lockdownd_start_service(Handle, identifier, out var serviceDescriptorHandle).GetException();
+            var ex = lockdownd_start_service(Handle, identifier, out var serviceDescriptorHandle).GetException();
             if (ex != null)
             {
                 throw ex;
@@ -161,7 +171,7 @@ namespace IOSLib
         {
             if (sendEscrowBag)
             {
-                var ex = Native.Lockdown.lockdownd_start_service_with_escrow_bag(Handle, identifier, out var serviceDescriptorHandle).GetException();
+                var ex = lockdownd_start_service_with_escrow_bag(Handle, identifier, out var serviceDescriptorHandle).GetException();
                 if (ex != null)
                 {
                     throw ex;
@@ -174,41 +184,79 @@ namespace IOSLib
             }
         }
 
-        public bool Pair(Native.LockdownPairRecordHandle? pairRecordHandle)
+
+
+
+
+        public Task<bool> PairAsync(LockdownPairRecordHandle pairRecordHandle,CancellationToken cancellationToken)
         {
-            return !Native.Lockdown.lockdownd_pair(Handle, pairRecordHandle).IsError();
+            TaskCompletionSource<bool> tsk = new TaskCompletionSource<bool>();
+            if (cancellationToken.IsCancellationRequested)
+            {
+                tsk.TrySetCanceled(cancellationToken);
+            }
+            cancellationToken.Register(() => tsk.TrySetCanceled(cancellationToken));
+            var err = lockdownd_pair(Handle, pairRecordHandle);
+            switch (err)
+            {
+                case LockdownError.Success:
+                    tsk.SetResult(true);
+                    device.IsPaired = true;
+                    break;
+                case LockdownError.UserDeniedPairing:
+                    tsk.SetResult(false);
+                    device.IsPaired = false;
+                    break;
+                case LockdownError.PairingDialogResponsePending:
+                    var np = new InsecureNotificationProxy(device);
+                    np.ObserveNotification("com.apple.mobile.lockdown.request_pair");
+                    np.NotificationProxyEvent += async (s, e) =>
+                    {
+                        tsk.SetResult(await PairAsync(pairRecordHandle, cancellationToken));
+                        np.Dispose();
+                    };
+                    break;
+                case LockdownError.InvalidHostId:
+                    tsk.SetResult(false);
+                    device.IsPaired = false;
+                    break;
+                default:
+                    tsk.SetException(err.GetException());
+                    break;
+            }
+            return tsk.Task;
         }
 
-
-        public bool Pair()
+        public Task<bool> PairAsync()
         {
-            return Pair(null);
+            return PairAsync(LockdownPairRecordHandle.Zero,CancellationToken.None);
         }
 
-        public bool Unpair(Native.LockdownPairRecordHandle? pairRecordHandle)
+        public Task<bool> PairAsync(LockdownPairRecordHandle pairRecordHandle)
         {
-            return !Native.Lockdown.lockdownd_unpair(Handle, pairRecordHandle).IsError();
+            return PairAsync(pairRecordHandle, CancellationToken.None);
+        }
+
+        public Task<bool> PairAsync(CancellationToken cancellationToken)
+        {
+            return PairAsync(LockdownPairRecordHandle.Zero, cancellationToken);
+        }
+
+        public bool Unpair(LockdownPairRecordHandle pairRecordHandle)
+        {
+            var b = !lockdownd_unpair(Handle, pairRecordHandle).IsError();
+            device.IsPaired = !b;
+            return b;
         }
 
         public bool Unpair()
         {
-            return Unpair(null);
-        }
-
-        public bool ValidatePair()
-        {
-           var code = Native.Lockdown.lockdownd_validate_pair(Handle, null);
-            return code switch
-            {
-                LockdownError.Success => true,
-                LockdownError.InvalidHostId => false,
-                _ => throw code.GetException(),
-            };
+            return Unpair(LockdownPairRecordHandle.Zero);
         }
 
         void EnterRecovery() 
         {
-            Native.Lockdown.lockdownd_enter_recovery(Handle);
+            lockdownd_enter_recovery(Handle);
         }
 
         public void Dispose()
