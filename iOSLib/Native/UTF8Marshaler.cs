@@ -37,7 +37,9 @@ namespace IOSLib.Native
 
         public object MarshalNativeToManaged(IntPtr pNativeData)
         {
-#if NETSTANDARD2_0
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP1_1_OR_GREATER
+            return Marshal.PtrToStringUTF8(pNativeData)!;
+#else
             unsafe
             {
                 byte* walk = (byte*)pNativeData;
@@ -54,8 +56,6 @@ namespace IOSLib.Native
                 string data = Encoding.UTF8.GetString((byte*)pNativeData, length);
                 return data;
             }
-#else
-            return Marshal.PtrToStringUTF8(pNativeData)!;
 #endif
         }
 
