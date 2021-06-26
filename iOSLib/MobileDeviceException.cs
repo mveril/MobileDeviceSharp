@@ -19,7 +19,7 @@ namespace IOSLib
             var Description = memberData.GetCustomAttributes<ExceptionMessageAttribute>(false).FirstOrDefault()?.Message;
             if (Description==null)
             {
-                return string.Empty;
+                return value.ToString();
             }
             return Description;
         }
