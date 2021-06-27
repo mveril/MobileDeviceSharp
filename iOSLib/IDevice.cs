@@ -12,27 +12,26 @@ using System.Linq;
 
 namespace IOSLib
 {
-    public class IDevice : IDisposable
+    public class IDevice : IOSHandleWrapperBase<IDeviceHandle>
     {
-        private const int USBMUXCONNECTIONTYPE_All = 3;
-        public IDevice(string udid)
+        public IDevice(string udid) : base(GetHandle(udid))
         {
-            var ex = idevice_new_with_options(out var deviceHandle, udid, USBMUXCONNECTIONTYPE_All).GetException();
-            if (ex != null)
-            {
-                throw ex;
-            }
-            Handle = deviceHandle;
+
         }
 
-        public IDevice(string udid, UsbmuxConnectionType connectionType)
+        public IDevice(string udid, UsbmuxConnectionType connectionType) : base(GetHandle(udid,connectionType))
         {
-            var ex = idevice_new_with_options(out var deviceHandle, udid, (int)connectionType).GetException();
+
+        }
+
+        private static IDeviceHandle GetHandle(string udid, UsbmuxConnectionType connectionType = UsbmuxConnectionType.All)
+        {
+            var ex = idevice_new_with_options(out var deviceHandle, udid, connectionType).GetException();
             if (ex != null)
             {
                 throw ex;
             }
-            Handle = deviceHandle;
+            return deviceHandle;
         }
 
         public static IEnumerable<IDevice> List()
@@ -57,13 +56,12 @@ namespace IOSLib
             return udids.Select(id => new IDevice(id));
         }
 
-        public IDeviceHandle Handle { get; }
 
         public string Name
         {
             get
             {
-                using var lockdown = new Lockdown(this,IsPaired);
+                using var lockdown = new LockdownSession(this,IsPaired);
                 return lockdown.DeviceName;
             }
         }
@@ -72,16 +70,10 @@ namespace IOSLib
         {
             get
             {
-                using var lockdown = new Lockdown(this,IsPaired);
+                using var lockdown = new LockdownSession(this,IsPaired);
                 return lockdown.DeviceUdid;
             }
         }
-
-        public void Dispose()
-        {
-            ((IDisposable)Handle).Dispose();
-        }
-
         public OSVersion OSVersion
         {
             get
@@ -101,7 +93,7 @@ namespace IOSLib
             get
             {
                 string strClass = string.Empty;
-                using (var lockdown = new Lockdown(this,IsPaired))
+                using (var lockdown = new LockdownSession(this,IsPaired))
                 {
                     using (PlistString deviceClassNode = (PlistString)lockdown.GetValue("DeviceClass"))
                     {
@@ -116,7 +108,7 @@ namespace IOSLib
         {
             get
             {
-                using var lockdown = new Lockdown(this,IsPaired);
+                using var lockdown = new LockdownSession(this,IsPaired);
                 using var pValue = (PlistString)lockdown.GetValue("ProductType");
                 return pValue.Value;
             }
@@ -236,7 +228,7 @@ namespace IOSLib
         {
             get
             {
-                using var lockdown = new Lockdown(this,IsPaired);
+                using var lockdown = new LockdownSession(this,IsPaired);
                 using var pValue = (PlistString)lockdown.GetValue("SerialNumber");
                 return pValue.Value;
             }
@@ -247,7 +239,7 @@ namespace IOSLib
             get
             {
                 string strLang = string.Empty;
-                using (var lockdown = new Lockdown(this,IsPaired))
+                using (var lockdown = new LockdownSession(this,IsPaired))
                 {
                     using (PlistString deviceClassNode = (PlistString)lockdown.GetValue("com.apple.international", "Language"))
                     {
@@ -263,7 +255,7 @@ namespace IOSLib
             get
             {
                 string strReg = string.Empty;
-                using (var lockdown = new Lockdown(this,IsPaired))
+                using (var lockdown = new LockdownSession(this,IsPaired))
                 {
                     using (PlistString deviceClassNode = (PlistString)lockdown.GetValue("com.apple.international", "Locale"))
                     {
@@ -279,7 +271,7 @@ namespace IOSLib
         {
             get
             {
-                using var lockdown = new Lockdown(this,IsPaired);
+                using var lockdown = new LockdownSession(this,IsPaired);
                 using var pValue = (PlistInteger)lockdown.GetValue("com.apple.disk_usage", "TotalDiskCapacity");
                 return pValue.Value;
             }
@@ -289,7 +281,7 @@ namespace IOSLib
         {
             get
             {
-                using var lockdown = new Lockdown(this,IsPaired);
+                using var lockdown = new LockdownSession(this,IsPaired);
                 using var pValue = (PlistString)lockdown.GetValue(nameof(PhoneNumber));
                 return pValue.Value;
             }
@@ -300,7 +292,7 @@ namespace IOSLib
         {
             get
             {
-                using var lockdown = new Lockdown(this,IsPaired);
+                using var lockdown = new LockdownSession(this,IsPaired);
                 using var pValue = (PlistBoolean)lockdown.GetValue(nameof(HasTelephonyCapability));
                 return pValue.Value;
             }
@@ -310,7 +302,7 @@ namespace IOSLib
             get
             {
                 string strAdress = string.Empty;
-                using (var lockdown = new Lockdown(this,IsPaired))
+                using (var lockdown = new LockdownSession(this,IsPaired))
                 {
                     using (PlistString deviceClassNode = (PlistString)lockdown.GetValue(nameof(WiFiAddress)))
                     {
@@ -326,7 +318,7 @@ namespace IOSLib
             get
             {
                 string strAdress = string.Empty;
-                using (var lockdown = new Lockdown(this,IsPaired))
+                using (var lockdown = new LockdownSession(this,IsPaired))
                 {
                     using (PlistString deviceClassNode = (PlistString)lockdown.GetValue(nameof(EthernetAddress)))
                     {
@@ -347,7 +339,7 @@ namespace IOSLib
             get
             {
                 string strAdress = string.Empty;
-                using (var lockdown = new Lockdown(this,IsPaired))
+                using (var lockdown = new LockdownSession(this,IsPaired))
                 {
                     using (PlistString deviceClassNode = (PlistString)lockdown.GetValue(nameof(BluetoothAddress)))
                     {
@@ -365,7 +357,7 @@ namespace IOSLib
             {
 
                 string strTZ = string.Empty;
-                using (var lockdown = new Lockdown(this,IsPaired))
+                using (var lockdown = new LockdownSession(this,IsPaired))
                 {
                     using (PlistString timeZoneNode = (PlistString)lockdown.GetValue(nameof(TimeZone)))
                     {
@@ -386,7 +378,7 @@ namespace IOSLib
             {
                 double offset;
                 using (
-                    var lockdown = new Lockdown(this,IsPaired))
+                    var lockdown = new LockdownSession(this,IsPaired))
                 {
                     using (var intervalNode = (PlistReal)lockdown.GetValue("TimeIntervalSince1970"))
                     {
@@ -408,7 +400,7 @@ namespace IOSLib
         {
             get
             {
-                using var lockdown = new Lockdown(this,IsPaired);
+                using var lockdown = new LockdownSession(this,IsPaired);
                 using var pValue = (PlistString)lockdown.GetValue(nameof(CPUArchitecture));
                 return pValue.Value;
             }

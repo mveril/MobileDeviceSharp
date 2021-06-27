@@ -11,7 +11,7 @@ namespace IOSLib
         {
             string buildNumber;
             string sversion;
-            using (var lockdown = new Lockdown(idevice))
+            using (var lockdown = new LockdownSession(idevice))
             {
                 using (var pValue = (PlistString)lockdown.GetValue("BuildVersion"))
                 {

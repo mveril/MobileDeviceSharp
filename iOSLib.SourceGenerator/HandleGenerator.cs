@@ -60,6 +60,7 @@ namespace IOSLib.SourceGenerator
         {
             var argName = (string)(PropName[0].ToString()).ToLower() + PropName.Substring(1);
             return string.Format(@"using System;
+using IOSLib.;
 
 namespace {0}
 {{

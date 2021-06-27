@@ -22,7 +22,7 @@ namespace IOSLib
             {
                 LockdownError battryDataError = default;
                 PlistNode plist;
-                using (var lockdown =new Lockdown(device))
+                using (var lockdown =new LockdownSession(device))
                 {
                     battryDataError = lockdown.TryGetValues(BATTERY_LOCKDOWN_DOMAIN, out plist);
                 }
@@ -66,7 +66,7 @@ namespace IOSLib
         {
             get 
             {
-                using var lockdown = new Lockdown(device);
+                using var lockdown = new LockdownSession(device);
                 using var pValue = (PlistInteger)lockdown.GetValue(BATTERY_LOCKDOWN_DOMAIN, "BatteryCurrentCapacity");
                 return pValue.Value/100;
             }

@@ -7,22 +7,32 @@ using System.Text;
 
 namespace IOSLib
 {
-    public abstract class NotificationProxyBase : IDisposable
+    public abstract class NotificationProxySessionBase : ServiceSessionBase<NotificationProxyClientHandle>
     {
         public event NotificationProxyEventHandler? NotificationProxyEvent;
-        public NotificationProxyBase(IDevice device, string ServiceID)
+        public NotificationProxySessionBase(IDevice device, string ServiceID) : base(device, ServiceID)
         {
-            LockdownServiceDescriptorHandle descriptorHandle;
-            using (var lickdown = new Lockdown(device))
-            {
-                descriptorHandle = lickdown.StartService(ServiceID);
-            }
-            var ex = np_client_new(device.Handle,descriptorHandle, out var handle).GetException();
+            
+        }
+
+        protected override NotificationProxyClientHandle Init()
+        {
+            var ex = np_client_start_service(Device.Handle, out var handle, null).GetException();
             if (ex != null)
             {
                 throw ex;
             }
-            Handle = handle;
+            return handle;
+        }
+
+        protected override NotificationProxyClientHandle Init(LockdownServiceDescriptorHandle Descriptor)
+        {
+            var ex = np_client_new(Device.Handle, Descriptor, out var handle).GetException();
+            if (ex != null)
+            {
+                throw ex;
+            }
+            return Handle;
         }
 
         public void ObserveNotification(params string[] notification)
@@ -53,13 +63,6 @@ namespace IOSLib
         {
             np_post_notification(Handle, e.EventName);
             NotificationProxyEvent?.Invoke(this, e);
-        }
-
-        public NotificationProxyClientHandle Handle { get; } = NotificationProxyClientHandle.Zero;
-
-        public void Dispose()
-        {
-            ((IDisposable)Handle).Dispose();
         }
     }
 }

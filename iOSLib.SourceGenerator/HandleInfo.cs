@@ -83,25 +83,12 @@ namespace {0}
     /// </summary>
     [SecurityPermission(SecurityAction.InheritanceDemand, UnmanagedCode=true)]
     [SecurityPermission(SecurityAction.Demand, UnmanagedCode=true)]
-    public partial class {1} : SafeHandleZeroOrMinusOneIsInvalid
+    public partial class {1} : IOSLib.Native.IOSHandle
     {{
         /// <summary>
         /// Initializes a new instance of the <see cref=""{1}""/> class.
         /// </summary>
-        protected {1}() :
-                base(true)
-        {{
-
-        }}
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref=""{1}""/> class, specifying whether the handle is to be reliably released.
-        /// </summary>
-        /// <param name=""ownsHandle"">
-        /// <see langword=""true""/> to reliably release the handle during the finalization phase; <see langword=""false""/> to prevent reliable release (not recommended).
-        /// </param>
-        protected {1}(bool ownsHandle) :
-                 base(true)
+        public {1}() : base()
         {{
 
         }}
@@ -113,7 +100,7 @@ namespace {0}
         {{
             get
             {{
-                return {1}.DangerousCreate(System.IntPtr.Zero);
+                return new {1}();
             }}
         }}
 
@@ -122,37 +109,6 @@ namespace {0}
         protected override bool ReleaseHandle()
         {{
             return {2};
-        }}
-
-        /// <summary>
-        /// Creates a new <see cref=""{1}""/> from a <see cref=""IntPtr""/>.
-        /// </summary>
-        /// <param name=""unsafeHandle"">
-        /// The underlying <see cref=""IntPtr""/>
-        /// </param>
-        /// <param name=""ownsHandle"">
-        /// <see langword=""true""/> to reliably release the handle during the finalization phase; <see langword=""false""/> to prevent reliable release (not recommended).
-        /// </param>
-        /// <returns>
-        /// </returns>
-        public static {1} DangerousCreate(System.IntPtr unsafeHandle, bool ownsHandle)
-        {{
-            {1} safeHandle = new {1}(ownsHandle);
-            safeHandle.SetHandle(unsafeHandle);
-            return safeHandle;
-        }}
-
-        /// <summary>
-        /// Creates a new <see cref=""{1}""/> from a <see cref=""IntPtr""/>.
-        /// </summary>
-        /// <param name=""unsafeHandle"">
-        /// The underlying <see cref=""IntPtr""/>
-        /// </param>
-        /// <returns>
-        /// </returns>
-        public static {1} DangerousCreate(System.IntPtr unsafeHandle)
-        {{
-            return {1}.DangerousCreate(unsafeHandle, true);
         }}
 
         /// <inheritdoc/>

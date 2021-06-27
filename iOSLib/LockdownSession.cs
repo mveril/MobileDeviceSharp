@@ -9,18 +9,20 @@ using static IOSLib.Native.Lockdown;
 namespace IOSLib
 {
 
-    public class Lockdown : IDisposable
+    public class LockdownSession : IOSHandleWrapperBase<LockdownClientHandle>
     {
         private readonly IDevice device;
 
-        public LockdownClientHandle Handle { get; } = LockdownClientHandle.Zero;
+        public LockdownSession(IDevice device,string? label, bool WithHandShake) : base(GetHandle(device,label,WithHandShake))
+        {
+            
+        }
 
-        public Lockdown(IDevice device,string? label, bool WithHandShake)
+        private static LockdownClientHandle GetHandle(IDevice device, string? label, bool withHandShake)
         {
             var handle = LockdownClientHandle.Zero;
-            this.device = device;
             LockdownException? ex;
-            if (WithHandShake)
+            if (withHandShake)
             {
                 ex = lockdownd_client_new_with_handshake(device.Handle, out handle, label).GetException();
             }
@@ -32,19 +34,19 @@ namespace IOSLib
             {
                 throw ex;
             }
-            if (WithHandShake)
+            if (withHandShake)
             {
                 device.IsPaired = true;
             }
-            Handle = handle;
+            return handle;
         }
 
-        public Lockdown(IDevice device) : this(device, null, false)
+        public LockdownSession(IDevice device) : this(device, null, false)
         {
 
         }
 
-        public Lockdown(IDevice device, bool WithHandShake) : this(device, null, WithHandShake)
+        public LockdownSession(IDevice device, bool WithHandShake) : this(device, null, WithHandShake)
         {
 
         }
@@ -157,9 +159,9 @@ namespace IOSLib
             SetValue(null, value, node);
         }
 
-        public LockdownServiceDescriptorHandle StartService(string identifier)
+        public LockdownServiceDescriptorHandle StartService(string serviceID)
         {
-            var ex = lockdownd_start_service(Handle, identifier, out var serviceDescriptorHandle).GetException();
+            var ex = lockdownd_start_service(Handle, serviceID, out var serviceDescriptorHandle).GetException();
             if (ex != null)
             {
                 throw ex;
@@ -208,7 +210,7 @@ namespace IOSLib
                     device.IsPaired = false;
                     break;
                 case LockdownError.PairingDialogResponsePending:
-                    var np = new InsecureNotificationProxy(device);
+                    var np = new InsecureNotificationProxySession(device);
                     np.ObserveNotification("com.apple.mobile.lockdown.request_pair");
                     np.NotificationProxyEvent += async (s, e) =>
                     {
@@ -257,11 +259,6 @@ namespace IOSLib
         void EnterRecovery() 
         {
             lockdownd_enter_recovery(Handle);
-        }
-
-        public void Dispose()
-        {
-            ((IDisposable)Handle).Dispose();
         }
     }
 }

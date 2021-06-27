@@ -10,14 +10,14 @@ namespace IOSLib.DiagnosticsRelay
 
         public static void Shutdown(this IDevice device)
         {
-            using (var relay = new DiagnosticsRelayService(device))
+            using (var relay = new DiagnosticsRelaySession(device))
             {
                 relay.Shutdown(DiagnosticsRelayAction.ActionFlagDisplayFail);
             }
         }
         public static void Reboot(this IDevice device)
         {
-            using (var relay = new DiagnosticsRelayService(device))
+            using (var relay = new DiagnosticsRelaySession(device))
             {
                 relay.Reboot(DiagnosticsRelayAction.ActionFlagDisplayFail);
             }

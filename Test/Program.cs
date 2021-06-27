@@ -11,7 +11,7 @@ namespace Test
         {
             foreach (var device in IDevice.List())
             {
-                var ld = new Lockdown(device);
+                var ld = new LockdownSession(device);
                 try
                 {
                     Console.WriteLine(await ld.PairAsync());
