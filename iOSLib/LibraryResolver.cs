@@ -9,7 +9,7 @@ using NativeLibraryLoader;
 
 namespace IOSLib.Native
 {
-    internal static class LibraryResolver
+    public static class LibraryResolver
     {
         static LibraryResolver()
         {
