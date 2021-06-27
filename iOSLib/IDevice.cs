@@ -77,21 +77,6 @@ namespace IOSLib
             }
         }
 
-
-        //public void Shutdown()
-        //{
-        //    Lockdown.lockdownd_client_new_with_handshake(Handle, out var lockdownClient, null);
-        //    DiagnosticsRelay.diagnostics_relay_client_start_service(Handle, out var diagnosticsRelay, null);
-        //    DiagnosticsRelay.diagnostics_relay_shutdown(diagnosticsRelay, DiagnosticsRelayAction.ActionFlagDisplayFail);
-        //}
-
-        //public void Reboot()
-        //{
-        //    Lockdown.lockdownd_client_new_with_handshake(Handle, out var lockdownClient, null);
-        //    DiagnosticsRelay.diagnostics_relay_client_start_service(Handle, out var diagnosticsRelay, null);
-        //    DiagnosticsRelay.diagnostics_relay_restart(diagnosticsRelay, DiagnosticsRelay.DiagnosticsRelayAction.ActionFlagDisplayFail);
-        //}
-
         public void Dispose()
         {
             ((IDisposable)Handle).Dispose();
