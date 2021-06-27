@@ -9,6 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "iOSLib.SourceGenerator", "iOSLib.SourceGenerator\iOSLib.SourceGenerator.csproj", "{F8A812B3-2683-4C7B-9BD2-C5A6A64E0410}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IOSLib.DiagnosticsRelay", "IOSLib.DiagnosticsRelay\IOSLib.DiagnosticsRelay.csproj", "{1AF8B1C3-A747-493D-8169-AB2E480C16C1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IOSLib.CompilerServices", "IOSLib.CompilerServices\IOSLib.CompilerServices.csproj", "{92C660ED-B570-49AE-AB0F-AC11BA017AF2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{F8A812B3-2683-4C7B-9BD2-C5A6A64E0410}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8A812B3-2683-4C7B-9BD2-C5A6A64E0410}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F8A812B3-2683-4C7B-9BD2-C5A6A64E0410}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AF8B1C3-A747-493D-8169-AB2E480C16C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AF8B1C3-A747-493D-8169-AB2E480C16C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AF8B1C3-A747-493D-8169-AB2E480C16C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AF8B1C3-A747-493D-8169-AB2E480C16C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92C660ED-B570-49AE-AB0F-AC11BA017AF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92C660ED-B570-49AE-AB0F-AC11BA017AF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92C660ED-B570-49AE-AB0F-AC11BA017AF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92C660ED-B570-49AE-AB0F-AC11BA017AF2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

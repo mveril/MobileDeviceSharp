@@ -14,13 +14,13 @@ namespace IOSLib.SourceGenerator
     [Generator]
     public class HandleGenerator : ISourceGenerator
     {
-        const string AttrNamespace = "IOSLib.Generator";
+        const string AttrNamespace = "IOSLib.CompilerServices";
         const string AttrName = "GenerateHandleAttribute";
         const string PropName = "HandleName";
         public void Execute(GeneratorExecutionContext context)
         {
             var attrSource = SourceText.From(GetAttrSorce(), Encoding.UTF8);
-            var compilation = context.AddSourceAndGetCompilation($"{AttrName}.g.cs", attrSource);
+            var compilation = context.Compilation;
             IEnumerable<SyntaxNode> allNodes = compilation.SyntaxTrees.SelectMany(s => s.GetRoot().DescendantNodes());
 
             IEnumerable<MethodDeclarationSyntax> allMethods = allNodes

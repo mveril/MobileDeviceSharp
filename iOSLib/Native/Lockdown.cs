@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using IOSLib.Generator;
+using IOSLib.CompilerServices;
 using PlistSharp;
 using System.Runtime.InteropServices;
 

@@ -11,8 +11,6 @@ namespace Test
         {
             foreach (var device in IDevice.List())
             {
-                //var ld = new Lockdown(device,true);
-                //Console.WriteLine(ld.Unpair());
                 var ld = new Lockdown(device);
                 try
                 {

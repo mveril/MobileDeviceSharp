@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
-using IOSLib.Generator;
+using IOSLib.CompilerServices;
 
 namespace IOSLib.Native
 {

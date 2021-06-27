@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
+using IOSLib.CompilerServices;
 
 namespace IOSLib.Native
 {
@@ -68,7 +69,7 @@ namespace IOSLib.Native
         /// <returns>
         /// NP_E_SUCCESS on success, or NP_E_INVALID_ARG when client is NULL.
         /// </returns>
-        [Generator.GenerateHandle("NotificationProxyClient")]
+        [GenerateHandle("NotificationProxyClient")]
         [DllImportAttribute(NotificationProxy.LibraryName, EntryPoint = "np_client_free", CallingConvention = CallingConvention.Cdecl)]
         public static extern NotificationProxyError np_client_free(System.IntPtr client);
 

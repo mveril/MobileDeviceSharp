@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
+using IOSLib.CompilerServices;
 
 namespace IOSLib.Native
 {
@@ -42,7 +43,7 @@ namespace IOSLib.Native
         /// <returns>
         /// 0 on success or a negative errno value.
         /// </returns>
-        [Generator.GenerateHandle("UsbmuxdSubscriptionContext")]
+        [GenerateHandle("UsbmuxdSubscriptionContext")]
         [DllImportAttribute(Usbmuxd.LibraryName, EntryPoint = "usbmuxd_events_unsubscribe", CallingConvention = CallingConvention.Cdecl)]
         public static extern int usbmuxd_events_unsubscribe(UsbmuxdSubscriptionContextHandle context);
 
