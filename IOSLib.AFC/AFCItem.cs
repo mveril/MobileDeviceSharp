@@ -1,0 +1,92 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using static IOSLib.AFC.Native.AFC;
+using IOSLib.AFC.Native;
+
+namespace IOSLib.AFC
+{
+    public class AFCItem
+    {
+
+        public AFCItemType ItemType => GetItemType();
+
+        internal IReadOnlyDictionary<string, string> GetFileInfo()
+        {
+            return Session.GetFileInfo(this.Path);
+        }
+
+        internal AFCItemType GetItemType()
+        {
+            return Session.GetItemType(this.Path);
+        }
+
+
+        protected virtual bool IsItemTypeSupported(AFCItemType itemType) => true;
+
+        public string Path { get; protected set; }
+
+        const string BIRTHTIME = "st_birthtime";
+        private const string MTIME = "st_mtime";
+
+        protected DateTime getDateValue(string key)
+        {
+            var nanosec = long.Parse(GetFileInfo()[key]);
+            var milisec = nanosec * 1e-6;
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
+            DateTime unix = DateTime.UnixEpoch;
+
+#else
+            DateTime unix = DateTimeOffset.FromUnixTimeSeconds(0).UtcDateTime;
+#endif
+            return unix.AddMilliseconds(milisec);
+        }
+
+        public DateTime CreationTime => getDateValue(BIRTHTIME);
+
+        public DateTime LastModifiedTime => getDateValue(MTIME);
+
+        public AFCSessionBase Session { get; }
+
+        public AFCItem(AFCSessionBase session, string path)
+        {
+            Path = path;
+            Session = session;
+            afc_get_file_info(session.Handle, Path, out var infos);
+            if (infos.Count > 0)
+            {
+                EnsureSupported(ItemType);
+            }
+        }
+
+        private void EnsureSupported(AFCItemType itemType)
+        {
+            if (!IsItemTypeSupported(ItemType))
+            {
+                throw new UnauthorizedAccessException();
+            }
+        }
+
+        public void Delete()
+        {
+            var ex = afc_remove_path(Session.Handle, Path).GetException();
+            if (ex != null)
+                throw ex;
+        }
+
+        virtual public bool Exist()
+        {
+            return GetFileInfo().Count > 0;
+        }
+
+        public void MoveTo(string to)
+        {
+            Session.Move(this.Path, to);
+            Path = to;
+        }
+        public void MakeLink(AFCLinkType linkType, string linkPath)
+        {
+            Session.MakeLink(this.Path, linkPath,linkType);
+        }
+    }
+}
