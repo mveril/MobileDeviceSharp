@@ -9,9 +9,9 @@ namespace IOSLib.SourceGenerator
 
         internal void AddTo(GeneratorExecutionContext context)
         {
-            foreach (var item in this.BuildSource())
+            foreach (var item in BuildSource())
             {
-                context.AddSource(item.Key, item.Value);
+                context.AddSource($"{item.Key}.g.cs", item.Value);
             }
         }
     }

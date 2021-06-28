@@ -11,8 +11,10 @@ namespace IOSLib.SourceGenerator
 {
     internal class HandleInfo : SourceCodeInfoBase
     {
-        internal HandleInfo(IMethodSymbol freeMethod, string handleBaseName)
+        private Compilation compilation;
+        internal HandleInfo(IMethodSymbol freeMethod, string handleBaseName,Compilation compilation)
         {
+            this.compilation = compilation;
             FreeMethod = freeMethod;
             HandleBaseName = handleBaseName;
             namespaceName = FreeMethod.ContainingNamespace.ToDisplayString();
@@ -58,7 +60,7 @@ namespace IOSLib.SourceGenerator
                 }
                 var argType = FreeMethod.Parameters.First().Type;
                 var freeArg = "this";
-                if (argType.ToDisplayString(argFormat) == "System.IntPtr")
+                if (argType.Equals(compilation.GetSpecialType(SpecialType.System_IntPtr),SymbolEqualityComparer.Default))
                 {
                     freeArg = "this.handle";
                 }
@@ -192,7 +194,7 @@ namespace {0}
 }}
 ";
             var source = string.Format(sourceFormat, namespaceName, $"{HandleBaseName}Handle", GetFreeCode());
-            return new ReadOnlyDictionary<string, string>(new Dictionary<string, string> { { $"{HandleName}.g.cs", source } });
+            return new ReadOnlyDictionary<string, string>(new Dictionary<string, string> { { HandleName, source } });
         }
     }
 }

@@ -98,7 +98,7 @@ namespace {0}
                 return null;
             }
             var genName = (string)genAttr.ConstructorArguments[0].Value;
-            var info = new HandleInfo(methodSymbol, genName);
+            var info = new HandleInfo(methodSymbol, genName, compilation);
             return info;
         }
     }

@@ -20,12 +20,12 @@ namespace iOSLib.SourceGenerator
             string className = TypeSymbol.Name.Remove(TypeSymbol.Name.Length - 4, 4);
             var sourceFormat = @"namespace {0}
 {{
-    public class {1} : {1}Base
+    public partial class {1} : {1}Base
     {{
         public {1}(IDevice device) : base(device) {{ }}
     }}
 }}";
-            return new ReadOnlyDictionary<string, string>(new Dictionary<string, string>() { { $"{className}.g.cs", string.Format(sourceFormat, nameSpaceName, className) } });
+            return new ReadOnlyDictionary<string, string>(new Dictionary<string, string>() { { className, string.Format(sourceFormat, nameSpaceName, className) } });
         }
     }
 }

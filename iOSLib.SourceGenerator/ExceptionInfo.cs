@@ -84,7 +84,7 @@ namespace {1}
         }}
     }}
 }}", enumNamespaceName, parentNamespaceName, exceptionName,baseNameSpaceName, enumName,baseName);
-            dic.Add($"{exceptionName}.g.cs", sourceException);
+            dic.Add(exceptionName, sourceException);
             return dic;
         }
     }
