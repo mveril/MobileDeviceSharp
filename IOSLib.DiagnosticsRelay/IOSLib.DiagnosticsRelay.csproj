@@ -10,4 +10,9 @@
     <ProjectReference Include="..\iOSLib\IOSLib.csproj" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)\GeneratedFiles</CompilerGeneratedFilesOutputPath>
+  </PropertyGroup>
+
 </Project>
