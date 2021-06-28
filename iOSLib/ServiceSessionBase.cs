@@ -8,24 +8,18 @@ namespace IOSLib
 {
     public abstract class ServiceSessionBase<T> : IOSHandleWrapperBase<T> where T : IOSHandle,new()
     {
-        protected ServiceSessionBase(IDevice device ,string? serviceID) : base()
+        protected ServiceSessionBase(IDevice device ,string serviceID, bool withEscrowBag) : base()
         {
             Device = device;
-            if (serviceID == null)
-            {
-                Handle = Init();
-            }
-            else
-            {
-                using var ld = new LockdownSession(device);
-                var descriptor = ld.StartService(serviceID);
-                Handle = Init(descriptor);
-            }
+            using var ld = new LockdownSession(device);
+            var descriptor = ld.StartService(serviceID, withEscrowBag);
+            Handle = Init(descriptor);
         }
 
-        protected ServiceSessionBase(IDevice device) : this(device, null)
+        protected ServiceSessionBase(IDevice device) : base()
         {
-
+            Device = device;
+            Handle = Init();
         }
 
         protected abstract T Init(LockdownServiceDescriptorHandle Descriptor);

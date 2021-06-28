@@ -169,9 +169,9 @@ namespace IOSLib
             return serviceDescriptorHandle;
         }
 
-        public LockdownServiceDescriptorHandle StartService(string identifier,bool sendEscrowBag)
+        public LockdownServiceDescriptorHandle StartService(string identifier,bool withEscrowBag)
         {
-            if (sendEscrowBag)
+            if (withEscrowBag)
             {
                 var ex = lockdownd_start_service_with_escrow_bag(Handle, identifier, out var serviceDescriptorHandle).GetException();
                 if (ex != null)

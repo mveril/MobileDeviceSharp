@@ -14,7 +14,7 @@ namespace IOSLib.DiagnosticsRelay
 
         }
 
-        public DiagnosticsRelaySessionBase(IDevice device, string serviceID) : base(device,serviceID)
+        public DiagnosticsRelaySessionBase(IDevice device, string serviceID, bool withEscrowBag) : base(device,serviceID,withEscrowBag)
         {
 
         }

@@ -10,9 +10,14 @@ namespace IOSLib
     public abstract class NotificationProxySessionBase : ServiceSessionBase<NotificationProxyClientHandle>
     {
         public event NotificationProxyEventHandler? NotificationProxyEvent;
-        public NotificationProxySessionBase(IDevice device, string ServiceID) : base(device, ServiceID)
+        public NotificationProxySessionBase(IDevice device, string ServiceID, bool withEscrowBag) : base(device, ServiceID, withEscrowBag)
         {
             
+        }
+
+        public NotificationProxySessionBase(IDevice device) : base(device)
+        {
+
         }
 
         protected override NotificationProxyClientHandle Init()
