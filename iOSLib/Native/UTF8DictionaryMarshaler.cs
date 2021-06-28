@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 using System.Text;
 using System.Linq;
 
-namespace IOSLib
+namespace IOSLib.Native
 {
     public class UTF8DictionaryMarshaler : ICustomMarshaler
     {
@@ -16,7 +16,7 @@ namespace IOSLib
             
         }
 
-        public void CleanUpNativeData(IntPtr pNativeData)
+        public virtual void CleanUpNativeData(IntPtr pNativeData)
         {
             UTF8ArrayMarshaler.GetInstance().CleanUpManagedData(pNativeData);
         }
