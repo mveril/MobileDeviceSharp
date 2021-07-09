@@ -277,6 +277,22 @@ namespace IOSLib
             }
         }
 
+        public bool WifiConnectionEnabled
+        {
+            get
+            {
+                using var lockdown = new LockdownSession(this, IsPaired);
+                using var pValue = (PlistBoolean)lockdown.GetValue("com.apple.mobile.wireless_lockdown", "EnableWifiConnections");
+                return pValue.Value;
+            }
+            //set
+            //{
+            //    using var lockdown = new LockdownSession(this, IsPaired);
+            //    using var pValue = (PlistBoolean)lockdown.SetValue("com.apple.mobile.wireless_lockdown", "EnableWifiConnections",new PlistBoolean(value));
+            //    return pValue.Value;
+            //}
+        }
+
         public string PhoneNumber
         {
             get
