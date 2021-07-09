@@ -11,13 +11,12 @@ namespace IOSLib.AFC
         public AFCSessionBase Session { get;  }
 
         private readonly string path;
-        private readonly ulong fHandle;
+        private ulong fHandle = 0;
 
         public AFCStream(AFCSessionBase session, string path, FileMode mode, FileAccess access, AFCLockOp fileLock)
         {
             Session = session;
-            ulong fHandle = 0;
-            Path = path;
+            this.path = path;
             FileAccess = access;
             AFCFileMode AFCMode = (access, mode) switch
             {
@@ -42,7 +41,6 @@ namespace IOSLib.AFC
                 throw ex;
         }
 
-        public string Path { get; }
         public FileAccess FileAccess { get; }
         public override bool CanRead => (Session?.IsClosed).GetValueOrDefault(false) && FileAccess.HasFlag(FileAccess.Read);
 
@@ -112,7 +110,9 @@ namespace IOSLib.AFC
 
         public override void SetLength(long value)
         {
-            afc_file_truncate(Session.Handle, fHandle, (ulong)value);
+            var ex = afc_file_truncate(Session.Handle, fHandle, (ulong)value).GetException();
+            if (ex != null)
+                throw ex;
         }
 
         public override void Write(byte[] buffer, int offset, int count)
