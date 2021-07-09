@@ -52,10 +52,10 @@ namespace IOSLib.AFC
         {
             Path = path;
             Session = session;
-            afc_get_file_info(session.Handle, Path, out var infos);
+            var infos = session.GetFileInfo(path);
             if (infos.Count > 0)
             {
-                EnsureSupported(ItemType);
+                EnsureSupported(Session.GetItemType(infos));
             }
         }
 
@@ -69,9 +69,7 @@ namespace IOSLib.AFC
 
         public void Delete()
         {
-            var ex = afc_remove_path(Session.Handle, Path).GetException();
-            if (ex != null)
-                throw ex;
+            Session.Delete(Path);
         }
 
         virtual public bool Exist()

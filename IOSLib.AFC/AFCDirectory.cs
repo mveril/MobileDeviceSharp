@@ -78,16 +78,7 @@ namespace IOSLib.AFC
 
         public void Delete(bool recursive)
         {
-            if (recursive)
-            {
-                var ex = afc_remove_path_and_contents(Session.Handle, Path).GetException();
-                if (ex != null)
-                    throw ex;
-            }
-            else
-            {
-                Delete();
-            }
+            this.Session.Delete(Path, recursive);
         }
     }
 }

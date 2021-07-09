@@ -40,9 +40,14 @@ namespace IOSLib.AFC
             return handle;
         }
 
-        internal AFCItemType GetItemType(string path)
+        public AFCItemType GetItemType(string path)
         {
-            return AFCItemType.Create(GetFileInfo(path)["st_ifmt"]);
+            return GetItemType(GetFileInfo(path));
+        }
+
+        internal AFCItemType GetItemType(IReadOnlyDictionary<string,string> fileInfo)
+        {
+            return AFCItemType.Create(fileInfo["st_ifmt"]);
         }
 
         internal IReadOnlyDictionary<string,string> GetFileInfo(string path)
@@ -65,6 +70,27 @@ namespace IOSLib.AFC
             var ex = afc_rename_path(Handle, path, to).GetException();
             if (ex != null)
                 throw ex;
+        }
+
+        public void Delete(string path)
+        {
+            var ex = afc_remove_path(Handle, path).GetException();
+            if (ex != null)
+                throw ex;
+        }
+
+        public void Delete(string path, bool recursive)
+        {
+            if (recursive)
+            {
+                var ex = afc_remove_path_and_contents(Handle, path).GetException();
+                if (ex != null)
+                    throw ex;
+            }
+            else
+            {
+                Delete(path);
+            }
         }
     }
 }
