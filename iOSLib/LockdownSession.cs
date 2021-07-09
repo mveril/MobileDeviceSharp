@@ -149,15 +149,15 @@ namespace IOSLib
             return TryGetValues(null, out node);
         }
 
-        public void SetValue(string? domain, string key, PlistNode node)
-        {
-            lockdownd_set_value(Handle, domain, key, node);
-        }
+        //public void SetValue(string? domain, string key, out PlistNode node)
+        //{
+        //    lockdownd_set_value(Handle, domain, key, out node);
+        //}
 
-        public void SetValue(string value,PlistNode node)
-        {
-            SetValue(null, value, node);
-        }
+        //public void SetValue(string value,PlistNode node)
+        //{
+        //    SetValue(null, value, node);
+        //}
 
         public LockdownServiceDescriptorHandle StartService(string serviceID)
         {
