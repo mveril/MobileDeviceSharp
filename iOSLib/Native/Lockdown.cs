@@ -139,7 +139,7 @@ namespace IOSLib.Native
         /// value is NULL
         /// </returns>
         [DllImport(Lockdown.LibraryName, EntryPoint = "lockdownd_set_value", CallingConvention = CallingConvention.Cdecl)]
-        public static extern LockdownError lockdownd_set_value(LockdownClientHandle client, [MarshalAsAttribute(UnmanagedType.LPStr)] string? domain, [MarshalAsAttribute(UnmanagedType.LPStr)] string key, PlistNode value);
+        public static extern LockdownError lockdownd_set_value(LockdownClientHandle client, [MarshalAsAttribute(UnmanagedType.LPStr)] string? domain, [MarshalAsAttribute(UnmanagedType.LPStr)] string key, plist_t value);
 
         /// <summary>
         /// Removes a preference node by domain and/or key name.
