@@ -66,7 +66,7 @@ namespace IOSLib
             get
             {
                 var privateLockdown = Marshal.PtrToStructure<lockdownd_client_private>(Handle.DangerousGetHandle());
-                return privateLockdown.label;
+                return (string)UTF8Marshaler.GetInstance().MarshalNativeToManaged(privateLockdown.label);
             }
             set
             {
