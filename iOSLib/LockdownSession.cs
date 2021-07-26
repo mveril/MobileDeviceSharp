@@ -13,7 +13,7 @@ namespace IOSLib
     {
         private readonly IDevice device;
 
-        public LockdownSession(IDevice device,string? label, bool WithHandShake) : base(GetHandle(device,label,WithHandShake))
+        public LockdownSession(IDevice device, string? label, bool WithHandShake) : base(GetHandle(device, label, WithHandShake))
         {
             
         }
@@ -202,8 +202,8 @@ namespace IOSLib
             switch (err)
             {
                 case LockdownError.Success:
-                    tsk.SetResult(true);
                     device.IsPaired = true;
+                    tsk.SetResult(true);
                     break;
                 case LockdownError.UserDeniedPairing:
                     tsk.SetResult(false);
