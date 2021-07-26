@@ -103,6 +103,8 @@ namespace IOSLib
             return accumulator;
         }
 
+        public override string ToString() => $"{Major}{Minor}{Build}";
+
         public object Clone()
         {
             return new BuildNumber(this);
