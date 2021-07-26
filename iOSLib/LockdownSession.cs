@@ -15,7 +15,7 @@ namespace IOSLib
 
         public LockdownSession(IDevice device, string? label, bool WithHandShake) : base(GetHandle(device, label, WithHandShake))
         {
-            
+            this.device = device;
         }
 
         private static LockdownClientHandle GetHandle(IDevice device, string? label, bool withHandShake)
