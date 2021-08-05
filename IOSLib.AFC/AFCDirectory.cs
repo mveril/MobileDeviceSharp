@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using IOSLib.AFC.Native;
+using Mono.Unix;
 using static IOSLib.AFC.Native.AFC;
 
 namespace IOSLib.AFC
@@ -34,20 +35,20 @@ namespace IOSLib.AFC
 
         public AFCDirectory GetSubDirectory(string name)
         {
-            var subpath = $"{Path}/{name}";
+            var subpath = UnixPath.Combine(Path,name);
             return new AFCDirectory(Session, subpath);
         }
 
         public AFCFile GetFile(string name)
         {
-            var subpath = $"{Path}/{name}";
+            var subpath = UnixPath.Combine(Path, name);
             return new AFCFile(Session, subpath);
         }
 
         public AFCDirectory CreateSubPath(string subpath)
         {
             var curr = this;
-            foreach (var item in subpath.Split('/'))
+            foreach (var item in subpath.Split(UnixPath.DirectorySeparatorChar))
             {
                 curr = curr.CreateSubDirectory(item);
             }
@@ -59,7 +60,7 @@ namespace IOSLib.AFC
             afc_read_directory(Session.Handle, Path, out var items);
             foreach (var item in items)
             {
-                var path = $"{Path}/{item}";
+                var path = UnixPath.Combine(Path,item);
                 var type = Session.GetItemType(path);
                 if (type == AFCItemType.File)
                 {
