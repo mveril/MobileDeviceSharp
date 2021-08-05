@@ -18,7 +18,9 @@ namespace IOSLib.AFC
 
         }
 
-        public abstract string Root { get; }
+        public abstract string RootPath { get; }
+
+        public AFCDirectory Root => new AFCDirectory(this,"/");
 
         protected override AFCClientHandle Init(LockdownServiceDescriptorHandle Descriptor)
         {

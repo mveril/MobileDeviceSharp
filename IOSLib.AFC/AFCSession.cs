@@ -6,7 +6,7 @@ namespace IOSLib.AFC
 {
     public partial class AFCSession
     {
-        public override string Root => "/private/var/mobile/Media";
+        public override string RootPath => "/private/var/mobile/Media";
 
     }
 }

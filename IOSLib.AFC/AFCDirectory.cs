@@ -6,9 +6,9 @@ using static IOSLib.AFC.Native.AFC;
 
 namespace IOSLib.AFC
 {
-    class AFCDirectory : AFCItem
+    public class AFCDirectory : AFCItem
     {
-        AFCDirectory(AFCSessionBase session, string path) : base(session, path)
+        internal AFCDirectory(AFCSessionBase session, string path) : base(session, path)
         {
 
         }

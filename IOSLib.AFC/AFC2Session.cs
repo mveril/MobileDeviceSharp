@@ -10,6 +10,6 @@ namespace IOSLib.AFC
 
         AFC2Session(IDevice device) : base(device, AFC2_SERVICE_ID) { }
 
-        public override string Root => "/";
+        public override string RootPath => "/";
     }
 }
