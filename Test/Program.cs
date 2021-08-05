@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using IOSLib;
+using IOSLib.AFC;
 
 namespace Test
 {
@@ -20,12 +21,12 @@ namespace Test
                 {
                     Console.ReadLine();
                     Console.WriteLine(await ld.PairAsync());
-                    throw;
                 }
-                Console.WriteLine(device.OSVersion.BuildNumber.Major);
-                Console.WriteLine(device.OSVersion.BuildNumber.Minor);
-                Console.WriteLine(device.OSVersion.BuildNumber.Build);
-                Console.WriteLine(device.DeviceTime);
+                var session = new AFCSession(device);
+                foreach (var item in session.Root.EnumerateItems())
+                {
+                    Console.WriteLine(item.Path);
+                }
             }
         }
     }
