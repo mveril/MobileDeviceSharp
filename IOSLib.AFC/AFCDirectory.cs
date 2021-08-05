@@ -72,7 +72,7 @@ namespace IOSLib.AFC
                 }
                 else
                 {
-                    yield return new AFCItem(Session, path);
+                    throw new NotSupportedException();
                 }
             }
         }

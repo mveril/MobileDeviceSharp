@@ -6,7 +6,7 @@ using IOSLib.AFC.Native;
 
 namespace IOSLib.AFC
 {
-    public class AFCItem
+    public abstract class AFCItem
     {
 
         public AFCItemType ItemType => GetItemType();
@@ -22,7 +22,7 @@ namespace IOSLib.AFC
         }
 
 
-        protected virtual bool IsItemTypeSupported(AFCItemType itemType) => true;
+        protected abstract bool IsItemTypeSupported(AFCItemType itemType);
 
         public string Path { get; protected set; }
 
