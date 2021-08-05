@@ -19,7 +19,7 @@ namespace IOSLib.AFC
         }
 
         /// <summary>
-        /// Creates a new OSPlatform instance.
+        /// Creates a new AFCItemType instance.
         /// </summary>
         /// <remarks>If you plan to call this method frequently, please consider caching its result.</remarks>
         public static AFCItemType Create(string AFCitemType)
