@@ -70,6 +70,10 @@ namespace IOSLib.AFC
                 {
                     yield return new AFCDirectory(Session, path);
                 }
+                else if (type == AFCItemType.SymbolicLink)
+                {
+                    yield return new AFCSymbolicLink(Session, path);
+                }
                 else
                 {
                     throw new NotSupportedException();

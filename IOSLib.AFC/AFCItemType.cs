@@ -8,6 +8,8 @@ namespace IOSLib.AFC
 
         public static AFCItemType Directory { get; } = new AFCItemType("S_IFDIR");
 
+        public static AFCItemType SymbolicLink { get; } = new AFCItemType("S_IFLNK");
+
         internal string Name { get; }
 
         private AFCItemType(string AFCitemType)
