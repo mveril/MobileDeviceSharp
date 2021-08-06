@@ -34,6 +34,28 @@ namespace IOSLib.AFC
             return sub;
         }
 
+        public AFCItem GetItem(string name)
+        {
+            var path = UnixPath.Combine(Path, name);
+            var type = Session.GetItemType(path);
+            if (type == AFCItemType.File)
+            {
+                return new AFCFile(Session, path);
+            }
+            else if (type == AFCItemType.Directory)
+            {
+                return new AFCDirectory(Session, path);
+            }
+            else if (type == AFCItemType.SymbolicLink)
+            {
+                return new AFCSymbolicLink(Session, path);
+            }
+            else
+            {
+                throw new NotSupportedException();
+            }
+        }
+
         public AFCDirectory GetSubDirectory(string name)
         {
             var subpath = UnixPath.Combine(Path,name);
@@ -46,6 +68,12 @@ namespace IOSLib.AFC
             return new AFCFile(Session, subpath);
         }
 
+        public AFCItem GetSymbolicLink(string name)
+        {
+            var subpath = UnixPath.Combine(Path, name);
+            return new AFCSymbolicLink(Session, subpath);
+        }
+
         public AFCDirectory CreateSubPath(string subpath)
         {
             var curr = this;
@@ -56,29 +84,13 @@ namespace IOSLib.AFC
             return curr;
         }
 
-        public IEnumerable<AFCItem> EnumerateItems()
+        public IEnumerable<AFCItem> GetItems()
         {
             afc_read_directory(Session.Handle, Path, out var items);
             foreach (var item in items.Except(new string[] { ".", ".." }))
             {
                 var path = UnixPath.Combine(Path,item);
-                var type = Session.GetItemType(path);
-                if (type == AFCItemType.File)
-                {
-                    yield return new AFCFile(Session, path);
-                }
-                else if (type == AFCItemType.Directory)
-                {
-                    yield return new AFCDirectory(Session, path);
-                }
-                else if (type == AFCItemType.SymbolicLink)
-                {
-                    yield return new AFCSymbolicLink(Session, path);
-                }
-                else
-                {
-                    throw new NotSupportedException();
-                }
+                yield return GetItem(item);
             }
         }
 
