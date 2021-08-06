@@ -42,11 +42,11 @@ namespace IOSLib.AFC
         }
 
         public FileAccess FileAccess { get; }
-        public override bool CanRead => (Session?.IsClosed).GetValueOrDefault(false) && FileAccess.HasFlag(FileAccess.Read);
+        public override bool CanRead => (!Session?.IsClosed).GetValueOrDefault(false) && FileAccess.HasFlag(FileAccess.Read);
 
-        public override bool CanSeek => (Session?.IsClosed).GetValueOrDefault(false);
+        public override bool CanSeek => (!Session?.IsClosed).GetValueOrDefault(false);
 
-        public override bool CanWrite => (Session?.IsClosed).GetValueOrDefault(false) && FileAccess.HasFlag(FileAccess.Write);
+        public override bool CanWrite => (!Session?.IsClosed).GetValueOrDefault(false) && FileAccess.HasFlag(FileAccess.Write);
 
         public override long Length
         {
