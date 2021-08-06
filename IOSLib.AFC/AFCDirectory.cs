@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using IOSLib.AFC.Native;
 using Mono.Unix;
@@ -58,7 +59,7 @@ namespace IOSLib.AFC
         public IEnumerable<AFCItem> EnumerateItems()
         {
             afc_read_directory(Session.Handle, Path, out var items);
-            foreach (var item in items)
+            foreach (var item in items.Except(new string[] { ".", ".." }))
             {
                 var path = UnixPath.Combine(Path,item);
                 var type = Session.GetItemType(path);
