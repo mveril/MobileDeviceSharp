@@ -23,7 +23,7 @@ namespace IOSLib.AFC
             if (recusive)
             {
                 var target = new AFCSymbolicLink(this.Session, TargetPath);
-                if (target.Exist())
+                if (target.Exists)
                 {
                     return target.ReadLink(true);
                 }

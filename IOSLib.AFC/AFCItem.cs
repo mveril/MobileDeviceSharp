@@ -60,10 +60,7 @@ namespace IOSLib.AFC
             Session.Delete(Path);
         }
 
-        virtual public bool Exist()
-        {
-            return GetFileInfo().Count > 0 && IsItemTypeSupported(ItemType);
-        }
+        public bool Exists => GetFileInfo().Count > 0 && IsItemTypeSupported(ItemType);
 
         public void MoveTo(string to)
         {
