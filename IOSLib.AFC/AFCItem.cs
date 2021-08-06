@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using static IOSLib.AFC.Native.AFC;
 using IOSLib.AFC.Native;
+using Mono.Unix;
+using System.Linq;
 
 namespace IOSLib.AFC
 {
@@ -62,6 +64,10 @@ namespace IOSLib.AFC
 
         public bool Exists => GetFileInfo().Count > 0 && IsItemTypeSupported(ItemType);
 
+        public string Name => UnixPath.GetFileName(Path);
+
+        public string Extension => Name.Split('.').Last();
+
         public void MoveTo(string to)
         {
             Session.Move(this.Path, to);
@@ -70,6 +76,22 @@ namespace IOSLib.AFC
         public void MakeLink(AFCLinkType linkType, string linkPath)
         {
             Session.MakeLink(this.Path, linkPath,linkType);
+        }
+
+        public AFCDirectory? Parent
+        {
+            get
+            {
+                var dir = UnixPath.GetDirectoryName(Path);
+                if (dir == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    return new AFCDirectory(Session, dir);
+                }                
+            }
         }
     }
 }
