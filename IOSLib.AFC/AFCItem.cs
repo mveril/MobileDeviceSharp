@@ -53,18 +53,6 @@ namespace IOSLib.AFC
             Path = path;
             Session = session;
             var infos = session.GetFileInfo(path);
-            if (infos.Count > 0)
-            {
-                EnsureSupported(Session.GetItemType(infos));
-            }
-        }
-
-        private void EnsureSupported(AFCItemType itemType)
-        {
-            if (!IsItemTypeSupported(ItemType))
-            {
-                throw new UnauthorizedAccessException();
-            }
         }
 
         public void Delete()
@@ -74,7 +62,7 @@ namespace IOSLib.AFC
 
         virtual public bool Exist()
         {
-            return GetFileInfo().Count > 0;
+            return GetFileInfo().Count > 0 && IsItemTypeSupported(ItemType);
         }
 
         public void MoveTo(string to)
