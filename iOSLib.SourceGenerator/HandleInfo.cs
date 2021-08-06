@@ -115,7 +115,7 @@ namespace {0}
         /// <inheritdoc/>
         public override string ToString()
         {{
-            return $""{{this.handle}} (nameof({1}))"";
+            return $""{{this.handle}} ({{nameof({1})}})"";
         }}
 
         /// <inheritdoc/>
