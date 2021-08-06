@@ -37,7 +37,7 @@ namespace IOSLib
             {
                 throw ex;
             }
-            return Handle;
+            return handle;
         }
 
         public void ObserveNotification(params string[] notification)
