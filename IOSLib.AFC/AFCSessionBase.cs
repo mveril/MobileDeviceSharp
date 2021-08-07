@@ -2,6 +2,7 @@
 using IOSLib.Native;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using static IOSLib.AFC.Native.AFC;
 
 namespace IOSLib.AFC
@@ -54,10 +55,17 @@ namespace IOSLib.AFC
 
         internal IReadOnlyDictionary<string,string> GetFileInfo(string path)
         {
-            var ex = afc_get_file_info(Handle, path, out var col).GetException();
-            if (ex != null)
-                throw ex;
-            return col;
+            try
+            {
+                var ex = afc_get_file_info(Handle, path, out var col).GetException();
+                if (ex != null)
+                    throw ex;
+                return col;
+            }
+            catch (AFCException ex) when (ex.ErrorCode == (int)AFCError.ObjectNotFound)
+            {
+                return new ReadOnlyDictionary<string, string>(new Dictionary<string,string>());
+            }
         }
 
 
