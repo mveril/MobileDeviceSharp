@@ -80,18 +80,31 @@ namespace IOSLib.AFC
 
         public override int Read(byte[] buffer, int offset, int count)
         {
-            byte[] targetBuffer = (offset == 0 ? buffer : new byte[count]);
             uint byteread = 0;
-            var ex = afc_file_read(Session.Handle, fHandle, targetBuffer, (uint)count, ref byteread).GetException();
-            if (ex != null)
-                throw ex;
-            if (offset != 0)
+            if (offset == 0)
+            {
+                var ex = afc_file_read(Session.Handle, fHandle, buffer, (uint)count, ref byteread).GetException();
+                if (ex != null)
+                    throw ex;
+            }
+            else
             {
                 var resultSpan = new Span<byte>(buffer, offset, count);
-                targetBuffer.CopyTo(resultSpan);
+                unsafe
+                {
+                    Exception ex;
+                    fixed (byte* bptr = resultSpan)
+                    {
+                        ex = afc_file_read(Session.Handle, fHandle, bptr, (uint)count, ref byteread).GetException();
+                    }
+                    if (ex != null)
+                        throw ex;
+                }
             }
+
             return (int)byteread;
         }
+
 
         public override long Seek(long offset, SeekOrigin origin)
         {
@@ -118,19 +131,26 @@ namespace IOSLib.AFC
         public override void Write(byte[] buffer, int offset, int count)
         {
             uint bytesWritten = 0;
-            byte[] targetBuffer;
             if (offset == 0)
             {
-                targetBuffer = buffer;
+                var ex = afc_file_write(Session.Handle, fHandle, buffer, (uint)count, ref bytesWritten).GetException();
+                if (ex != null)
+                    throw ex;
             }
             else
             {
                 var targetSpan = new Span<byte>(buffer, offset, count);
-                targetBuffer = targetSpan.ToArray();
+                Exception ex;
+                unsafe
+                {
+                    fixed(byte* bptr = targetSpan)
+                    {
+                        ex = afc_file_write(Session.Handle, fHandle, bptr, (uint)count, ref bytesWritten).GetException();
+                    }
+                }
+                if (ex != null)
+                    throw ex;
             }
-            var ex = afc_file_write(Session.Handle, fHandle, targetBuffer, (uint)count, ref bytesWritten).GetException();
-            if (ex != null)
-                throw ex;
         }
 
         protected override void Dispose(bool disposing)
