@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using IOSLib;
@@ -12,7 +14,7 @@ namespace Test
         {
             foreach (var device in IDevice.List())
             {
-                var ld = new LockdownSession(device);
+                using var ld = new LockdownSession(device);
                 try
                 {
                     Console.WriteLine(await ld.PairAsync());
@@ -22,11 +24,67 @@ namespace Test
                     Console.ReadLine();
                     Console.WriteLine(await ld.PairAsync());
                 }
-                var session = new AFCSession(device);
-                foreach (var item in session.Root.EnumerateItems())
+                using var session = new AFCSession(device);
+                ProcessItem(session.Root);
+
+            }
+        }
+        private static void ProcessLine(AFCDirectory current, string line)
+        {
+            ProcessItem(current.GetItem(line));   
+        }
+
+        private static void ShowFileInExplorer(string filePath)
+        {
+            try
+            {
+                var winDir = Environment.GetEnvironmentVariable("windir");
+                if (winDir != null)
                 {
-                    Console.WriteLine(item.Path);
+                    var explorerPath = Path.Combine(winDir, @"explorer.exe");
+                    var arguments = String.Format("/select, {0}{1}{0}", (char)34, filePath);
+                    Process.Start(explorerPath, arguments);
                 }
+            }
+            catch (Exception ex)
+            {
+                //handle the exception your way!
+            }
+        }
+
+        private static void ProcessItem(AFCDirectory Dir)
+        {
+            foreach (var item in Dir.GetItems())
+            {
+                Console.WriteLine(item.Path);
+                Console.WriteLine($"> {item.CreationTime}");
+                Console.WriteLine($"> {item.LastModifiedTime}");
+                Console.WriteLine($"> {item.Name}");
+                Console.WriteLine($"> {item.Extension}");
+            }
+            ProcessLine(Dir,Console.ReadLine());
+        }
+
+        private static void ProcessItem(AFCFile file)
+        {
+            var p = Path.Combine(Path.GetTempPath(), file.Name);
+            var outp = File.OpenWrite(p);
+            var inp = file.OpenRead();
+            inp.CopyTo(outp);
+            inp.Close();
+            outp.Close();
+            ShowFileInExplorer(p);
+            ProcessItem(file.Parent);
+        }
+        private static void ProcessItem(AFCItem item)
+        {
+            if (item.GetType() == typeof(AFCFile))
+            {
+                ProcessItem((AFCFile)item);
+            }
+            else if (item.GetType() == typeof(AFCDirectory))
+            {
+                ProcessItem((AFCDirectory)item);
             }
         }
     }
