@@ -66,7 +66,21 @@ namespace IOSLib.AFC
 
         public string Name => UnixPath.GetFileName(Path);
 
-        public string Extension => Name.Split('.').Last();
+        public string Extension
+        {
+            get
+            {
+                var index = Name.LastIndexOf('.');
+                if (index != -1)
+                {
+                    return Name.Substring(index);
+                }
+                else
+                {
+                    return string.Empty;
+                }
+            }
+        }
 
         public void MoveTo(string to)
         {
