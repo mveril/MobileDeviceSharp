@@ -31,7 +31,21 @@ namespace Test
         }
         private static void ProcessLine(AFCDirectory current, string line)
         {
-            ProcessItem(current.GetItem(line));   
+            if (string.IsNullOrEmpty(line))
+            {
+                if (current.Parent!= null)
+                {
+                    ProcessItem(current.Parent);
+                }
+                else
+                {
+                    ProcessItem(current);
+                }
+            }
+            else
+            {
+                ProcessItem(current.GetItem(line));
+            }
         }
 
         private static void ShowFileInExplorer(string filePath)
