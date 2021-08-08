@@ -7,37 +7,17 @@ using System.Text;
 
 namespace IOSLib
 {
-    public abstract class NotificationProxySessionBase : ServiceSessionBase<NotificationProxyClientHandle>
+    public abstract class NotificationProxySessionBase : ServiceSessionBase<NotificationProxyClientHandle,NotificationProxyError>
     {
         public event NotificationProxyEventHandler? NotificationProxyEvent;
-        public NotificationProxySessionBase(IDevice device, string ServiceID, bool withEscrowBag) : base(device, ServiceID, withEscrowBag)
+        public NotificationProxySessionBase(IDevice device, string ServiceID, bool withEscrowBag) : base(device, ServiceID, withEscrowBag,new ClientNewCallback<NotificationProxyClientHandle, NotificationProxyError>(np_client_new))
         {
             
         }
 
-        public NotificationProxySessionBase(IDevice device) : base(device)
+        public NotificationProxySessionBase(IDevice device) : base(device, new StartServiceCallback<NotificationProxyClientHandle, NotificationProxyError>(np_client_start_service))
         {
 
-        }
-
-        protected override NotificationProxyClientHandle Init()
-        {
-            var ex = np_client_start_service(Device.Handle, out var handle, null).GetException();
-            if (ex != null)
-            {
-                throw ex;
-            }
-            return handle;
-        }
-
-        protected override NotificationProxyClientHandle Init(LockdownServiceDescriptorHandle Descriptor)
-        {
-            var ex = np_client_new(Device.Handle, Descriptor, out var handle).GetException();
-            if (ex != null)
-            {
-                throw ex;
-            }
-            return handle;
         }
 
         public void ObserveNotification(params string[] notification)

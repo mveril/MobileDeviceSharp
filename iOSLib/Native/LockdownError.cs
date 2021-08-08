@@ -3,6 +3,7 @@
     /// <summary>
     /// Error Codes 
     /// </summary>
+    [Exception(typeof(LockdownException))]
     public enum LockdownError : int
     {
 

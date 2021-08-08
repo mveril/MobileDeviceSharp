@@ -3,6 +3,7 @@
     /// <summary>
     /// Error Codes 
     /// </summary>
+    [Exception(typeof(AFCException))]
     public enum AFCError : int
     {
 

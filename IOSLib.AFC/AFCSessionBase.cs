@@ -7,14 +7,14 @@ using static IOSLib.AFC.Native.AFC;
 
 namespace IOSLib.AFC
 {
-    public abstract class AFCSessionBase : ServiceSessionBase<AFCClientHandle>
+    public abstract class AFCSessionBase : ServiceSessionBase<AFCClientHandle,AFCError>
     {
-        protected AFCSessionBase(IDevice device, string serviceID) : base(device, serviceID, true)
+        protected AFCSessionBase(IDevice device, string serviceID) : base(device, serviceID, true, new ClientNewCallback<AFCClientHandle, AFCError>(afc_client_new))
         {
 
         }
 
-        protected AFCSessionBase(IDevice device) : base(device)
+        protected AFCSessionBase(IDevice device) : base(device, new StartServiceCallback<AFCClientHandle, AFCError>(afc_client_start_service))
         {
 
         }
@@ -22,26 +22,6 @@ namespace IOSLib.AFC
         public abstract string RootPath { get; }
 
         public AFCDirectory Root => new AFCDirectory(this,"/");
-
-        protected override AFCClientHandle Init(LockdownServiceDescriptorHandle Descriptor)
-        {
-            var ex = afc_client_new(Device.Handle, Descriptor, out var handle).GetException();
-            if (ex != null)
-            {
-                throw ex;
-            }
-            return handle;
-        }
-
-        protected override AFCClientHandle Init()
-        {
-            var ex = afc_client_start_service(Device.Handle, out var handle, null).GetException();
-            if (ex != null)
-            {
-                throw ex;
-            }
-            return handle;
-        }
 
         public AFCItemType GetItemType(string path)
         {

@@ -6,25 +6,37 @@ using System.Text;
 
 namespace IOSLib
 {
-    public abstract class ServiceSessionBase<T> : IOSHandleWrapperBase<T> where T : IOSHandle,new()
+    public abstract class ServiceSessionBase<THandle, TError> : IOSHandleWrapperBase<THandle> where THandle : IOSHandle,new() where TError : Enum
     {
-        protected ServiceSessionBase(IDevice device ,string serviceID, bool withEscrowBag) : base()
+        protected ServiceSessionBase(IDevice device ,string serviceID, bool withEscrowBag, ClientNewCallback<THandle,TError> ClientNew) : base()
         {
+            var init = ClientNew;
             Device = device;
             using var ld = new LockdownSession(device);
             var descriptor = ld.StartService(serviceID, withEscrowBag);
-            Handle = Init(descriptor);
+            THandle handle;
+            var error = init(device.Handle, descriptor, out handle);
+            var ex = ExceptionUtils.GetException(error);
+            if (ex != null)
+            {
+                throw ex;
+            }
+            Handle = handle;
         }
 
-        protected ServiceSessionBase(IDevice device) : base()
+        protected ServiceSessionBase(IDevice device, StartServiceCallback<THandle, TError> startService) : base()
         {
+            var init = startService;
             Device = device;
-            Handle = Init();
+            THandle handle;
+            var error = init(device.Handle, out handle, null);
+            var ex = ExceptionUtils.GetException(error);
+            if (ex != null)
+            {
+                throw ex;
+            }
+            Handle = handle;
         }
-
-        protected abstract T Init(LockdownServiceDescriptorHandle Descriptor);
-
-        protected abstract T Init();
 
         public IDevice Device { get; }
     }

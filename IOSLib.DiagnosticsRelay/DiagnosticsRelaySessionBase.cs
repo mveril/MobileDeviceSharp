@@ -7,14 +7,14 @@ using IOSLib.DiagnosticsRelay.Native;
 
 namespace IOSLib.DiagnosticsRelay
 {
-    public abstract class DiagnosticsRelaySessionBase : ServiceSessionBase<DiagnosticsRelayClientHandle> 
+    public abstract class DiagnosticsRelaySessionBase : ServiceSessionBase<DiagnosticsRelayClientHandle,DiagnosticsRelayError> 
     {
-        public DiagnosticsRelaySessionBase(IDevice device) : base(device)
+        public DiagnosticsRelaySessionBase(IDevice device) : base(device, new StartServiceCallback<DiagnosticsRelayClientHandle, DiagnosticsRelayError>(diagnostics_relay_client_start_service))
         {
 
         }
 
-        public DiagnosticsRelaySessionBase(IDevice device, string serviceID, bool withEscrowBag) : base(device,serviceID,withEscrowBag)
+        public DiagnosticsRelaySessionBase(IDevice device, string serviceID, bool withEscrowBag) : base(device,serviceID,withEscrowBag,new ClientNewCallback<DiagnosticsRelayClientHandle, DiagnosticsRelayError>(diagnostics_relay_client_new))
         {
 
         }
@@ -35,26 +35,6 @@ namespace IOSLib.DiagnosticsRelay
             {
                 throw ex;
             }
-        }
-
-        protected override DiagnosticsRelayClientHandle Init(LockdownServiceDescriptorHandle Descriptor)
-        {
-            var ex = diagnostics_relay_client_new(Device.Handle,Descriptor, out var handle).GetException();
-            if (ex != null)
-            {
-                throw ex;
-            }
-            return handle;
-        }
-
-        protected override DiagnosticsRelayClientHandle Init()
-        {
-            var ex = diagnostics_relay_client_start_service(Device.Handle, out var handle, null).GetException();
-            if (ex != null)
-            {
-                throw ex;
-            }
-            return handle;
         }
     }
 }

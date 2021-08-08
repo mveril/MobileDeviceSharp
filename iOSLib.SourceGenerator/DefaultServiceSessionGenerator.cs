@@ -32,7 +32,7 @@ namespace iOSLib.SourceGenerator
 
         private DefaultServiceSessionInfo? TryGetServiceBaseInfo(Compilation compilation, ClassDeclarationSyntax type)
         {
-            var serviceSessionBase = compilation.GetTypeByMetadataName("IOSLib.ServiceSessionBase`1");
+            var serviceSessionBase = compilation.GetTypeByMetadataName("IOSLib.ServiceSessionBase`2");
             if (type.Identifier.ToString().EndsWith("Base"))
             {
                 var typeSymbol = compilation.GetSemanticModel(type.SyntaxTree).GetDeclaredSymbol(type);

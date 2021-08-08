@@ -1,8 +1,10 @@
-﻿namespace IOSLib.Native
+﻿using IOSLib;
+namespace IOSLib.Native
 {
     /// <summary>
     /// Error Codes 
     /// </summary>
+    [Exception(typeof(NotificationProxyException))]
     public enum NotificationProxyError : int
     {
 

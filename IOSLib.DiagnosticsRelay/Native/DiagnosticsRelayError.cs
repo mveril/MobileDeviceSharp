@@ -3,6 +3,7 @@
     /// <summary>
     /// Error Codes 
     /// </summary>
+    [Exception(typeof(DiagnosticsRelayException))]
     public enum DiagnosticsRelayError : int
     {
 
