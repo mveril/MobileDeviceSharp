@@ -89,7 +89,6 @@ namespace IOSLib.AFC
             afc_read_directory(Session.Handle, Path, out var items);
             foreach (var item in items.Except(new string[] { ".", ".." }))
             {
-                var path = UnixPath.Combine(Path,item);
                 yield return GetItem(item);
             }
         }
