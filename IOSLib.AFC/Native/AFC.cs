@@ -54,7 +54,7 @@ namespace IOSLib.AFC.Native
         /// AFC_E_SUCCESS on success, or an AFC_E_* error code otherwise.
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(AFC.LibraryName, EntryPoint = "afc_client_start_service", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern AFCError afc_client_start_service(IDeviceHandle device, out AFCClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string label);
+        public static extern AFCError afc_client_start_service(IDeviceHandle device, out AFCClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string? label);
 
         /// <summary>
         /// Frees up an AFC client. If the connection was created by the client itself,
