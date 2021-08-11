@@ -82,6 +82,11 @@ namespace IOSLib
                 lockdownd_get_device_name(Handle, out var name);
                 return name;
             }
+            set
+            {
+                using var PlistName = new PlistString(value);
+                SetValue("DeviceName", PlistName);
+            }
         }
 
         public Ulid DeviceUdid
