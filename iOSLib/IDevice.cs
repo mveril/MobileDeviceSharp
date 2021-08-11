@@ -397,6 +397,48 @@ namespace IOSLib
                 }
 #endif
             }
+            set
+            {
+                string strTZ;
+#if !NET6_0_OR_GREATER
+#if NET5_0
+                if (OperatingSystem.IsWindows())
+#else
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+#endif
+                {
+                    strTZ = TZConvert.WindowsToIana(value.StandardName);
+                }
+                else
+                {
+
+                    strTZ = value.StandardName;
+                }
+#else
+                if (value.HasIanaId)
+                {
+                    strTZ = value.StandardName;
+                }
+                else
+                {
+                    if (TimeZoneInfo.TryConvertWindowsIdToIanaId(value.StandardName, out var strTZt))
+                    {
+                        strTZ = strTZt!;
+                    }
+                    else
+                    {
+                        throw new NotSupportedException();
+                    }
+                }
+#endif
+                using (var lockdown = new LockdownSession(this, IsPaired))
+                {
+                    using (PlistString timeZoneNode = new PlistString(strTZ))
+                    {
+                        lockdown.SetValue(nameof(TimeZone), timeZoneNode);
+                    }                    
+                }
+            }
         }
 
         public DateTimeOffset DeviceTime
