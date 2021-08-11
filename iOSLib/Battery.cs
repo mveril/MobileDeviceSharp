@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using IOSLib;
 using IOSLib.Native;
-using PlistSharp;
+using IOSLib.PropertyList;
 
 namespace IOSLib
 {

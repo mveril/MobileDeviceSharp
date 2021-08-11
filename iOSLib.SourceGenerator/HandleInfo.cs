@@ -39,9 +39,11 @@ namespace IOSLib.SourceGenerator
 
         private string GetFreeCode()
         {
+            var indent = "            ";
+            var defaultreturn = "true";
             if (FreeMethod == null)
             {
-                return "true";
+                return $"{indent}return {defaultreturn};";
             }
             else
             {
@@ -49,22 +51,38 @@ namespace IOSLib.SourceGenerator
                 var returnFormat = new SymbolDisplayFormat(memberOptions: SymbolDisplayMemberOptions.IncludeContainingType);
                 var argFormat = new SymbolDisplayFormat(typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces);
                 var freeReturn = FreeMethod.ReturnType;
-                string retval = "0";
-                if (freeReturn.TypeKind == TypeKind.Enum)
-                {
-                    var field = freeReturn.GetMembers().OfType<IFieldSymbol>().FirstOrDefault(f => f.HasConstantValue && f.ConstantValue.Equals(0));
-                    if (field != null)
-                    {
-                        retval = field.ToDisplayString(returnFormat);
-                    }
-                }
                 var argType = FreeMethod.Parameters.First().Type;
                 var freeArg = "this";
-                if (argType.Equals(compilation.GetSpecialType(SpecialType.System_IntPtr),SymbolEqualityComparer.Default))
+                if (argType.Equals(compilation.GetSpecialType(SpecialType.System_IntPtr), SymbolEqualityComparer.Default))
                 {
                     freeArg = "this.handle";
                 }
-                return (FreeMethod == null ? "true" : $"({FreeMethod.ToDisplayString(methodFormat)}({freeArg}) == {retval})");
+                var methodcall = $"{FreeMethod.ToDisplayString(methodFormat)}({freeArg})";                
+                if (freeReturn.Equals(compilation.GetSpecialType(SpecialType.System_Void),SymbolEqualityComparer.Default))
+                {
+                    return $"{indent}{methodcall};\n{indent}return {defaultreturn};";
+                }
+                else
+                {
+                    string retval;
+                    if (freeReturn.Equals(compilation.GetSpecialType(SpecialType.System_Int32), SymbolEqualityComparer.Default) || freeReturn.TypeKind == TypeKind.Enum)
+                    {
+                        retval = "0";
+                        if (freeReturn.TypeKind == TypeKind.Enum)
+                        {
+                            var field = freeReturn.GetMembers().OfType<IFieldSymbol>().FirstOrDefault(f => f.HasConstantValue && f.ConstantValue.Equals(0));
+                            if (field != null)
+                            {
+                                retval = field.ToDisplayString(returnFormat);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        throw new NotSupportedException();
+                    }
+                    return $"{indent}return ({methodcall} == {retval});";
+                }
             }
         }
 
@@ -109,7 +127,7 @@ namespace {0}
         [ReliabilityContractAttribute(Consistency.WillNotCorruptState, Cer.MayFail)]
         protected override bool ReleaseHandle()
         {{
-            return {2};
+{2}
         }}
 
         /// <inheritdoc/>

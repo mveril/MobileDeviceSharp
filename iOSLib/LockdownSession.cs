@@ -1,5 +1,6 @@
 ﻿using IOSLib.Native;
-using PlistSharp;
+using IOSLib.PropertyList;
+using IOSLib.PropertyList.Native;
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -94,12 +95,12 @@ namespace IOSLib
 
         public PlistNode GetValue(string? domain,string key)
         {
-            var ex = lockdownd_get_value(Handle, domain, key, out var nodet).GetException();
+            var ex = lockdownd_get_value(Handle, domain, key, out var plistHandle).GetException();
             if (ex != null)
             {
                 throw ex;
             }
-            return PlistNode.FromPlist(nodet);
+            return PlistNode.From(plistHandle);
         }
 
         public PlistNode GetValue(string value)
@@ -109,10 +110,10 @@ namespace IOSLib
 
         public LockdownError TryGetValue(string? domain, string key, out PlistNode? node)
         {
-            var err = lockdownd_get_value(Handle, domain, key, out var nodet);
+            var err = lockdownd_get_value(Handle, domain, key, out var plistHandle);
             if (err == LockdownError.Success)
             {
-                node = PlistNode.FromPlist(nodet);
+                node = PlistNode.From(plistHandle);
             }
             else
             {
@@ -128,8 +129,8 @@ namespace IOSLib
 
         public PlistNode GetValues(string? domain,bool Elevate = true)
         {
-            lockdownd_get_value(Handle, domain, null, out var nodet);
-            return PlistNode.FromPlist(nodet);
+            lockdownd_get_value(Handle, domain, null, out var plistHandle);
+            return PlistNode.From(plistHandle);
         }
 
         public PlistNode GetValues()
@@ -139,8 +140,8 @@ namespace IOSLib
 
         public LockdownError TryGetValues(string? domain, out PlistNode node)
         {
-            var err = lockdownd_get_value(Handle, domain, null, out var nodet);
-            node = PlistNode.FromPlist(nodet);
+            var err = lockdownd_get_value(Handle, domain, null, out var plistHandle);
+            node = PlistNode.From(plistHandle);
             return err;
         }
 
@@ -149,15 +150,15 @@ namespace IOSLib
             return TryGetValues(null, out node);
         }
 
-        //public void SetValue(string? domain, string key, out PlistNode node)
-        //{
-        //    lockdownd_set_value(Handle, domain, key, out node);
-        //}
+        public void SetValue(string? domain, string key, PlistNode node)
+        {
+            lockdownd_set_value(Handle, domain, key, node.Handle);
+        }
 
-        //public void SetValue(string value,PlistNode node)
-        //{
-        //    SetValue(null, value, node);
-        //}
+        public void SetValue(string value,PlistNode node)
+        {
+            SetValue(null, value, node);
+        }
 
         public LockdownServiceDescriptorHandle StartService(string serviceID)
         {

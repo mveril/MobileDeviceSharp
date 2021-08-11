@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using IOSLib.CompilerServices;
-using PlistSharp;
 using System.Runtime.InteropServices;
+using IOSLib.PropertyList;
+using IOSLib.PropertyList.Native;
 
 namespace IOSLib.Native
 {
@@ -117,7 +118,7 @@ namespace IOSLib.Native
         /// LOCKDOWN_E_SUCCESS on success, LOCKDOWN_E_INVALID_ARG when client is NULL
         /// </returns>
         [DllImport(Lockdown.LibraryName, EntryPoint = "lockdownd_get_value", CallingConvention = CallingConvention.Cdecl)]
-        public static extern LockdownError lockdownd_get_value(LockdownClientHandle client, [MarshalAsAttribute(UnmanagedType.LPStr)] string? domain, [MarshalAsAttribute(UnmanagedType.LPStr)] string? key, out plist_t value);
+        public static extern LockdownError lockdownd_get_value(LockdownClientHandle client, [MarshalAsAttribute(UnmanagedType.LPStr)] string? domain, [MarshalAsAttribute(UnmanagedType.LPStr)] string? key, out PlistHandle value);
 
         /// <summary>
         /// Sets a preferences value using a plist and optional by domain and/or key name.
@@ -139,7 +140,7 @@ namespace IOSLib.Native
         /// value is NULL
         /// </returns>
         [DllImport(Lockdown.LibraryName, EntryPoint = "lockdownd_set_value", CallingConvention = CallingConvention.Cdecl)]
-        public static extern LockdownError lockdownd_set_value(LockdownClientHandle client, [MarshalAsAttribute(UnmanagedType.LPStr)] string? domain, [MarshalAsAttribute(UnmanagedType.LPStr)] string key, plist_t value);
+        public static extern LockdownError lockdownd_set_value(LockdownClientHandle client, [MarshalAsAttribute(UnmanagedType.LPStr)] string? domain, [MarshalAsAttribute(UnmanagedType.LPStr)] string key, PlistHandle value);
 
         /// <summary>
         /// Removes a preference node by domain and/or key name.

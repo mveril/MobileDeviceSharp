@@ -1,5 +1,5 @@
 ﻿using IOSLib.Native;
-using PlistSharp;
+using IOSLib.PropertyList.Native;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -169,15 +169,15 @@ namespace IOSLib.DiagnosticsRelay.Native
         /// request
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(DiagnosticsRelay.LibraryName, EntryPoint = "diagnostics_relay_request_diagnostics", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern DiagnosticsRelayError diagnostics_relay_request_diagnostics(DiagnosticsRelayClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string type, out plist_t diagnostics);
+        public static extern DiagnosticsRelayError diagnostics_relay_request_diagnostics(DiagnosticsRelayClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string type, out PlistHandle diagnostics);
 
         [System.Runtime.InteropServices.DllImportAttribute(DiagnosticsRelay.LibraryName, EntryPoint = "diagnostics_relay_query_mobilegestalt", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern DiagnosticsRelayError diagnostics_relay_query_mobilegestalt(DiagnosticsRelayClientHandle client, plist_t keys, out plist_t result);
+        public static extern DiagnosticsRelayError diagnostics_relay_query_mobilegestalt(DiagnosticsRelayClientHandle client, PlistHandle keys, out PlistHandle result);
 
         [System.Runtime.InteropServices.DllImportAttribute(DiagnosticsRelay.LibraryName, EntryPoint = "diagnostics_relay_query_ioregistry_entry", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern DiagnosticsRelayError diagnostics_relay_query_ioregistry_entry(DiagnosticsRelayClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string entryName, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string entryClass, out plist_t result);
+        public static extern DiagnosticsRelayError diagnostics_relay_query_ioregistry_entry(DiagnosticsRelayClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string entryName, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string entryClass, out PlistHandle result);
 
         [System.Runtime.InteropServices.DllImportAttribute(DiagnosticsRelay.LibraryName, EntryPoint = "diagnostics_relay_query_ioregistry_plane", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern DiagnosticsRelayError diagnostics_relay_query_ioregistry_plane(DiagnosticsRelayClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string plane, out plist_t result);
+        public static extern DiagnosticsRelayError diagnostics_relay_query_ioregistry_plane(DiagnosticsRelayClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string plane, out PlistHandle result);
     }
 }

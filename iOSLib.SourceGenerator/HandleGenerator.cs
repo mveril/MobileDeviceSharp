@@ -28,14 +28,21 @@ namespace IOSLib.SourceGenerator
                 .OfType<MethodDeclarationSyntax>();
             foreach (var method in allMethods)
             {
-                var info = TryGetHandleInfo(compilation, method);
-                if (info != null)
+                try
                 {
-                    var source = info.BuildSource();
-                    if (source != null)
+                    var info = TryGetHandleInfo(compilation, method);
+                    if (info != null)
                     {
-                        info.AddTo(context);
+                        var source = info.BuildSource();
+                        if (source != null)
+                        {
+                            info.AddTo(context);
+                        }
                     }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.ToString());
                 }
             }
 

@@ -4,8 +4,8 @@ using System.Globalization;
 using TimeZoneConverter;
 #endif
 using System.Net.NetworkInformation;
-using PlistSharp;
 using IOSLib.Native;
+using IOSLib.PropertyList;
 using static IOSLib.Native.IDevice;
 using System.Collections.Generic;
 using System.Linq;
@@ -285,12 +285,11 @@ namespace IOSLib
                 using var pValue = (PlistBoolean)lockdown.GetValue("com.apple.mobile.wireless_lockdown", "EnableWifiConnections");
                 return pValue.Value;
             }
-            //set
-            //{
-            //    using var lockdown = new LockdownSession(this, IsPaired);
-            //    using var pValue = (PlistBoolean)lockdown.SetValue("com.apple.mobile.wireless_lockdown", "EnableWifiConnections",new PlistBoolean(value));
-            //    return pValue.Value;
-            //}
+            set
+            {
+                using var lockdown = new LockdownSession(this, IsPaired);
+                lockdown.SetValue("com.apple.mobile.wireless_lockdown", "EnableWifiConnections",new PlistBoolean(value));
+            }
         }
 
         public string PhoneNumber
