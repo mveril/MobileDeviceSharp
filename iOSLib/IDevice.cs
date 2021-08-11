@@ -9,6 +9,7 @@ using IOSLib.PropertyList;
 using static IOSLib.Native.IDevice;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace IOSLib
 {
@@ -379,10 +380,21 @@ namespace IOSLib
                         strTZ = timeZoneNode.Value;
                     }
                 }
-#if NET6_0_OR_GREATER
-                return TimeZoneInfo.FindSystemTimeZoneById(strTZ);
+#if !NET6_0_OR_GREATER
+#if NET5_0
+                if (OperatingSystem.IsWindows())
 #else
-                return TZConvert.GetTimeZoneInfo(strTZ);
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+#endif
+                {
+                    return TZConvert.GetTimeZoneInfo(strTZ);
+                }
+                else
+                {
+#endif
+                    return TimeZoneInfo.FindSystemTimeZoneById(strTZ);
+#if !NET6_0_OR_GREATER
+                }
 #endif
             }
         }
