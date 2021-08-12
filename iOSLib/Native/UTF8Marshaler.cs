@@ -11,7 +11,7 @@ namespace IOSLib.Native
     {
         static Lazy<UTF8Marshaler> static_instance = new Lazy<UTF8Marshaler>();
 
-        public unsafe IntPtr MarshalManagedToNative(object managedObj)
+        public unsafe IntPtr MarshalManagedToNative(string managedObj)
         {
             if (!(managedObj is string))
                 throw new MarshalDirectiveException(
@@ -35,7 +35,7 @@ namespace IOSLib.Native
             return ptr;
         }
 
-        public object MarshalNativeToManaged(IntPtr pNativeData)
+        public string MarshalNativeToManaged(IntPtr pNativeData)
         {
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP1_1_OR_GREATER
             return Marshal.PtrToStringUTF8(pNativeData)!;
@@ -64,7 +64,7 @@ namespace IOSLib.Native
             Marshal.FreeHGlobal(pNativeData);
         }
 
-        public void CleanUpManagedData(object managedObj)
+        void ICustomMarshaler.CleanUpManagedData(object managedObj)
         {
         }
 
@@ -81,6 +81,16 @@ namespace IOSLib.Native
         public static ICustomMarshaler GetInstance(string cookie)
         {
             return static_instance.Value;
+        }
+
+        IntPtr ICustomMarshaler.MarshalManagedToNative(object ManagedObj)
+        {
+            return MarshalManagedToNative((string)ManagedObj);
+        }
+
+        object ICustomMarshaler.MarshalNativeToManaged(IntPtr pNativeData)
+        {
+            return MarshalNativeToManaged(pNativeData);
         }
     }
 }
