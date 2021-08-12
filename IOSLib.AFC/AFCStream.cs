@@ -121,7 +121,7 @@ namespace IOSLib.AFC
         public override void Write(byte[] buffer, int offset, int count)
         {
             uint bytesWritten = 0;
-            var targetSpan = new Span<byte>(buffer, offset, count);
+            var targetSpan = new ReadOnlySpan<byte>(buffer, offset, count);
             Exception ex;
             unsafe
             {

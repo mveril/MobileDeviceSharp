@@ -23,12 +23,12 @@ namespace IOSLib.PropertyList
             return plist_new_data(value, (uint)value.Length);
         }
 
-        public PlistData(Span<byte> value) : base(Create(value))
+        public PlistData(ReadOnlySpan<byte> value) : base(Create(value))
         {
 
         }
 
-        private unsafe static PlistHandle Create(Span<byte> value)
+        private unsafe static PlistHandle Create(ReadOnlySpan<byte> value)
         {
             fixed(byte* ptr = value)
             {
