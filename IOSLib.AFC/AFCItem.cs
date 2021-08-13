@@ -59,7 +59,17 @@ namespace IOSLib.AFC
 
         public void Delete()
         {
-            Session.Delete(Path);
+            var ex = afc_remove_path(Session.Handle, Path).GetException();
+            if (ex != null)
+                throw ex;
+        }
+
+        public AFCItem MakeLink(string path, AFCLinkType linkType)
+        {
+            var ex = afc_make_link(Session.Handle, linkType, Path, path).GetException();
+            if (ex != null)
+                throw ex;
+            return Session.Root.GetItem(path);
         }
 
         public bool Exists => GetFileInfo().Count > 0 && IsItemTypeSupported(ItemType);
@@ -84,7 +94,9 @@ namespace IOSLib.AFC
 
         public void MoveTo(string to)
         {
-            Session.Move(this.Path, to);
+            var ex = afc_rename_path(Session.Handle, Path, to).GetException();
+            if (ex != null)
+                throw ex;
             Path = to;
         }
         public void MakeLink(AFCLinkType linkType, string linkPath)
