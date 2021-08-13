@@ -47,40 +47,5 @@ namespace IOSLib.AFC
                 return new ReadOnlyDictionary<string, string>(new Dictionary<string,string>());
             }
         }
-
-
-        public void MakeLink(string target, string link, AFCLinkType linkType)
-        {
-            var ex = afc_make_link(Handle, linkType, target, link).GetException();
-            if (ex != null)
-                throw ex;
-        }
-        public void Move(string path, string to)
-        {
-            var ex = afc_rename_path(Handle, path, to).GetException();
-            if (ex != null)
-                throw ex;
-        }
-
-        public void Delete(string path)
-        {
-            var ex = afc_remove_path(Handle, path).GetException();
-            if (ex != null)
-                throw ex;
-        }
-
-        public void Delete(string path, bool recursive)
-        {
-            if (recursive)
-            {
-                var ex = afc_remove_path_and_contents(Handle, path).GetException();
-                if (ex != null)
-                    throw ex;
-            }
-            else
-            {
-                Delete(path);
-            }
-        }
     }
 }
