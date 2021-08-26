@@ -78,8 +78,29 @@ namespace IOSLib.AFC
 
         }
 
+#if !NET6_0_OR_GREATER
+        private static void ValidateBufferArguments(byte[] buffer, int offset, int count)
+        {
+            if (buffer is null)
+            {
+                throw new ArgumentNullException(nameof(buffer));
+            }
+
+            if (offset < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(offset));
+            }
+
+            if ((uint)count > buffer.Length - offset)
+            {
+                throw new ArgumentOutOfRangeException(nameof(count));
+            }
+        }
+#endif
+
         public override int Read(byte[] buffer, int offset, int count)
         {
+            ValidateBufferArguments(buffer, offset, count);
             uint byteread = 0;
             Exception ex;
             var resultSpan = new Span<byte>(buffer, offset, count);
@@ -120,6 +141,7 @@ namespace IOSLib.AFC
 
         public override void Write(byte[] buffer, int offset, int count)
         {
+            ValidateBufferArguments(buffer, offset, count);
             uint bytesWritten = 0;
             var targetSpan = new ReadOnlySpan<byte>(buffer, offset, count);
             Exception ex;
