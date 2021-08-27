@@ -4,7 +4,7 @@ using System.Text;
 
 namespace IOSLib.Native
 {
-    struct NotificationProxyEvents
+    public struct NotificationProxyEvents
     {
 
         /// Event Can be send
