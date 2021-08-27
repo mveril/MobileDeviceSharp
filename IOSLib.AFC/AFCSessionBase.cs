@@ -9,12 +9,16 @@ namespace IOSLib.AFC
 {
     public abstract class AFCSessionBase : ServiceSessionBase<AFCClientHandle,AFCError>
     {
-        protected AFCSessionBase(IDevice device, string serviceID) : base(device, serviceID, true, new ClientNewCallback<AFCClientHandle, AFCError>(afc_client_new))
+        private static readonly StartServiceCallback<AFCClientHandle, AFCError> startCallback = afc_client_start_service;
+
+        private static readonly ClientNewCallback<AFCClientHandle, AFCError> clientNewCallback = afc_client_new;
+
+        protected AFCSessionBase(IDevice device, string serviceID) : base(device, serviceID, true, clientNewCallback)
         {
 
         }
 
-        protected AFCSessionBase(IDevice device) : base(device, new StartServiceCallback<AFCClientHandle, AFCError>(afc_client_start_service))
+        protected AFCSessionBase(IDevice device) : base(device, startCallback)
         {
 
         }

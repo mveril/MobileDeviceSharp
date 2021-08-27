@@ -10,12 +10,17 @@ namespace IOSLib
     public abstract class NotificationProxySessionBase : ServiceSessionBase<NotificationProxyClientHandle,NotificationProxyError>
     {
         public event NotificationProxyEventHandler? NotificationProxyEvent;
+
+        private static readonly StartServiceCallback<NotificationProxyClientHandle, NotificationProxyError> startCallback = np_client_start_service;
+
+        private static readonly ClientNewCallback<NotificationProxyClientHandle, NotificationProxyError> clientNewCallback = np_client_new ;
+
         public NotificationProxySessionBase(IDevice device, string ServiceID, bool withEscrowBag) : base(device, ServiceID, withEscrowBag,new ClientNewCallback<NotificationProxyClientHandle, NotificationProxyError>(np_client_new))
         {
             
         }
 
-        public NotificationProxySessionBase(IDevice device) : base(device, new StartServiceCallback<NotificationProxyClientHandle, NotificationProxyError>(np_client_start_service))
+        public NotificationProxySessionBase(IDevice device) : base(device, startCallback)
         {
 
         }

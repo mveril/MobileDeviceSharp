@@ -9,12 +9,17 @@ namespace IOSLib.DiagnosticsRelay
 {
     public abstract class DiagnosticsRelaySessionBase : ServiceSessionBase<DiagnosticsRelayClientHandle,DiagnosticsRelayError> 
     {
-        public DiagnosticsRelaySessionBase(IDevice device) : base(device, new StartServiceCallback<DiagnosticsRelayClientHandle, DiagnosticsRelayError>(diagnostics_relay_client_start_service))
+
+        private static readonly StartServiceCallback<DiagnosticsRelayClientHandle, DiagnosticsRelayError> startCallback = diagnostics_relay_client_start_service;
+        
+        private static readonly ClientNewCallback<DiagnosticsRelayClientHandle, DiagnosticsRelayError> clientNewCallback = diagnostics_relay_client_new;
+
+        public DiagnosticsRelaySessionBase(IDevice device) : base(device, startCallback)
         {
 
         }
 
-        public DiagnosticsRelaySessionBase(IDevice device, string serviceID, bool withEscrowBag) : base(device,serviceID,withEscrowBag,new ClientNewCallback<DiagnosticsRelayClientHandle, DiagnosticsRelayError>(diagnostics_relay_client_new))
+        public DiagnosticsRelaySessionBase(IDevice device, string serviceID, bool withEscrowBag) : base(device,serviceID,withEscrowBag,clientNewCallback)
         {
 
         }
