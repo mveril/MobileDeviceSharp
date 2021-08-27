@@ -11,7 +11,7 @@ namespace IOSLib.AFC
         public AFCSessionBase Session { get;  }
 
         private readonly string path;
-        private ulong fHandle = 0;
+        private ulong fHandle;
 
         public AFCStream(AFCSessionBase session, string path, FileMode mode, FileAccess access, AFCLockOp fileLock)
         {
@@ -28,7 +28,7 @@ namespace IOSLib.AFC
                 (FileAccess.ReadWrite, FileMode.Append) => AFCFileMode.FopenRdappend, //a+
                 _ => throw new InvalidOperationException(),
             };
-            var ex = afc_file_open(Session.Handle, path, AFCMode, ref fHandle).GetException();
+            var ex = afc_file_open(Session.Handle, path, AFCMode, out fHandle).GetException();
             if (ex != null)
                 throw ex;
             Lock(fileLock);
@@ -60,11 +60,10 @@ namespace IOSLib.AFC
         {
             get
             {
-                ulong var = 0;
-                var ex = afc_file_tell(Session.Handle, fHandle, ref var).GetException();
+                var ex = afc_file_tell(Session.Handle, fHandle, out var position).GetException();
                 if (ex != null)
                     throw ex;
-                return (long)var;
+                return (long)position;
             }
 
             set
@@ -108,7 +107,7 @@ namespace IOSLib.AFC
             {
                 fixed (byte* bptr = resultSpan)
                 {
-                    ex = afc_file_read(Session.Handle, fHandle, bptr, (uint)count, ref byteread).GetException();
+                    ex = afc_file_read(Session.Handle, fHandle, bptr, (uint)count, out byteread).GetException();
                 }
             }
             if (ex != null)
@@ -149,7 +148,7 @@ namespace IOSLib.AFC
             {
                 fixed(byte* bptr = targetSpan)
                 {
-                    ex = afc_file_write(Session.Handle, fHandle, bptr, (uint)count, ref bytesWritten).GetException();
+                    ex = afc_file_write(Session.Handle, fHandle, bptr, (uint)count, out _).GetException();
                 }
             }
             if (ex != null)

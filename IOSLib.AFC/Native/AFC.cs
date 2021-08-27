@@ -145,7 +145,7 @@ namespace IOSLib.AFC.Native
         /// AFC_E_SUCCESS on success or an AFC_E_* error value.
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(AFC.LibraryName, EntryPoint = "afc_file_open", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern AFCError afc_file_open(AFCClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string filename, AFCFileMode fileMode, ref ulong handle);
+        public static extern AFCError afc_file_open(AFCClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string filename, AFCFileMode fileMode, out ulong handle);
 
         /// <summary>
         /// Closes a file on the device.
@@ -199,7 +199,7 @@ namespace IOSLib.AFC.Native
         /// AFC_E_SUCCESS on success or an AFC_E_* error value.
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(AFC.LibraryName, EntryPoint = "afc_file_read", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern AFCError afc_file_read(AFCClientHandle client, ulong handle, byte[] data, uint length, ref uint bytesRead);
+        public static extern AFCError afc_file_read(AFCClientHandle client, ulong handle, byte[] data, uint length, out uint bytesRead);
 
         /// <summary>
         /// Attempts to the read the given number of bytes from the given file.
@@ -223,7 +223,7 @@ namespace IOSLib.AFC.Native
         /// AFC_E_SUCCESS on success or an AFC_E_* error value.
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(AFC.LibraryName, EntryPoint = "afc_file_read", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static unsafe extern AFCError afc_file_read(AFCClientHandle client, ulong handle, byte* data, uint length, ref uint bytesRead);
+        public static unsafe extern AFCError afc_file_read(AFCClientHandle client, ulong handle, byte* data, uint length, out uint bytesRead);
 
         /// <summary>
         /// Writes a given number of bytes to a file.
@@ -247,7 +247,7 @@ namespace IOSLib.AFC.Native
         /// AFC_E_SUCCESS on success or an AFC_E_* error value.
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(AFC.LibraryName, EntryPoint = "afc_file_write", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern AFCError afc_file_write(AFCClientHandle client, ulong handle, byte[] data, uint length, ref uint bytesWritten);
+        public static extern AFCError afc_file_write(AFCClientHandle client, ulong handle, byte[] data, uint length, out uint bytesWritten);
 
         /// <summary>
         /// Writes a given number of bytes to a file.
@@ -271,7 +271,7 @@ namespace IOSLib.AFC.Native
         /// AFC_E_SUCCESS on success or an AFC_E_* error value.
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(AFC.LibraryName, EntryPoint = "afc_file_write", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static unsafe extern AFCError afc_file_write(AFCClientHandle client, ulong handle, byte* data, uint length, ref uint bytesWritten);
+        public static unsafe extern AFCError afc_file_write(AFCClientHandle client, ulong handle, byte* data, uint length, out uint bytesWritten);
 
         /// <summary>
         /// Seeks to a given position of a pre-opened file on the device.
@@ -310,7 +310,7 @@ namespace IOSLib.AFC.Native
         /// AFC_E_SUCCESS on success or an AFC_E_* error value.
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(AFC.LibraryName, EntryPoint = "afc_file_tell", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern AFCError afc_file_tell(AFCClientHandle client, ulong handle, ref ulong position);
+        public static extern AFCError afc_file_tell(AFCClientHandle client, ulong handle, out ulong position);
 
         /// <summary>
         /// Sets the size of a file on the device.
