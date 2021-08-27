@@ -10,10 +10,11 @@ using static IOSLib.Native.IDevice;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using IOSLib.CompilerServices;
 
 namespace IOSLib
 {
-    public class IDevice : IOSHandleWrapperBase<IDeviceHandle>
+    public partial class IDevice : IOSHandleWrapperBase<IDeviceHandle>
     {
         public IDevice(string udid) : base(GetHandle(udid))
         {
@@ -58,6 +59,8 @@ namespace IOSLib
         }
 
 
+        [NotificationProxyEventName(NotificationProxyEvents.Recevable.NP_DEVICE_NAME_CHANGED)]
+        public event EventHandler NameChanged;
         public string Name
         {
             get
@@ -235,6 +238,8 @@ namespace IOSLib
             }
         }
 
+        [NotificationProxyEventName(NotificationProxyEvents.Recevable.NP_LANGUAGE_CHANGED)]
+        public event EventHandler LanguageChanged;
         public CultureInfo Language
         {
             get
@@ -293,6 +298,9 @@ namespace IOSLib
             }
         }
 
+        
+        [NotificationProxyEventName(NotificationProxyEvents.Recevable.NP_PHONE_NUMBER_CHANGED)]
+        public event EventHandler PhoneNumberChanged;
         public string PhoneNumber
         {
             get
@@ -366,12 +374,12 @@ namespace IOSLib
             }
         }
 
-
+        [NotificationProxyEventName(NotificationProxyEvents.Recevable.NP_TIMEZONE_CHANGED)]
+        public event EventHandler TimeZoneChanged;
         public TimeZoneInfo TimeZone
         {
             get
             {
-
                 string strTZ = string.Empty;
                 using (var lockdown = new LockdownSession(this,IsPaired))
                 {
@@ -475,6 +483,23 @@ namespace IOSLib
             }
         }
 
-        public bool IsPaired { get; internal set; }
+        private bool _IsPared;
+        public bool IsPaired { 
+            get
+            {
+                return _IsPared;
+            }
+            internal set {
+                _IsPared = value;
+                if (value)
+                {
+                    InitEventWatching(this);
+                }
+                else
+                {
+                    CloseEventWatching();
+                }
+            }
+        }
     }
 }
