@@ -15,8 +15,9 @@ namespace IOSLib
         private readonly int _Major; // Do not rename (binary serialization)
         private readonly char _Minor; // Do not rename (binary serialization)
         private readonly int _Build; // Do not rename (binary serialization)
+        private readonly char? _Revision; // Do not rename (binary serialization)
 
-        public BuildNumber(int major, char minor, int build)
+        public BuildNumber(int major, char minor, int build, char? revision)
         {
             if (major < 0)
                 throw new ArgumentOutOfRangeException(nameof(major));
@@ -27,9 +28,18 @@ namespace IOSLib
             if (build < 0)
                 throw new ArgumentOutOfRangeException(nameof(build));
 
+            if (revision.HasValue && !char.IsLower(revision.Value))
+                throw new ArgumentOutOfRangeException(nameof(revision));
+
             _Major = major;
             _Minor = minor;
             _Build = build;
+            _Revision = revision;
+        }
+
+        public BuildNumber(int major, char minor, int build) : this(major, minor, build, null)
+        {
+
         }
 
         public BuildNumber(string buildNumber)
@@ -38,6 +48,7 @@ namespace IOSLib
             _Major = b.Major;
             _Minor = b.Minor;
             _Build = b.Build;
+            _Revision = b._Revision;
         }
 
         private BuildNumber(BuildNumber buildNumber)
@@ -47,6 +58,7 @@ namespace IOSLib
             _Major = buildNumber._Major;
             _Minor = buildNumber._Minor;
             _Build = buildNumber._Build;
+            _Revision = buildNumber._Revision;
         }
 
         public int CompareTo(object? buildNumber)
@@ -72,6 +84,7 @@ namespace IOSLib
                 _Major != value._Major ? (_Major > value._Major ? 1 : -1) :
                 _Minor != value._Minor ? (_Minor > value._Minor ? 1 : -1) :
                 _Build != value._Build ? (_Build > value._Build ? 1 : -1) :
+                _Revision != value._Revision ? (_Revision.GetValueOrDefault('\0') > value._Revision.GetValueOrDefault('\0') ? 1 : -1) :
                 0;
         }
 
@@ -86,7 +99,8 @@ namespace IOSLib
                 (!(obj is null) &&
                 _Major == obj._Major &&
                 _Minor == obj._Minor &&
-                _Build == obj._Build);
+                _Build == obj._Build &&
+                _Revision == obj._Revision);
         }
 
         public override int GetHashCode()
@@ -98,12 +112,16 @@ namespace IOSLib
 
             accumulator |= (_Major & 0x0000000F) << 28;
             accumulator |= (_Minor - 'A' & 0x000000FF) << 20;
-            accumulator |= (_Build & 0x000000FF);
+            accumulator |= (_Build & 0x000000FF << 12);
+            if (_Revision != null)
+            {
+                accumulator |= (_Revision.Value - 'a' + 1 & 0x00000FFF);
+            }
 
             return accumulator;
         }
 
-        public override string ToString() => $"{Major}{Minor}{Build}";
+        public override string ToString() => $"{Major}{Minor}{Build}{(_Revision.HasValue ? _Revision : String.Empty)} ";
 
         public object Clone()
         {
@@ -116,6 +134,8 @@ namespace IOSLib
         public char Minor => _Minor;
 
         public int Build => _Build;
+
+        public char? Revision => _Revision;
 
         public static BuildNumber Parse(string input)
         {
@@ -140,7 +160,7 @@ namespace IOSLib
 
         private static BuildNumber? ParseBuildNumber(string input, bool throwOnFailure)
         {
-            var m= Regex.Match(input, @"^(\d+)([A-Z])(\d+)$");
+            var m= Regex.Match(input, @"^(\d+)([A-Z])(\d+)([a-z])?$");
             if (!m.Success)
             {
                 if (throwOnFailure)
@@ -149,7 +169,7 @@ namespace IOSLib
                 }
                 return null;
             }
-            return new BuildNumber(int.Parse(m.Groups[1].Value), m.Groups[2].Value[0], int.Parse(m.Groups[3].Value));
+            return new BuildNumber(int.Parse(m.Groups[1].Value), m.Groups[2].Value[0], int.Parse(m.Groups[3].Value), m.Groups[4].Success ? m.Groups[4].Value[0] : null);
         }
 
         // Force inline as the true/false ternary takes it above ALWAYS_INLINE size even though the asm ends up smaller
