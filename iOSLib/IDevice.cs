@@ -415,21 +415,21 @@ namespace IOSLib
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
 #endif
                 {
-                    strTZ = TZConvert.WindowsToIana(value.StandardName);
+                    strTZ = TZConvert.WindowsToIana(value.Id);
                 }
                 else
                 {
 
-                    strTZ = value.StandardName;
+                    strTZ = value.Id;
                 }
 #else
                 if (value.HasIanaId)
                 {
-                    strTZ = value.StandardName;
+                    strTZ = value.Id;
                 }
                 else
                 {
-                    if (TimeZoneInfo.TryConvertWindowsIdToIanaId(value.StandardName, out var strTZt))
+                    if (TimeZoneInfo.TryConvertWindowsIdToIanaId(value.Id, out var strTZt))
                     {
                         strTZ = strTZt!;
                     }
