@@ -490,14 +490,17 @@ namespace IOSLib
                 return _IsPared;
             }
             internal set {
-                _IsPared = value;
-                if (value)
+                if (_IsPared != value)
                 {
-                    InitEventWatching(this);
-                }
-                else
-                {
-                    CloseEventWatching();
+                    _IsPared = value;
+                    if (value)
+                    {
+                        InitEventWatching(this);
+                    }
+                    else
+                    {
+                        CloseEventWatching();
+                    }
                 }
             }
         }
