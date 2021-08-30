@@ -13,6 +13,10 @@ namespace IOSLib.PropertyList
 
         }
 
+        public PlistKey(string key) : base(plist_new_string(key))
+        {
+
+        }
 
         public override string Value
         {
