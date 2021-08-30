@@ -4,6 +4,8 @@ using System.Text;
 using static IOSLib.DiagnosticsRelay.Native.DiagnosticsRelay;
 using IOSLib.Native;
 using IOSLib.DiagnosticsRelay.Native;
+using IOSLib.PropertyList.Native;
+using IOSLib.PropertyList;
 
 namespace IOSLib.DiagnosticsRelay
 {
@@ -24,6 +26,11 @@ namespace IOSLib.DiagnosticsRelay
 
         }
 
+        public void Sleep()
+        {
+            diagnostics_relay_sleep(Handle);
+        }
+
         public void Reboot(DiagnosticsRelayAction action)
         {
             var ex = diagnostics_relay_restart(Handle, action).GetException();
@@ -40,6 +47,50 @@ namespace IOSLib.DiagnosticsRelay
             {
                 throw ex;
             }
+        }
+        public PlistNode RequestDiagnostics(string type)
+        {
+            var ex = diagnostics_relay_request_diagnostics(Handle, type, out var plistHandle).GetException();
+            if (ex != null)
+            {
+                throw ex;
+            }
+            return PlistNode.From(plistHandle);
+        }
+
+        public PlistNode QueryMobilegestalt(string key)
+        {
+            Exception ex;
+            PlistHandle result;
+            using (var keynode = new PlistKey(key))
+            {
+                ex = diagnostics_relay_query_mobilegestalt(Handle, keynode.Handle, out result).GetException();
+            }
+            if (ex != null)
+            {
+                throw ex;
+            }
+            return PlistNode.From(result);
+        }
+
+        public PlistNode QueryIoregistryEntry(string entryName,string entryClass)
+        {
+            var ex = diagnostics_relay_query_ioregistry_entry(Handle, entryName, entryClass, out var result).GetException();
+            if (ex != null)
+            {
+                throw ex;
+            }
+            return PlistNode.From(result);
+        }
+
+        public PlistNode QueryIoregistryPlane(string plane)
+        {
+            var ex = diagnostics_relay_query_ioregistry_plane(Handle, plane, out var result).GetException();
+            if (ex != null)
+            {
+                throw ex;
+            }
+            return PlistNode.From(result);
         }
     }
 }
