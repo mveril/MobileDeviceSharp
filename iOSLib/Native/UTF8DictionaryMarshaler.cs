@@ -8,54 +8,54 @@ using System.Linq;
 
 namespace IOSLib.Native
 {
-    public class UTF8DictionaryMarshaler : ICustomMarshaler
+    public class UTF8DictionaryMarshaler : CustomMashaler<IReadOnlyDictionary<string,string>>
     {
         static Lazy<UTF8DictionaryMarshaler> static_instance = new Lazy<UTF8DictionaryMarshaler>();
-        public void CleanUpManagedData(object ManagedObj)
+        public override void CleanUpManagedData(IReadOnlyDictionary<string, string> ManagedObj)
         {
             
         }
 
-        public virtual void CleanUpNativeData(IntPtr pNativeData)
+        public override void CleanUpNativeData(IntPtr pNativeData)
         {
             UTF8ArrayMarshaler.GetInstance().CleanUpNativeData(pNativeData);
         }
 
-        public int GetNativeDataSize()
+        public override int GetNativeDataSize()
         {
             return UTF8ArrayMarshaler.GetInstance().GetNativeDataSize();
         }
 
-        public IntPtr MarshalManagedToNative(object ManagedObj)
+        public override IntPtr MarshalManagedToNative(IReadOnlyDictionary<string,string> ManagedObj)
         {
             var stringMarshaler = UTF8Marshaler.GetInstance();
-            var dic = ManagedObj as IDictionary<string, string>;
 
-            if (dic == null)
+            if (ManagedObj == null)
             {
                 return IntPtr.Zero;
             }
-            var array = dic.SelectMany((kv) => new[] { kv.Key, kv.Value });
+
+            var array = ManagedObj.SelectMany((kv) => new[] { kv.Key, kv.Value }).ToArray();
             return UTF8ArrayMarshaler.GetInstance().MarshalManagedToNative(array);
         }
 
-        public object MarshalNativeToManaged(IntPtr pNativeData)
+        public override IReadOnlyDictionary<string,string> MarshalNativeToManaged(IntPtr pNativeData)
         {
-            var array = (string[])UTF8ArrayMarshaler.GetInstance().MarshalNativeToManaged(pNativeData);
+            var array = UTF8ArrayMarshaler.GetInstance().MarshalNativeToManaged(pNativeData);
             var dic = new Dictionary<string, string>();
-                var enumerator = array.GetEnumerator();
-                while (enumerator.MoveNext())
+            var enumerator = array.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                string key, value;
+                key = (string)enumerator.Current;
+                if (!enumerator.MoveNext())
                 {
-                    string key, value;
-                    key = (string)enumerator.Current;
-                    if (!enumerator.MoveNext())
-                    {
-                        break;
-                    }                    
-                    value = (string)enumerator.Current;
-                    dic.Add(key, value);
-                }
-                return new ReadOnlyDictionary<string, string>(dic);
+                    break;
+                }                    
+                value = (string)enumerator.Current;
+                dic.Add(key, value);
+            }
+             return new ReadOnlyDictionary<string, string>(dic);
         }
 
         public static ICustomMarshaler GetInstance(string cookie)

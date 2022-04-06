@@ -7,32 +7,31 @@ using System.Runtime.InteropServices;
 using System.Text;
 namespace IOSLib.Native
 {
-    public class UTF8ArrayMarshaler : ICustomMarshaler
+    public class UTF8ArrayMarshaler : CustomMashaler<string[]>
     {
         static Lazy<UTF8ArrayMarshaler> static_instance = new Lazy<UTF8ArrayMarshaler>();
 
-        public virtual unsafe IntPtr MarshalManagedToNative(object managedObj)
+        public override unsafe IntPtr MarshalManagedToNative(string[] managedObj)
         {
             var stringMarshaler = UTF8Marshaler.GetInstance();
-            var values = managedObj as string[];
 
-            if (values == null)
+            if (managedObj == null)
             {
                 return IntPtr.Zero;
             }
-            IntPtr pUnmanagedData = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(IntPtr)) * values.Length + 1);
-            var UnmanagedData = new Span<IntPtr>(pUnmanagedData.ToPointer(), values.Length + 1);
+            IntPtr pUnmanagedData = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(IntPtr)) * managedObj.Length + 1);
+            var UnmanagedData = new Span<IntPtr>(pUnmanagedData.ToPointer(), managedObj.Length + 1);
 
-            for (int i = 0; i < values.Length; i++)
+            for (int i = 0; i < managedObj.Length; i++)
             {
-                UnmanagedData[i] = stringMarshaler.MarshalManagedToNative(values[i]);
+                UnmanagedData[i] = stringMarshaler.MarshalManagedToNative(managedObj[i]);
             }
 
-            UnmanagedData[values.Length] = IntPtr.Zero;
+            UnmanagedData[managedObj.Length] = IntPtr.Zero;
             return pUnmanagedData;
         }
 
-        public virtual unsafe object MarshalNativeToManaged(IntPtr pNativeData)
+        public override unsafe string[] MarshalNativeToManaged(IntPtr pNativeData)
         {
             var list = new List<string>();
             var stringMarshaler = UTF8Marshaler.GetInstance();
@@ -54,7 +53,7 @@ namespace IOSLib.Native
             }
             return Array.Empty<string>();
         }
-        public virtual unsafe void CleanUpNativeData(IntPtr pNativeData)
+        public override unsafe void CleanUpNativeData(IntPtr pNativeData)
         {
             var stringMarshaler = UTF8Marshaler.GetInstance();
             if (pNativeData != IntPtr.Zero)
@@ -77,22 +76,22 @@ namespace IOSLib.Native
             Marshal.FreeHGlobal(pNativeData);
         }
 
-        public virtual void CleanUpManagedData(object managedObj)
+        public override void CleanUpManagedData(string[] managedObj)
         {
 
         }
 
-        public int GetNativeDataSize()
+        public override int GetNativeDataSize()
         {
             return -1;
         }
 
-        public static ICustomMarshaler GetInstance(string cookie)
+        public static CustomMashaler<string[]> GetInstance(string cookie)
         {
             return static_instance.Value;
         }
 
-        public static ICustomMarshaler GetInstance()
+        public static CustomMashaler<string[]> GetInstance()
         {
             return static_instance.Value;
         }

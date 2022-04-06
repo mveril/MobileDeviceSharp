@@ -7,27 +7,23 @@ using System.Text;
 
 namespace IOSLib.Native
 {
-    public class UTF8Marshaler : ICustomMarshaler
+    public class UTF8Marshaler : CustomMashaler<string>
     {
         static Lazy<UTF8Marshaler> static_instance = new Lazy<UTF8Marshaler>();
 
-        public unsafe IntPtr MarshalManagedToNative(string managedObj)
+        public override unsafe IntPtr MarshalManagedToNative(string managedObj)
         {
-            if (!(managedObj is string))
-                throw new MarshalDirectiveException(
-                       "UTF8Marshaler must be used on a string.");
-            string str = (managedObj as string)!;
-            // not null terminated
-            int nb = Encoding.UTF8.GetMaxByteCount(str.Length);
+            // managedObj is not null terminated
+            int nb = Encoding.UTF8.GetMaxByteCount(managedObj.Length);
 
             IntPtr ptr = Marshal.AllocHGlobal(nb + 1);
 
             int nbWritten;
             byte* pbMem = (byte*)ptr;
 
-            fixed (char* firstChar = str)
+            fixed (char* firstChar = managedObj)
             {
-                nbWritten = Encoding.UTF8.GetBytes(firstChar, str.Length, pbMem, nb);
+                nbWritten = Encoding.UTF8.GetBytes(firstChar, managedObj.Length, pbMem, nb);
             }
 
             pbMem[nbWritten] = 0;
@@ -35,7 +31,7 @@ namespace IOSLib.Native
             return ptr;
         }
 
-        public string MarshalNativeToManaged(IntPtr pNativeData)
+        public override string MarshalNativeToManaged(IntPtr pNativeData)
         {
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP1_1_OR_GREATER
             return Marshal.PtrToStringUTF8(pNativeData)!;
@@ -59,16 +55,16 @@ namespace IOSLib.Native
 #endif
         }
 
-        public void CleanUpNativeData(IntPtr pNativeData)
+        public override void CleanUpNativeData(IntPtr pNativeData)
         {
             Marshal.FreeHGlobal(pNativeData);
         }
 
-        void ICustomMarshaler.CleanUpManagedData(object managedObj)
+        public override void CleanUpManagedData(string managedObj)
         {
         }
 
-        public int GetNativeDataSize()
+        public override int GetNativeDataSize()
         {
             return -1;
         }
@@ -81,16 +77,6 @@ namespace IOSLib.Native
         public static ICustomMarshaler GetInstance(string cookie)
         {
             return static_instance.Value;
-        }
-
-        IntPtr ICustomMarshaler.MarshalManagedToNative(object ManagedObj)
-        {
-            return MarshalManagedToNative((string)ManagedObj);
-        }
-
-        object ICustomMarshaler.MarshalNativeToManaged(IntPtr pNativeData)
-        {
-            return MarshalNativeToManaged(pNativeData);
         }
     }
 }
