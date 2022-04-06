@@ -100,14 +100,35 @@ namespace IOSLib.AFC
         public override int Read(byte[] buffer, int offset, int count)
         {
             ValidateBufferArguments(buffer, offset, count);
-            uint byteread = 0;
+            if (offset==0)
+            {
+                return ReadInternal(buffer, count);
+            }
+            else
+            {
+                var targetSpan= new Span<byte>(buffer, offset, count);
+                return ReadInternal(targetSpan);
+            }
+        }
+
+        private int ReadInternal(byte[] buffer, int count)
+        {
             Exception ex;
-            var resultSpan = new Span<byte>(buffer, offset, count);
+            ex = afc_file_read(Session.Handle, fHandle, buffer, (uint)count, out var byteread).GetException();
+            if (ex != null)
+                throw ex;
+            return (int)byteread;
+        }
+
+        private int ReadInternal(Span<byte> buffer)
+        {
+            Exception ex;
+            uint byteread;
             unsafe
             {
-                fixed (byte* bptr = resultSpan)
+                fixed (byte* bptr = buffer)
                 {
-                    ex = afc_file_read(Session.Handle, fHandle, bptr, (uint)count, out byteread).GetException();
+                    ex = afc_file_read(Session.Handle, fHandle, bptr, (uint)buffer.Length, out byteread).GetException();
                 }
             }
             if (ex != null)
@@ -141,14 +162,32 @@ namespace IOSLib.AFC
         public override void Write(byte[] buffer, int offset, int count)
         {
             ValidateBufferArguments(buffer, offset, count);
-            uint bytesWritten = 0;
-            var targetSpan = new ReadOnlySpan<byte>(buffer, offset, count);
+            if (offset==0)
+            {
+                WriteInternal(buffer, count);
+            }
+            else
+            {
+                var targetSpan = new ReadOnlySpan<byte>(buffer, offset, count);
+                WriteInternal(targetSpan);
+            }
+        }
+
+        public void WriteInternal(byte[] buffer, int count)
+        {
+            Exception ex = afc_file_write(Session.Handle, fHandle, buffer, (uint)count, out _).GetException();
+            if (ex != null)
+                throw ex;
+        }
+
+        public void WriteInternal(ReadOnlySpan<byte> buffer)
+        {
             Exception ex;
             unsafe
             {
-                fixed(byte* bptr = targetSpan)
+                fixed (byte* bptr = buffer)
                 {
-                    ex = afc_file_write(Session.Handle, fHandle, bptr, (uint)count, out _).GetException();
+                    ex = afc_file_write(Session.Handle, fHandle, bptr, (uint)buffer.Length, out _).GetException();
                 }
             }
             if (ex != null)
