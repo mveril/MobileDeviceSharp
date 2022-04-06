@@ -12,7 +12,7 @@ using System;
 namespace IOSLib.SourceGenerator
 {
     [Generator]
-    public class HandleGenerator : ISourceGenerator
+    internal class HandleGenerator : ISourceGenerator
     {
         const string AttrNamespace = "IOSLib.CompilerServices";
         const string AttrName = "GenerateHandleAttribute";
