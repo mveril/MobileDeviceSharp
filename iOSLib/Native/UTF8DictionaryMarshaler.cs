@@ -41,18 +41,18 @@ namespace IOSLib.Native
 
         public override IReadOnlyDictionary<string,string> MarshalNativeToManaged(IntPtr pNativeData)
         {
-            var array = UTF8ArrayMarshaler.GetInstance().MarshalNativeToManaged(pNativeData);
+            var array = UTF8ArrayMarshaler.GetInstance().MarshalNativeToManaged(pNativeData).AsEnumerable();
             var dic = new Dictionary<string, string>();
             var enumerator = array.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 string key, value;
-                key = (string)enumerator.Current;
+                key = enumerator.Current;
                 if (!enumerator.MoveNext())
                 {
                     break;
                 }                    
-                value = (string)enumerator.Current;
+                value = enumerator.Current;
                 dic.Add(key, value);
             }
              return new ReadOnlyDictionary<string, string>(dic);
