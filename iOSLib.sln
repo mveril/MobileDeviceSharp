@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31320.298
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32328.378
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IOSLib", "iOSLib\IOSLib.csproj", "{47688532-DD3F-465C-814D-0E95AF5A657B}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IOSLib.CompilerServices", "IOSLib.CompilerServices\IOSLib.CompilerServices.csproj", "{92C660ED-B570-49AE-AB0F-AC11BA017AF2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IOSLib.AFC", "IOSLib.AFC\IOSLib.AFC.csproj", "{602FF178-A5E4-4757-B829-02EFF8483ACE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Documentation", "Documentation\Documentation.csproj", "{D5AA8E6E-ADC6-457A-B8A7-3E5B61338D45}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{602FF178-A5E4-4757-B829-02EFF8483ACE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{602FF178-A5E4-4757-B829-02EFF8483ACE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{602FF178-A5E4-4757-B829-02EFF8483ACE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5AA8E6E-ADC6-457A-B8A7-3E5B61338D45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5AA8E6E-ADC6-457A-B8A7-3E5B61338D45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5AA8E6E-ADC6-457A-B8A7-3E5B61338D45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5AA8E6E-ADC6-457A-B8A7-3E5B61338D45}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
