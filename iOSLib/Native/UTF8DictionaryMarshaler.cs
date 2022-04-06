@@ -58,12 +58,12 @@ namespace IOSLib.Native
              return new ReadOnlyDictionary<string, string>(dic);
         }
 
-        public static ICustomMarshaler GetInstance(string cookie)
+        public static UTF8DictionaryMarshaler GetInstance(string cookie)
         {
             return static_instance.Value;
         }
 
-        public static ICustomMarshaler GetInstance()
+        public static UTF8DictionaryMarshaler GetInstance()
         {
             return static_instance.Value;
         }

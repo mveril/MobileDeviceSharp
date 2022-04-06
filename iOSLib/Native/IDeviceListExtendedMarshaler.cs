@@ -15,12 +15,12 @@ namespace IOSLib.Native
             IDevice.idevice_device_list_extended_free(pNativeData);
         }
 
-        public static ICustomMarshaler GetInstance()
+        public static new IDeviceListExtendedMarshaler GetInstance()
         {
             return static_instance.Value;
         }
 
-        public static new ICustomMarshaler GetInstance(string cookie)
+        public static new IDeviceListExtendedMarshaler GetInstance(string cookie)
         {
             return static_instance.Value;
         }
