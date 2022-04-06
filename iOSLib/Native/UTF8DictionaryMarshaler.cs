@@ -18,7 +18,7 @@ namespace IOSLib.Native
 
         public virtual void CleanUpNativeData(IntPtr pNativeData)
         {
-            UTF8ArrayMarshaler.GetInstance().CleanUpManagedData(pNativeData);
+            UTF8ArrayMarshaler.GetInstance().CleanUpNativeData(pNativeData);
         }
 
         public int GetNativeDataSize()
