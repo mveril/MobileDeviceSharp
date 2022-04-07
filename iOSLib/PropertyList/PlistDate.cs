@@ -6,13 +6,24 @@ using static IOSLib.PropertyList.Native.Plist;
 
 namespace IOSLib.PropertyList
 {
+    /// <summary>
+    /// Represent a plist node that contain <see cref="DateTime"/> value.
+    /// </summary>
     public sealed partial class PlistDate : PlistValueNode<DateTime>
     {
+
+        /// <summary>
+        /// Create <see cref="DateTime"/> plist node from an existing handle.
+        /// </summary>
+        /// <param name="handle">The <see cref="PlistHandle"/> of type <see cref="PlistType.Date"/> to wrap.</param>
         public PlistDate(PlistHandle handle) : base(handle)
         {
 
         }
-
+        /// <summary>
+        /// Initialize a new Plist docs with the specified <see cref="DateTime"/>.
+        /// </summary>
+        /// <param name="date">The <see cref="DateTime"/> value.</param>
         public PlistDate(DateTime date) : this((DateValue)date)
         {
 
@@ -26,6 +37,7 @@ namespace IOSLib.PropertyList
 
         private static readonly DateTime baseDateTime = new DateTime(2001, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
+        /// <inheritdoc/>
         public override DateTime Value
         {
             get

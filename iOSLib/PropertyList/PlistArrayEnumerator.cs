@@ -9,12 +9,13 @@ namespace IOSLib.PropertyList
 {
     public partial class PlistArray
     {
-
+        /// <inheritdoc/>
         private class Enumerator : IEnumerator<PlistNode>
         {
             private readonly PlistArray _root;
             private PlistArrayIterHandle _iter_handle;
 
+            /// <inheritdoc/>
             public Enumerator(PlistArray root)
             {
                 _root = root;
@@ -22,15 +23,18 @@ namespace IOSLib.PropertyList
             }
 
             private PlistNode current;
+            /// <inheritdoc/>
             public PlistNode Current => current;
 
             object IEnumerator.Current => current;
 
+            /// <inheritdoc/>
             public void Dispose()
             {
                 _iter_handle.Dispose();
             }
 
+            /// <inheritdoc/>
             public bool MoveNext()
             {
                 plist_array_next_item(_root.Handle, _iter_handle, out var currentHandle);
@@ -39,6 +43,7 @@ namespace IOSLib.PropertyList
                 return success;
             }
 
+            /// <inheritdoc/>
             public void Reset()
             {
                 plist_array_new_iter(_root.Handle, out _iter_handle);

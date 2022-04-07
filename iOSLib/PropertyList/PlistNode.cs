@@ -6,11 +6,17 @@ using static IOSLib.PropertyList.Native.Plist;
 
 namespace IOSLib.PropertyList
 {
+    /// <summary>
+    /// Represeent a node of a propery list.
+    /// </summary>
     public abstract class PlistNode : IOSLib.Native.IOSHandleWrapperBase<PlistHandle>,
         ICloneable,
         IEquatable<PlistNode>
     {
-
+        /// <summary>
+        /// Initialize a <see cref="PlistNode"/> from the current handle.
+        /// </summary>
+        /// <param name="handle"></param>
         public PlistNode(PlistHandle handle)
         {
             Handle = handle;
@@ -21,16 +27,24 @@ namespace IOSLib.PropertyList
             
         }
 
+        /// <summary>
+        /// Creates a new <see cref="PlistNode"/> that is a copy of the current instance.
+        /// </summary>
+        /// <returns>A new <see cref="PlistNode"/> that is a copy of this instance.</returns>
         public PlistNode Clone()
         {
             return From(plist_copy(Handle));
         }
 
+        /// <inheritdoc/>
         object ICloneable.Clone()
         {
             return Clone();
         }
 
+        /// <summary>
+        /// Get parent <see cref="PlistNode"/>.
+        /// </summary>
         public PlistNode Parent
         {
             get
@@ -39,7 +53,12 @@ namespace IOSLib.PropertyList
             }
         }
 
-
+        /// <summary>
+        /// Get a plist node from handle.
+        /// </summary>
+        /// <param name="plistHandle">The handle to wrap.</param>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException">Occure when the type of the PlistNode is unknow</exception>
         public static PlistNode From(PlistHandle plistHandle)
         {
             return plist_get_node_type(plistHandle) switch
@@ -58,11 +77,12 @@ namespace IOSLib.PropertyList
             };
         }
 
+        /// <inheritdoc/>
         public bool Equals(PlistNode other)
         {
             return this.Handle == other.Handle;
         }
-
+        /// <inheritdoc/>
         public override bool Equals(object obj)
         {
             if (typeof(PlistNode).IsAssignableFrom(obj.GetType()))
@@ -72,11 +92,14 @@ namespace IOSLib.PropertyList
             return base.Equals(obj);
         }
 
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             return this.Handle.GetHashCode();
         }
-
+        /// <summary>
+        /// Get the type of the current Plist node.
+        /// </summary>
         public PlistType PlistType => plist_get_node_type(Handle);
 
     }

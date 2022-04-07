@@ -5,6 +5,10 @@ using IOSLib.PropertyList.Native;
 
 namespace IOSLib.PropertyList
 {
+    /// <summary>
+    /// Represent an abstract class for Plist node wich contain value.
+    /// </summary>
+    /// <typeparam name="T">The value type</typeparam>
     public abstract class PlistValueNode<T> : PlistNode
     {
         protected PlistValueNode(PlistHandle handle) : base(handle)
@@ -17,6 +21,9 @@ namespace IOSLib.PropertyList
 
         }
 
+        /// <summary>
+        /// Get or set the value.
+        /// </summary>
         public abstract T Value { get; set; }
     }
 }

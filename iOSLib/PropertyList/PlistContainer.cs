@@ -9,6 +9,9 @@ using static IOSLib.PropertyList.Native.Plist;
 
 namespace IOSLib.PropertyList
 {
+    /// <summary>
+    /// Represent a container of PlistItem
+    /// </summary>
     public abstract class PlistContainer : PlistNode,
         ICollection,
         IEnumerable
