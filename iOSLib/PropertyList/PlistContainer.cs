@@ -10,24 +10,36 @@ using static IOSLib.PropertyList.Native.Plist;
 namespace IOSLib.PropertyList
 {
     /// <summary>
-    /// Represent a container of PlistItem
+    /// Represent a container of <see cref="PlistNode"/>.
     /// </summary>
     public abstract class PlistContainer : PlistNode,
         ICollection,
         IEnumerable
     {
+        /// <summary>
+        /// CHeck if the Plist is binary.
+        /// </summary>
         public bool IsBinary { get; private set; }
+
+        /// <inheritdoc/>
         public abstract int Count { get; }
         bool ICollection.IsSynchronized => false;
         private object _syncRoot = new object();
         object ICollection.SyncRoot => _syncRoot;
 
+        /// <summary>
+        /// Get plist container from handle
+        /// </summary>
+        /// <param name="handle"></param>
         public PlistContainer(PlistHandle handle) : base(handle)
         {
 
         }
 
-
+        /// <summary>
+        /// Get XML <see cref="string"/> from the plist.
+        /// </summary>
+        /// <returns>XML string</returns>
         public string ToXML()
         {
             plist_to_xml(Handle, out var xmlptr, out var leight);
@@ -45,6 +57,10 @@ namespace IOSLib.PropertyList
             return str;
         }
 
+        /// <summary>
+        /// Get binary plist from data.
+        /// </summary>
+        /// <returns></returns>
         public byte[] ToBin()
         {
             plist_to_bin(Handle, out IntPtr ptr, out var length);
@@ -54,6 +70,11 @@ namespace IOSLib.PropertyList
             return buffer;
         }
 
+        /// <summary>
+        /// Get plist from XML string.
+        /// </summary>
+        /// <param name="xml">XML string</param>
+        /// <returns>PlistContainer</returns>
         public static PlistContainer FromXml(string xml)
         {
             int length = Encoding.UTF8.GetByteCount(xml);
@@ -72,12 +93,22 @@ namespace IOSLib.PropertyList
             return structure;
         }
 
+        /// <summary>
+        /// Get plist data from file path.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns>The plist container</returns>
         public static PlistContainer FromFile(string path)
         {
             FileStream fileStream = new FileStream(path, FileMode.Open);
             return FromStream(fileStream);
         }
 
+        /// <summary>
+        /// Get plist data from file path.
+        /// </summary>
+        /// <param name="stream">The stream</param>
+        /// <returns>The plist container</returns>
         public static unsafe PlistContainer FromStream(Stream stream)
         {
             byte[] buffer;
