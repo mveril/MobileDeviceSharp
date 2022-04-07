@@ -17,8 +17,13 @@ namespace IOSLib.PropertyList
         /// Initialize a <see cref="PlistNode"/> from the current handle.
         /// </summary>
         /// <param name="handle"></param>
+        /// <exception cref="ArgumentException">Occure when the handle is invalid</exception>
         public PlistNode(PlistHandle handle)
         {
+            if (handle.IsInvalid)
+            {
+                throw new ArgumentException(nameof(handle));
+            }
             Handle = handle;
         }
 
@@ -33,7 +38,7 @@ namespace IOSLib.PropertyList
         /// <returns>A new <see cref="PlistNode"/> that is a copy of this instance.</returns>
         public PlistNode Clone()
         {
-            return From(plist_copy(Handle));
+            return From(plist_copy(Handle))!;
         }
 
         /// <inheritdoc/>
