@@ -26,6 +26,15 @@ namespace IOSLib.PropertyList
 
         }
 
+        /// <summary>
+        /// Create <see cref="string"/> plist node from a <see cref="ReadOnlySpan{Char}"/>.
+        /// </summary>
+        /// <param name="Value">the <see cref="string"/> value.</param>
+        public PlistString(ReadOnlySpan<char> value) : base(plist_new_string(new string(value.ToArray())
+        {
+
+        }
+
         public override string Value
         {
             get
