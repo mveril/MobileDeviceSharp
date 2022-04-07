@@ -116,7 +116,11 @@ namespace IOSLib.PropertyList
         /// <inheritdoc/>
         public void Clear()
         {
-            throw new System.NotImplementedException();
+            var keyscopy = this.Keys.ToList();
+            foreach  (string key in keyscopy)
+            {
+                Remove(key);
+            }
         }
 
         /// <inheritdoc/>
