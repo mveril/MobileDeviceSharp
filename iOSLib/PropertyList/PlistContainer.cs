@@ -28,7 +28,7 @@ namespace IOSLib.PropertyList
         object ICollection.SyncRoot => _syncRoot;
 
         /// <summary>
-        /// Get plist container from handle
+        /// Get plist container from handle.
         /// </summary>
         /// <param name="handle"></param>
         public PlistContainer(PlistHandle handle) : base(handle)
@@ -39,7 +39,7 @@ namespace IOSLib.PropertyList
         /// <summary>
         /// Get XML <see cref="string"/> from the plist.
         /// </summary>
-        /// <returns>XML string</returns>
+        /// <returns>XML <see cref="string"/></returns>
         public string ToXML()
         {
             plist_to_xml(Handle, out var xmlptr, out var leight);
@@ -60,7 +60,7 @@ namespace IOSLib.PropertyList
         /// <summary>
         /// Get binary plist from data.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Binary plist as byte array</returns>
         public byte[] ToBin()
         {
             plist_to_bin(Handle, out IntPtr ptr, out var length);
