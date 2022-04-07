@@ -45,11 +45,19 @@ namespace IOSLib.PropertyList
         /// <summary>
         /// Get parent <see cref="PlistNode"/>.
         /// </summary>
-        public PlistNode Parent
+        public PlistNode? Parent
         {
             get
             {
-                return PlistNode.From(plist_get_parent(Handle));
+                var hParent = plist_get_parent(Handle);
+                if (hParent.IsInvalid)
+                {
+                    return null;
+                }
+                else
+                {
+                    return PlistNode.From(hParent);
+                }
             }
         }
 
