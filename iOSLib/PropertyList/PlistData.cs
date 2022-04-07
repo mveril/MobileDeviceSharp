@@ -34,7 +34,7 @@ namespace IOSLib.PropertyList
             return plist_new_data(value, (uint)value.Length);
         }
         /// <summary>
-        /// /// Initialize new <see cref="PlistData"/> from a <see cref="ReadOnlySpan{Byte}"/>.
+        /// Initialize new <see cref="PlistData"/> from a <see cref="ReadOnlySpan{Byte}"/>.
         /// </summary>
         /// <param name="value">The data.</param>
         public PlistData(ReadOnlySpan<byte> value) : base(Create(value))
