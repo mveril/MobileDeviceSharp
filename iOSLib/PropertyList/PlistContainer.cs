@@ -100,7 +100,7 @@ namespace IOSLib.PropertyList
         /// <returns>The plist container</returns>
         public static PlistContainer FromFile(string path)
         {
-            FileStream fileStream = new FileStream(path, FileMode.Open);
+            using FileStream fileStream = new FileStream(path, FileMode.Open);
             return FromStream(fileStream);
         }
 
