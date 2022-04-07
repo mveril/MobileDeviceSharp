@@ -20,7 +20,7 @@ namespace IOSLib.PropertyList
         /// <summary>
         /// Create <see cref="string"/> plist node from a value.
         /// </summary>
-        /// <param name="Value">the <see cref="string"/> value.</param>
+        /// <param name="Value">The <see cref="string"/> value.</param>
         public PlistString(string value) : base(plist_new_string(value))
         {
 
@@ -29,7 +29,7 @@ namespace IOSLib.PropertyList
         /// <summary>
         /// Create <see cref="string"/> plist node from a <see cref="ReadOnlySpan{Char}"/>.
         /// </summary>
-        /// <param name="Value">the <see cref="string"/> value.</param>
+        /// <param name="Value">The <see cref="string"/> value as <see cref="ReadOnlySpan{char}"/>.</param>
         public PlistString(ReadOnlySpan<char> value) : base(plist_new_string(new string(value.ToArray())))
         {
 
