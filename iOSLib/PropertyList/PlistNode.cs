@@ -49,15 +49,7 @@ namespace IOSLib.PropertyList
         {
             get
             {
-                var hParent = plist_get_parent(Handle);
-                if (hParent.IsInvalid)
-                {
-                    return null;
-                }
-                else
-                {
-                    return PlistNode.From(hParent);
-                }
+                return PlistNode.From(plist_get_parent(Handle));
             }
         }
 
@@ -65,9 +57,8 @@ namespace IOSLib.PropertyList
         /// Get a plist node from handle.
         /// </summary>
         /// <param name="plistHandle">The handle to wrap.</param>
-        /// <returns></returns>
-        /// <exception cref="NotSupportedException">Occure when the type of the PlistNode is unknow</exception>
-        public static PlistNode From(PlistHandle plistHandle)
+        /// <returns>The plistNode</returns>
+        public static PlistNode? From(PlistHandle plistHandle)
         {
             return plist_get_node_type(plistHandle) switch
             {
@@ -81,7 +72,7 @@ namespace IOSLib.PropertyList
                 PlistType.Uid => new PlistUid(plistHandle),
                 PlistType.Date => new PlistDate(plistHandle),
                 PlistType.Data => new PlistData(plistHandle),
-                _ => throw new NotSupportedException()
+                PlistType.None => null
             };
         }
 
