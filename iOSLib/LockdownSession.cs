@@ -132,7 +132,7 @@ namespace IOSLib
             return TryGetValue(null, value, out node);
         }
 
-        public PlistNode GetValues(string? domain,bool Elevate = true)
+        public PlistNode GetValues(string? domain)
         {
             lockdownd_get_value(Handle, domain, null, out var plistHandle);
             return PlistNode.From(plistHandle);
