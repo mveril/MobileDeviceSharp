@@ -25,12 +25,21 @@ namespace iOSLib.SourceGenerator
                 .Where(d => d.IsKind(SyntaxKind.ClassDeclaration))
                 .OfType<ClassDeclarationSyntax>();
             foreach (var type in allClass)
-            {
-                var info = TryGetNPMapingInfo(compilation, type);
-                if (info != null)
+            {           
+                try
                 {
-                    info.AddTo(context);
+                    var info = TryGetNPMapingInfo(compilation, type);
+                    if (info != null)
+                    {
+                       info.AddTo(context);
+                    }
                 }
+                catch (Exception ex)
+                {
+
+                    Debug.WriteLine(ex.ToString());
+                }
+                
             }
         }
 

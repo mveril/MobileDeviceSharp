@@ -54,11 +54,19 @@ namespace IOSLib.SourceGenerator
                 {
                     foreach (var line in text.Lines)
                     {
-                        var span = line.Span;
-                        if (!span.IsEmpty)
+                        try
                         {
-                            var info = new HandleInfo(text.ToString(span));
-                            info.AddTo(context);
+                            var span = line.Span;
+                            if (!span.IsEmpty)
+                            {
+                                var info = new HandleInfo(text.ToString(span));
+                                info.AddTo(context);
+                            }   
+                        }
+                        catch (Exception ex)
+                        {
+
+                            Debug.WriteLine(ex);
                         }
                     }
                 }

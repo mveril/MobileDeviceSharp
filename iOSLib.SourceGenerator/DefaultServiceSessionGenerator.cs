@@ -22,11 +22,18 @@ namespace iOSLib.SourceGenerator
                 .OfType<ClassDeclarationSyntax>();
             foreach (var type in allClass)
             {
-                    var info = TryGetServiceBaseInfo(compilation, type);
+                try
+                {
+                                        var info = TryGetServiceBaseInfo(compilation, type);
                     if (info != null)
                     {
                         info.AddTo(context);
                     }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.ToString());
+                }
             }
         }
 
