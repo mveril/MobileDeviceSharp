@@ -4,86 +4,54 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 
 namespace IOSLib.SourceGenerator
 {
-    internal class HandleInfo : SourceCodeInfoBase
+    internal abstract class HandleInfoBase : SourceCodeInfoBase
     {
-        private Compilation? compilation;
-        internal HandleInfo(IMethodSymbol freeMethod, string handleBaseName,Compilation compilation)
+        internal HandleInfoBase(string namespaceName, string handleBaseName)
         {
-            this.compilation = compilation;
-            FreeMethod = freeMethod;
             HandleBaseName = handleBaseName;
-            namespaceName = FreeMethod.ContainingNamespace.ToDisplayString();
+            NamespaceName = namespaceName;
         }
 
-        internal HandleInfo(string fullClassName)
+        internal HandleInfoBase(string fullClassName)
         {
             var index = fullClassName.LastIndexOf(".");
-            namespaceName = fullClassName.Substring(0,index);
+            NamespaceName = fullClassName.Substring(0,index);
             HandleBaseName = fullClassName.Substring(index+1);
         }
 
-        internal IMethodSymbol? FreeMethod { get; }
-
-        private readonly string namespaceName;
+        internal string NamespaceName { get; }
 
         internal string HandleBaseName { get; }
 
         internal string HandleName => $"{HandleBaseName}Handle";
 
-        private string GetFreeCode()
+        internal protected string DefaultReturn => "true";
+
+        protected abstract string GetFreeCode();
+
+
+
+        private string GetIndentedFreeCode()
         {
             var indent = "            ";
-            var defaultreturn = "true";
-            if (FreeMethod == null)
+            var reader=new StringReader(GetFreeCode());
+            var sb=new StringBuilder();
+            while (true)
             {
-                return $"{indent}return {defaultreturn};";
+                string? line = reader.ReadLine();
+                if (line == null)
+                {
+                    break;
+                }
+                sb.AppendLine($"{indent}{line}");
             }
-            else
-            {
-                if (compilation == null)
-                    throw new NotSupportedException();
-                var methodFormat = new SymbolDisplayFormat(memberOptions: SymbolDisplayMemberOptions.IncludeContainingType);
-                var returnFormat = new SymbolDisplayFormat(memberOptions: SymbolDisplayMemberOptions.IncludeContainingType);
-                var argFormat = new SymbolDisplayFormat(typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces);
-                var freeReturn = FreeMethod.ReturnType;
-                var argType = FreeMethod.Parameters.First().Type;
-                var freeArg = "this";
-                if (argType.Equals(compilation.GetSpecialType(SpecialType.System_IntPtr), SymbolEqualityComparer.Default))
-                {
-                    freeArg = "this.handle";
-                }
-                var methodcall = $"{FreeMethod.ToDisplayString(methodFormat)}({freeArg})";                
-                if (freeReturn.Equals(compilation.GetSpecialType(SpecialType.System_Void),SymbolEqualityComparer.Default))
-                {
-                    return $"{indent}{methodcall};\n{indent}return {defaultreturn};";
-                }
-                else
-                {
-                    string retval;
-                    if (freeReturn.Equals(compilation.GetSpecialType(SpecialType.System_Int32), SymbolEqualityComparer.Default) || freeReturn.TypeKind == TypeKind.Enum)
-                    {
-                        retval = "0";
-                        if (freeReturn.TypeKind == TypeKind.Enum)
-                        {
-                            var field = freeReturn.GetMembers().OfType<IFieldSymbol>().FirstOrDefault(f => f.HasConstantValue && f.ConstantValue.Equals(0));
-                            if (field != null)
-                            {
-                                retval = field.ToDisplayString(returnFormat);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        throw new NotSupportedException();
-                    }
-                    return $"{indent}return ({methodcall} == {retval});";
-                }
-            }
+            return sb.ToString();
         }
 
         override internal IReadOnlyDictionary<string,string> BuildSource()
@@ -211,7 +179,7 @@ namespace {0}
     }}
 }}
 ";
-            var source = string.Format(sourceFormat, namespaceName, $"{HandleBaseName}Handle", GetFreeCode());
+            var source = string.Format(sourceFormat, NamespaceName, $"{HandleBaseName}Handle", GetIndentedFreeCode());
             return new ReadOnlyDictionary<string, string>(new Dictionary<string, string> { { HandleName, source } });
         }
     }
