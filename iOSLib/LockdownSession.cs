@@ -9,11 +9,19 @@ using static IOSLib.Native.Lockdown;
 
 namespace IOSLib
 {
-
+    /// <summary>
+    /// Represente a session of the <see href="https://docs.libimobiledevice.org/libimobiledevice/latest/lockdown_8h.html">Lockdown</see> service.
+    /// </summary>
     public class LockdownSession : IOSHandleWrapperBase<LockdownClientHandle>
     {
         private readonly IDevice device;
 
+        /// <summary>
+        /// Create lockdown session for the specified <paramref name="device"/>, the specified <paramref name="label"/> and with handshake or not.
+        /// </summary>
+        /// <param name="device">The target device.</param>
+        /// <param name="label">Set a label for the lockdow0</param>
+        /// <param name="WithHandShake">Create lockdown session with handshake or not.</param>
         public LockdownSession(IDevice device, string? label, bool WithHandShake) : base(GetHandle(device, label, WithHandShake))
         {
             this.device = device;
@@ -42,17 +50,28 @@ namespace IOSLib
             return handle;
         }
 
+        /// <summary>
+        /// Create lockdown session for the specified <paramref name="device"/> without handshake.
+        /// </summary>
+        /// <param name="device">The target device.</param>
         public LockdownSession(IDevice device) : this(device, null, false)
         {
 
         }
 
+        /// <summary>
+        /// Create lockdown session for the specified <paramref name="device"/> and with handshake or not.
+        /// </summary>
+        /// <param name="device">The target device.</param>
+        /// <param name="WithHandShake">Create lockdown session with handshake or not.</param>
         public LockdownSession(IDevice device, bool WithHandShake) : this(device, null, WithHandShake)
         {
 
         }
 
-
+        /// <summary>
+        /// Query the type of the lockdown.
+        /// </summary>
         public string Type
         {
             get
@@ -62,6 +81,9 @@ namespace IOSLib
             }
         }
 
+        /// <summary>
+        /// Get or set the Lockdown label
+        /// </summary>
         public string? Label
         {
             get
@@ -75,6 +97,9 @@ namespace IOSLib
             }
         }
 
+        /// <summary>
+        /// Get or set the target device name (equivalent of <see cref="IDevice.Name"/>
+        /// </summary>
         public string DeviceName
         {
             get
@@ -89,6 +114,9 @@ namespace IOSLib
             }
         }
 
+        /// <summary>
+        /// Get the device <see cref="Ulid"/>
+        /// </summary>
         public Ulid DeviceUdid
         {
             get
@@ -98,6 +126,12 @@ namespace IOSLib
             }
         }
 
+        /// <summary>
+        /// Get a value for the specified <paramref name="domain"/> and <paramref name="key"/>.
+        /// </summary>
+        /// <param name="domain">The target domain.</param>
+        /// <param name="key">The target key.</param>
+        /// <returns>A <see cref="PlistNode"/> contained the result value</returns>
         public PlistNode GetValue(string? domain,string key)
         {
             var ex = lockdownd_get_value(Handle, domain, key, out var plistHandle).GetException();
@@ -108,11 +142,23 @@ namespace IOSLib
             return PlistNode.From(plistHandle);
         }
 
-        public PlistNode GetValue(string value)
+        /// <summary>
+        /// Get a value for the default domain and <paramref name="key"/>.
+        /// </summary>
+        /// <param name="key">The target key.</param>
+        /// <returns>A <see cref="PlistNode"/> contained the result value.</returns>
+        public PlistNode GetValue(string key)
         {
-            return GetValue(null, value);
+            return GetValue(null, key);
         }
 
+        /// <summary>
+        /// Try to Get a Lockdown value and return the <see cref="LockdownError"/>.
+        /// </summary>
+        /// <param name="domain">The target domain.</param>
+        /// <param name="key">The target key.</param>
+        /// <param name="node">The result <see cref="PlistNode"/></param>
+        /// <returns>The lockdownError</returns>
         public LockdownError TryGetValue(string? domain, string key, out PlistNode? node)
         {
             var err = lockdownd_get_value(Handle, domain, key, out var plistHandle);
@@ -127,17 +173,32 @@ namespace IOSLib
             return err;
         }
 
-        public LockdownError TryGetValue(string value, out PlistNode node)
+        /// <summary>
+        /// Get a value for the default domain and <paramref name="key"/>.
+        /// </summary>
+        /// <param name="key">The target key.</param>
+        /// <param name="node">The result <see cref="PlistNode"/></param>
+        /// <returns>The lockdownError</returns>
+        public LockdownError TryGetValue(string key, out PlistNode node)
         {
-            return TryGetValue(null, value, out node);
+            return TryGetValue(null, key, out node);
         }
 
+        /// <summary>
+        /// Get all the values for the specified <paramref name="domain"/>
+        /// </summary>
+        /// <param name="domain"></param>
+        /// <returns>The <see cref="PlistNode"/> result</returns>
         public PlistNode GetValues(string? domain)
         {
             lockdownd_get_value(Handle, domain, null, out var plistHandle);
             return PlistNode.From(plistHandle);
         }
 
+        /// <summary>
+        /// Get all the values for the default domain
+        /// </summary>
+        /// <returns>The <see cref="PlistNode"/> result</returns>
         public PlistNode GetValues()
         {
             return GetValues(null);
@@ -150,21 +211,42 @@ namespace IOSLib
             return err;
         }
 
+        /// <summary>
+        /// try to get all the values for the default domain  and return the <see cref="LockdownError"/>.
+        /// </summary>
+        /// <param name="node">The <see cref="PlistNode"/> result</param>
+        /// <returns>The LockdownError</returns>
         public LockdownError TryGetValues(out PlistNode node)
         {
             return TryGetValues(null, out node);
         }
 
+        /// <summary>
+        /// set the value for the specified <paramref name="domain"/> and <paramref name="key"/>.
+        /// </summary>
+        /// <param name="domain"></param>
+        /// <param name="key"></param>
+        /// <param name="node"></param>
         public void SetValue(string? domain, string key, PlistNode node)
         {
             lockdownd_set_value(Handle, domain, key, node.Handle);
         }
 
-        public void SetValue(string value,PlistNode node)
+        /// <summary>
+        /// Set the value for the default domain and <paramref name="key"/>.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="node"></param>
+        public void SetValue(string key,PlistNode node)
         {
-            SetValue(null, value, node);
+            SetValue(null, key, node);
         }
 
+        /// <summary>
+        /// Start the Lockdown service with the specified <paramref name="serviceID"/>
+        /// </summary>
+        /// <param name="serviceID">The service identifier</param>
+        /// <returns></returns>
         public LockdownServiceDescriptorHandle StartService(string serviceID)
         {
             var ex = lockdownd_start_service(Handle, serviceID, out var serviceDescriptorHandle).GetException();
@@ -175,11 +257,17 @@ namespace IOSLib
             return serviceDescriptorHandle;
         }
 
-        public LockdownServiceDescriptorHandle StartService(string identifier,bool withEscrowBag)
+        /// <summary>
+        /// Start the Lockdown service with the specified <paramref name="serviceID"/> and with an escrow bag or not
+        /// </summary>
+        /// <param name="serviceID"></param>
+        /// <param name="withEscrowBag"></param>
+        /// <returns>THe service descriptor handle</returns>
+        public LockdownServiceDescriptorHandle StartService(string serviceID, bool withEscrowBag)
         {
             if (withEscrowBag)
             {
-                var ex = lockdownd_start_service_with_escrow_bag(Handle, identifier, out var serviceDescriptorHandle).GetException();
+                var ex = lockdownd_start_service_with_escrow_bag(Handle, serviceID, out var serviceDescriptorHandle).GetException();
                 if (ex != null)
                 {
                     throw ex;
@@ -188,14 +276,16 @@ namespace IOSLib
             }
             else
             {
-                return StartService(identifier);
+                return StartService(serviceID);
             }
         }
 
-
-
-
-
+        /// <summary>
+        /// Start a pairing operatoion with the specified <paramref name="pairRecordHandle"/>.
+        /// </summary>
+        /// <param name="pairRecordHandle">The handle of the pairRecord</param>
+        /// <param name="cancellationToken">A cancelation token used to cancel stop the operation</param>
+        /// <returns>Return true if the operation succeed</returns>
         public Task<bool> PairAsync(LockdownPairRecordHandle pairRecordHandle,CancellationToken cancellationToken)
         {
             TaskCompletionSource<bool> tsk = new TaskCompletionSource<bool>();
@@ -235,21 +325,40 @@ namespace IOSLib
             return tsk.Task;
         }
 
+        /// <summary>
+        /// Start a pairing operatoion.
+        /// </summary>
+        /// <returns>Return true if the operation succeed</returns>
         public Task<bool> PairAsync()
         {
             return PairAsync(LockdownPairRecordHandle.Zero,CancellationToken.None);
         }
 
+        /// <summary>
+        /// Start a pairing operatoion with the specified <paramref name="pairRecordHandle"/>.
+        /// </summary>
+        /// <param name="pairRecordHandle">The handle of the pairRecord.</param>
+        /// <returns>Return true if the operation succeed</returns>
         public Task<bool> PairAsync(LockdownPairRecordHandle pairRecordHandle)
         {
             return PairAsync(pairRecordHandle, CancellationToken.None);
         }
 
+        /// <summary>
+        /// Start a pairing operatoion.
+        /// </summary>
+        /// <param name="cancellationToken">A cancelation token used to cancel stop the operation</param>
+        /// <returns>Return true if the operation succeed</returns>
         public Task<bool> PairAsync(CancellationToken cancellationToken)
         {
             return PairAsync(LockdownPairRecordHandle.Zero, cancellationToken);
         }
 
+        /// <summary>
+        /// Try to unpair the device with the specified <paramref name="pairRecordHandle"/>.
+        /// </summary>
+        /// <param name="pairRecordHandle">The handle of the pairRecord.</param>
+        /// <returns></returns>
         public bool Unpair(LockdownPairRecordHandle pairRecordHandle)
         {
             var b = !lockdownd_unpair(Handle, pairRecordHandle).IsError();
@@ -257,11 +366,18 @@ namespace IOSLib
             return b;
         }
 
+        /// <summary>
+        /// Try to unpair the device with the specified <paramref name="pairRecordHandle"/>.
+        /// </summary>
+        /// <returns></returns>
         public bool Unpair()
         {
             return Unpair(LockdownPairRecordHandle.Zero);
         }
 
+        /// <summary>
+        /// Put the device into the recovery mode
+        /// </summary>
         void EnterRecovery() 
         {
             lockdownd_enter_recovery(Handle);
