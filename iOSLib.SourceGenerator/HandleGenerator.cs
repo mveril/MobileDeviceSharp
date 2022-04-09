@@ -50,13 +50,16 @@ namespace IOSLib.SourceGenerator
             if (file != null)
             {
                 var text = file.GetText();
-                foreach (var line in text.Lines)
+                if (text != null)
                 {
-                    var span = line.Span;
-                    if (!span.IsEmpty)
+                    foreach (var line in text.Lines)
                     {
-                        var info = new HandleInfo(text.ToString(span));
-                        info.AddTo(context);
+                        var span = line.Span;
+                        if (!span.IsEmpty)
+                        {
+                            var info = new HandleInfo(text.ToString(span));
+                            info.AddTo(context);
+                        }
                     }
                 }
             }
@@ -94,17 +97,21 @@ namespace {0}
         {
             //Debugger.Launch();  
         }
-        internal HandleInfo TryGetHandleInfo(Compilation compilation, MethodDeclarationSyntax methodDeclaration)
+        internal HandleInfo? TryGetHandleInfo(Compilation compilation, MethodDeclarationSyntax methodDeclaration)
         {
             var genAttrSymbol = compilation.GetTypeByMetadataName($"{AttrNamespace}.{AttrName}");
             var semanticModel = compilation.GetSemanticModel(methodDeclaration.SyntaxTree);
             var methodSymbol = semanticModel.GetDeclaredSymbol(methodDeclaration);
+            if (methodSymbol == null)
+            {
+                return null;
+            }
             var genAttr = methodSymbol.GetAttributes().FirstOrDefault((attr) => attr.AttributeClass.Equals(genAttrSymbol, SymbolEqualityComparer.Default));
             if (genAttr==null)
             {
                 return null;
             }
-            var genName = (string)genAttr.ConstructorArguments[0].Value;
+            var genName = (string)genAttr.ConstructorArguments[0].Value!;
             var info = new HandleInfo(methodSymbol, genName, compilation);
             return info;
         }

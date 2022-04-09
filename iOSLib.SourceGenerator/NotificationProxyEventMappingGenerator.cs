@@ -45,7 +45,10 @@ namespace iOSLib.SourceGenerator
             {
                 var semanticModel = compilation.GetSemanticModel(typeDeclaration.SyntaxTree);
                 var target = compilation.GetTypeByMetadataName("IOSLib.IDevice");
-                INamedTypeSymbol typeSymbol = (INamedTypeSymbol)semanticModel.GetDeclaredSymbol(typeDeclaration);
+                var declaredsymbol = semanticModel.GetDeclaredSymbol(typeDeclaration);
+                if (declaredsymbol == null)
+                    return null;
+                INamedTypeSymbol typeSymbol = (INamedTypeSymbol)declaredsymbol;
                 var npNameAttrSymbol = compilation.GetTypeByMetadataName($"{AttrNamespace}.{AttrName}");
                 if (typeSymbol.GetMembers().Any(m => m.Kind == SymbolKind.Event && ((IEventSymbol)m).GetAttributes().Any(a => a.AttributeClass.Equals(npNameAttrSymbol, SymbolEqualityComparer.Default))))
                 {

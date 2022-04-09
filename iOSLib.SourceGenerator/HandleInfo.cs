@@ -11,7 +11,7 @@ namespace IOSLib.SourceGenerator
 {
     internal class HandleInfo : SourceCodeInfoBase
     {
-        private Compilation compilation;
+        private Compilation? compilation;
         internal HandleInfo(IMethodSymbol freeMethod, string handleBaseName,Compilation compilation)
         {
             this.compilation = compilation;
@@ -27,7 +27,7 @@ namespace IOSLib.SourceGenerator
             HandleBaseName = fullClassName.Substring(index+1);
         }
 
-        internal IMethodSymbol FreeMethod { get; }
+        internal IMethodSymbol? FreeMethod { get; }
 
         private readonly string namespaceName;
 
@@ -45,6 +45,8 @@ namespace IOSLib.SourceGenerator
             }
             else
             {
+                if (compilation == null)
+                    throw new NotSupportedException();
                 var methodFormat = new SymbolDisplayFormat(memberOptions: SymbolDisplayMemberOptions.IncludeContainingType);
                 var returnFormat = new SymbolDisplayFormat(memberOptions: SymbolDisplayMemberOptions.IncludeContainingType);
                 var argFormat = new SymbolDisplayFormat(typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces);

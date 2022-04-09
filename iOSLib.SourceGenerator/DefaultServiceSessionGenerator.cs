@@ -36,13 +36,16 @@ namespace iOSLib.SourceGenerator
             if (type.Identifier.ToString().EndsWith("Base"))
             {
                 var typeSymbol = compilation.GetSemanticModel(type.SyntaxTree).GetDeclaredSymbol(type);
-                var bt = typeSymbol.BaseType;
-                var btbt = bt?.OriginalDefinition;
-                if ((btbt?.IsGenericType).GetValueOrDefault(false))
+                if (typeSymbol != null)
                 {
-                    if (btbt.OriginalDefinition.Equals(serviceSessionBase, SymbolEqualityComparer.Default))
+                    var bt = typeSymbol.BaseType;
+                    var btbt = bt?.OriginalDefinition;
+                    if ((btbt?.IsGenericType).GetValueOrDefault(false))
                     {
-                        return new DefaultServiceSessionInfo(typeSymbol);
+                        if (btbt!.OriginalDefinition.Equals(serviceSessionBase, SymbolEqualityComparer.Default))
+                        {
+                            return new DefaultServiceSessionInfo(typeSymbol);
+                        }
                     }
                 }
             }

@@ -18,7 +18,16 @@ namespace iOSLib.SourceGenerator
                 throw new ArgumentException($"{enumSymbol.Name} must be an enum");
             }
             EnumSymbol = enumSymbol;
-            baseType = compilation.GetTypeByMetadataName("IOSLib.MobileDeviceException");
+            var _baseType = compilation.GetTypeByMetadataName("IOSLib.MobileDeviceException");
+            if (_baseType == null)
+            {
+                throw new NotSupportedException("IOSLib.MobileDeviceException must exist.");
+            }
+            else
+            {
+                baseType = _baseType;
+            }
+
         }
         internal ITypeSymbol EnumSymbol { get; set; }
 

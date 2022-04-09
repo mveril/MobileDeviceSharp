@@ -33,12 +33,13 @@ namespace iOSLib.SourceGenerator
             }
         }
 
-        private ExceptionInfo TryGetExceptionInfo(Compilation compilation, EnumDeclarationSyntax @enum)
+        private ExceptionInfo? TryGetExceptionInfo(Compilation compilation, EnumDeclarationSyntax @enum)
         {
             if (@enum.Identifier.ToString().EndsWith("Error"))
             {
                 var enumSymbol = compilation.GetSemanticModel(@enum.SyntaxTree).GetDeclaredSymbol(@enum);
-                return new ExceptionInfo(compilation, enumSymbol);
+                if (enumSymbol != null)
+                  return new ExceptionInfo(compilation, enumSymbol);
             }
             return null;
         }
