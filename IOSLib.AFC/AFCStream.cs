@@ -28,15 +28,30 @@ namespace IOSLib.AFC
                 (FileAccess.ReadWrite, FileMode.Append) => AFCFileMode.FopenRdappend, //a+
                 _ => throw new InvalidOperationException(),
             };
-            var ex = afc_file_open(Session.Handle, path, AFCMode, out fHandle).GetException();
-            if (ex != null)
-                throw ex;
+            var hresult = afc_file_open(Session.Handle, path, AFCMode, out fHandle);
+            switch (hresult)
+            {
+                case AFCError.Success:
+                    break;
+                case AFCError.ObjectNotFound:
+                    throw new UnauthorizedAccessException($"File not found : {path}", hresult.GetException());
+                case AFCError.ObjectIsDir:
+                    throw new UnauthorizedAccessException($"Object is directory : {path}", hresult.GetException());
+                case AFCError.PermDenied:
+                    throw new UnauthorizedAccessException($"Permission denied : {path}", hresult.GetException());
+                case AFCError.ObjectExists:
+                    throw new IOException($"File already exist : {path}", hresult.GetException());
+                case AFCError.IoError:
+                    throw new IOException("IO error", hresult.GetException());
+                default:
+                    throw hresult.GetException();
+            }
             Lock(fileLock);
         }
 
         public void Lock(AFCLockOp operation)
         {
-            var ex = afc_file_lock(Session.Handle, fHandle, operation).GetException();
+            AFCException ex = afc_file_lock(Session.Handle, fHandle, operation).GetException();
             if (ex != null)
                 throw ex;
         }
@@ -52,6 +67,7 @@ namespace IOSLib.AFC
         {
             get
             {
+                ValidateHandle();
                 return long.Parse(Session.GetFileInfo(path)["st_size"]);
             }
         }
@@ -60,9 +76,10 @@ namespace IOSLib.AFC
         {
             get
             {
+                ValidateHandle();
                 var ex = afc_file_tell(Session.Handle, fHandle, out var position).GetException();
                 if (ex != null)
-                    throw ex;
+                    throw  new IOException("An exception occure when we triy to get the stream position",ex);
                 return (long)position;
             }
 
@@ -100,21 +117,29 @@ namespace IOSLib.AFC
         public override int Read(byte[] buffer, int offset, int count)
         {
             ValidateBufferArguments(buffer, offset, count);
-            if (offset==0)
+            try
             {
-                return ReadInternal(buffer, count);
+                if (offset == 0)
+                {
+                    return ReadInternal(buffer, count);
+                }
+                else
+                {
+                    var targetSpan = new Span<byte>(buffer, offset, count);
+                    return ReadInternal(targetSpan);
+                }
             }
-            else
+            catch (AFCException ex)
             {
-                var targetSpan= new Span<byte>(buffer, offset, count);
-                return ReadInternal(targetSpan);
+
+                throw new IOException("Read operation failed", ex);
             }
         }
 
         private int ReadInternal(byte[] buffer, int count)
         {
-            Exception ex;
-            ex = afc_file_read(Session.Handle, fHandle, buffer, (uint)count, out var byteread).GetException();
+            
+            AFCException ex = afc_file_read(Session.Handle, fHandle, buffer, (uint)count, out var byteread).GetException();
             if (ex != null)
                 throw ex;
             return (int)byteread;
@@ -122,7 +147,7 @@ namespace IOSLib.AFC
 
         private int ReadInternal(Span<byte> buffer)
         {
-            Exception ex;
+            AFCException ex;
             uint byteread;
             unsafe
             {
@@ -146,43 +171,67 @@ namespace IOSLib.AFC
                 SeekOrigin.Current => (offset += Position, 0),
                 SeekOrigin.End => (offset, 1)
             };
-            var ex = afc_file_seek(Session.Handle, fHandle, values.Item1, values.Item2).GetException();
+            ValidateHandle();
+            AFCException ex = afc_file_seek(Session.Handle, fHandle, values.Item1, values.Item2).GetException();
             if (ex != null)
-                throw ex;
+                throw new IOException("Seek operation failed.", ex);
             return Position;
         }
 
         public override void SetLength(long value)
         {
-            var ex = afc_file_truncate(Session.Handle, fHandle, (ulong)value).GetException();
-            if (ex != null)
-                throw ex;
+            if (value<0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(value));
+            }
+            else
+            { 
+                if (CanWrite)
+                {
+
+                    AFCException? ex = afc_file_truncate(Session.Handle, fHandle, (ulong)value).GetException();
+                    if (ex != null)
+                        throw new IOException("Truncate operation failed", ex);
+                }
+                else
+                {
+                    throw new NotSupportedException();
+                }
+            }
         }
 
         public override void Write(byte[] buffer, int offset, int count)
         {
             ValidateBufferArguments(buffer, offset, count);
-            if (offset==0)
+            ValidateHandle();
+            try
             {
-                WriteInternal(buffer, count);
+                if (offset == 0)
+                {
+                    WriteInternal(buffer, count);
+                }
+                else
+                {
+                    var targetSpan = new ReadOnlySpan<byte>(buffer, offset, count);
+                    WriteInternal(targetSpan);
+                }
             }
-            else
+            catch (AFCException ex)
             {
-                var targetSpan = new ReadOnlySpan<byte>(buffer, offset, count);
-                WriteInternal(targetSpan);
+                throw new IOException("Write operation failed.", ex);
             }
         }
 
         public void WriteInternal(byte[] buffer, int count)
         {
-            Exception ex = afc_file_write(Session.Handle, fHandle, buffer, (uint)count, out _).GetException();
+            AFCException ex = afc_file_write(Session.Handle, fHandle, buffer, (uint)count, out _).GetException();
             if (ex != null)
                 throw ex;
         }
 
         public void WriteInternal(ReadOnlySpan<byte> buffer)
         {
-            Exception ex;
+            AFCException ex;
             unsafe
             {
                 fixed (byte* bptr = buffer)
@@ -193,10 +242,27 @@ namespace IOSLib.AFC
             if (ex != null)
                 throw ex;
         }
+        private  void ValidateHandle()
+        {
+            if (_IsDisposed)
+            {
+                throw new ObjectDisposedException("The file is closed");
+            }
+            else if (Session.IsClosed)
+            {
+                throw new ObjectDisposedException("Session is closed");
+            }
+        }
+
+        private bool _IsDisposed = false;
+
 
         protected override void Dispose(bool disposing)
         {
+            ValidateHandle();
             afc_file_close(Session.Handle, fHandle);
+            _IsDisposed = true;
+            fHandle = 0;
             base.Dispose(disposing);
         }
     }
