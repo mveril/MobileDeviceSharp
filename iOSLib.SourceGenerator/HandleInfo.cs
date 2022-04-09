@@ -31,8 +31,6 @@ namespace IOSLib.SourceGenerator
 
         private readonly string namespaceName;
 
-        internal readonly string className;
-
         internal string HandleBaseName { get; }
 
         internal string HandleName => $"{HandleBaseName}Handle";
