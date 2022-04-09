@@ -378,7 +378,7 @@ namespace IOSLib
         /// <summary>
         /// Put the device into the recovery mode
         /// </summary>
-        void EnterRecovery() 
+        public void EnterRecovery() 
         {
             lockdownd_enter_recovery(Handle);
         }
