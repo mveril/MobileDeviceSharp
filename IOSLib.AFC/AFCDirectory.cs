@@ -87,10 +87,7 @@ namespace IOSLib.AFC
         public IEnumerable<AFCItem> GetItems()
         {
             afc_read_directory(Session.Handle, Path, out var items);
-            foreach (var item in items.Except(new string[] { ".", ".." }))
-            {
-                yield return GetItem(item);
-            }
+            return items.Except(new string[] { ".", ".." }).Select(item=> GetItem(item));
         }
 
         public void Delete(bool recursive)
