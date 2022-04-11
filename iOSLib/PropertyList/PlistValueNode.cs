@@ -25,5 +25,7 @@ namespace IOSLib.PropertyList
         /// Get or set the value.
         /// </summary>
         public abstract T Value { get; set; }
+
+        public static explicit operator T(PlistValueNode<T> node) => node.Value;
     }
 }
