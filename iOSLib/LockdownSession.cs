@@ -12,7 +12,7 @@ namespace IOSLib
     /// <summary>
     /// Represente a session of the <see href="https://docs.libimobiledevice.org/libimobiledevice/latest/lockdown_8h.html">Lockdown</see> service.
     /// </summary>
-    public class LockdownSession : IOSHandleWrapperBase<LockdownClientHandle>
+    public partial class LockdownSession : IOSHandleWrapperBase<LockdownClientHandle>
     {
         private readonly IDevice device;
 
@@ -126,20 +126,20 @@ namespace IOSLib
             }
         }
 
+        public LockdownDomain GetDomain(string? domainName) => new LockdownDomain(this, domainName);
+
+        public LockdownDomain GetDomain() => GetDomain(null);
+
         /// <summary>
         /// Get a value for the specified <paramref name="domain"/> and <paramref name="key"/>.
         /// </summary>
         /// <param name="domain">The target domain.</param>
         /// <param name="key">The target key.</param>
         /// <returns>A <see cref="PlistNode"/> contained the result value</returns>
+        [Obsolete("Use GetDomain(domain)[key];")]
         public PlistNode GetValue(string? domain,string key)
         {
-            var ex = lockdownd_get_value(Handle, domain, key, out var plistHandle).GetException();
-            if (ex != null)
-            {
-                throw ex;
-            }
-            return PlistNode.From(plistHandle);
+            return GetDomain(domain)[key];
         }
 
         /// <summary>
@@ -147,9 +147,10 @@ namespace IOSLib
         /// </summary>
         /// <param name="key">The target key.</param>
         /// <returns>A <see cref="PlistNode"/> contained the result value.</returns>
+        [Obsolete("Use GetDomain()[key];")]
         public PlistNode GetValue(string key)
         {
-            return GetValue(null, key);
+            return GetDomain()[key];
         }
 
         /// <summary>
@@ -159,18 +160,10 @@ namespace IOSLib
         /// <param name="key">The target key.</param>
         /// <param name="node">The result <see cref="PlistNode"/></param>
         /// <returns>The lockdownError</returns>
+        [Obsolete("Use GetDomain(domain).TryGetValue(key, out node);")]
         public LockdownError TryGetValue(string? domain, string key, out PlistNode? node)
         {
-            var err = lockdownd_get_value(Handle, domain, key, out var plistHandle);
-            if (err == LockdownError.Success)
-            {
-                node = PlistNode.From(plistHandle);
-            }
-            else
-            {
-                node = null;
-            }
-            return err;
+            return GetDomain(domain).TryGetValue(key, out node);
         }
 
         /// <summary>
@@ -179,9 +172,10 @@ namespace IOSLib
         /// <param name="key">The target key.</param>
         /// <param name="node">The result <see cref="PlistNode"/></param>
         /// <returns>The lockdownError</returns>
+        [Obsolete("Use GetDomain().TryGetValue(key, out node);")]
         public LockdownError TryGetValue(string key, out PlistNode node)
         {
-            return TryGetValue(null, key, out node);
+            return GetDomain().TryGetValue(key, out node);
         }
 
         /// <summary>
@@ -189,36 +183,27 @@ namespace IOSLib
         /// </summary>
         /// <param name="domain"></param>
         /// <returns>The <see cref="PlistNode"/> result</returns>
+        [Obsolete("Use GetDomain(domain).ToDictionary();")]
         public PlistNode GetValues(string? domain)
         {
-            lockdownd_get_value(Handle, domain, null, out var plistHandle);
-            return PlistNode.From(plistHandle);
+            return GetDomain(domain).ToDictionary();
         }
 
         /// <summary>
         /// Get all the values for the default domain
         /// </summary>
         /// <returns>The <see cref="PlistNode"/> result</returns>
+        [Obsolete("Use GetDomain().ToDictionary();")]
         public PlistNode GetValues()
         {
             return GetValues(null);
         }
-
-        public LockdownError TryGetValues(string? domain, out PlistNode node)
+        [Obsolete()]
+        public LockdownError TryGetValues(string? domain, out PlistNode? node)
         {
             var err = lockdownd_get_value(Handle, domain, null, out var plistHandle);
             node = PlistNode.From(plistHandle);
             return err;
-        }
-
-        /// <summary>
-        /// try to get all the values for the default domain  and return the <see cref="LockdownError"/>.
-        /// </summary>
-        /// <param name="node">The <see cref="PlistNode"/> result</param>
-        /// <returns>The LockdownError</returns>
-        public LockdownError TryGetValues(out PlistNode node)
-        {
-            return TryGetValues(null, out node);
         }
 
         /// <summary>
@@ -227,9 +212,10 @@ namespace IOSLib
         /// <param name="domain"></param>
         /// <param name="key"></param>
         /// <param name="node"></param>
+        [Obsolete("Use GetDomain(domain)[key] = node;")]
         public void SetValue(string? domain, string key, PlistNode node)
         {
-            lockdownd_set_value(Handle, domain, key, node.Handle);
+            GetDomain(domain)[key] = node;
         }
 
         /// <summary>
@@ -237,9 +223,10 @@ namespace IOSLib
         /// </summary>
         /// <param name="key"></param>
         /// <param name="node"></param>
-        public void SetValue(string key,PlistNode node)
+        [Obsolete("Use GetDomain()[key] = node;;")]
+        public void SetValue(string key, PlistNode node)
         {
-            SetValue(null, key, node);
+            GetDomain()[key] = node;
         }
 
         /// <summary>
@@ -376,11 +363,12 @@ namespace IOSLib
         }
 
         /// <summary>
-        /// Put the device into the recovery mode
+        /// Try to put the device into recovery mode
         /// </summary>
-        public void EnterRecovery() 
+        /// <returns>The error code</returns>
+        public LockdownError TryEnterRecovery() 
         {
-            lockdownd_enter_recovery(Handle);
+            return lockdownd_enter_recovery(Handle);
         }
     }
 }
