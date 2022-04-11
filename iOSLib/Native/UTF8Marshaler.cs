@@ -74,7 +74,7 @@ namespace IOSLib.Native
            return static_instance.Value;
         }
 
-        public static UTF8Marshaler GetInstance(string cookie)
+        public static ICustomMarshaler GetInstance(string cookie)
         {
             return static_instance.Value;
         }

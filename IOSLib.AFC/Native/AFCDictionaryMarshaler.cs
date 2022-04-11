@@ -21,7 +21,7 @@ namespace IOSLib.AFC.Native
             return static_instance.Value;
         }
 
-        public static new ICustomMarshaler GetInstance()
+        public static new AFCDictionaryMarshaler GetInstance()
         {
             return static_instance.Value;
         }

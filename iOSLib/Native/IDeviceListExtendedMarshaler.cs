@@ -20,7 +20,7 @@ namespace IOSLib.Native
             return static_instance.Value;
         }
 
-        public static new IDeviceListExtendedMarshaler GetInstance(string cookie)
+        public static new ICustomMarshaler GetInstance(string cookie)
         {
             return static_instance.Value;
         }
