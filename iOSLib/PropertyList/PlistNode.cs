@@ -86,6 +86,7 @@ namespace IOSLib.PropertyList
         {
             return this.Handle == other.Handle;
         }
+        
         /// <inheritdoc/>
         public override bool Equals(object obj)
         {

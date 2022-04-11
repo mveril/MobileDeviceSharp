@@ -32,10 +32,19 @@ namespace IOSLib.PropertyList
         {
             get
             {
-                return From(plist_dict_get_item(Handle, key));
+                var item = From(plist_dict_get_item(Handle, key));
+                if (item == null)
+                {
+                    throw new KeyNotFoundException($"The key {key} is not found in this dictionary");
+                }
+                return item;
             }
-            set 
+            set
             {
+                if (value == null)
+                    throw new ArgumentNullException(nameof(value));
+                if (value.Handle.IsClosed)
+                    throw new ObjectDisposedException(nameof(value));
                 plist_dict_set_item(Handle, key, value.Handle);
             }
         }
@@ -70,6 +79,8 @@ namespace IOSLib.PropertyList
         /// <inheritdoc/>
         public void Add(string key, PlistNode value)
         {
+            if (value.Handle.IsClosed)
+                throw new ObjectDisposedException(nameof(value));
             plist_dict_insert_item(Handle, key, value.Clone().Handle);
         }
 
@@ -97,14 +108,8 @@ namespace IOSLib.PropertyList
         /// <inheritdoc/>
         public bool TryGetValue(string key, out PlistNode value)
         {
-            var iHandle = plist_dict_get_item(Handle, key);
-            if (!iHandle.IsInvalid)
-            {
-                value = PlistNode.From(iHandle);
-                return true;
-            }
-            value = null!;
-            return false;
+            value = PlistNode.From(plist_dict_get_item(Handle, key));
+            return value != null;
         }
 
         /// <inheritdoc/>
