@@ -4,7 +4,7 @@ namespace IOSLib
 {
     class IDeviceException : MobileDeviceException
     {
-        IDeviceException() :base()
+        IDeviceException() : base()
         {
 
         }

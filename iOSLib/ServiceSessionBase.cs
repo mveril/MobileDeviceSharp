@@ -6,6 +6,11 @@ using System.Text;
 
 namespace IOSLib
 {
+    /// <summary>
+    /// Represent a base class for a libmobiledevice service.
+    /// </summary>
+    /// <typeparam name="THandle">The type of <see cref="IOSHandle"/>.</typeparam>
+    /// <typeparam name="TError">The type of the enum  representing the hresult of the service methods.</typeparam>
     public abstract class ServiceSessionBase<THandle, TError> : IOSHandleWrapperBase<THandle> where THandle : IOSHandle,new() where TError : Enum
     {
         protected ServiceSessionBase(IDevice device ,string serviceID, bool withEscrowBag, ClientNewCallback<THandle,TError> ClientNew) : base()
@@ -38,6 +43,9 @@ namespace IOSLib
             Handle = handle;
         }
 
+        /// <summary>
+        /// Get the undeling device.
+        /// </summary>
         public IDevice Device { get; }
     }
 }

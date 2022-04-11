@@ -14,13 +14,25 @@ using IOSLib.CompilerServices;
 
 namespace IOSLib
 {
+    /// <summary>
+    /// Represent an Apple Device
+    /// </summary>
     public partial class IDevice : IOSHandleWrapperBase<IDeviceHandle>
     {
+        /// <summary>
+        /// Initialize an apple device with his udid
+        /// </summary>
+        /// <param name="udid">The unique identifier</param>
         public IDevice(string udid) : base(GetHandle(udid))
         {
 
         }
 
+        /// <summary>
+        /// Initialize an apple device with his udid and the connection type
+        /// </summary>
+        /// <param name="udid"></param>
+        /// <param name="connectionType"></param>
         public IDevice(string udid, UsbmuxConnectionType connectionType) : base(GetHandle(udid,connectionType))
         {
 
@@ -36,6 +48,10 @@ namespace IOSLib
             return deviceHandle;
         }
 
+        /// <summary>
+        /// Get the list of all available devices
+        /// </summary>
+        /// <returns>Get the list of currently available devices</returns>
         public static IEnumerable<IDevice> List()
         {
             int count = 0;
@@ -47,6 +63,10 @@ namespace IOSLib
             return udids.Select(id => new IDevice(id));
         }
 
+        /// <summary>
+        /// An extended list of apple device with also device available via Wifi
+        /// </summary>
+        /// <returns></returns>
         public static IEnumerable<IDevice> ListExtended()
         {
             int count = 0;
@@ -58,9 +78,15 @@ namespace IOSLib
             return udids.Select(id => new IDevice(id));
         }
 
-
+        /// <summary>
+        /// Occure when the device name changed
+        /// </summary>
         [NotificationProxyEventName(NotificationProxyEvents.Recevable.NP_DEVICE_NAME_CHANGED)]
         public event EventHandler NameChanged;
+
+        /// <summary>
+        /// Get the device name
+        /// </summary>
         public string Name
         {
             get
@@ -70,6 +96,9 @@ namespace IOSLib
             }
         }
 
+        /// <summary>
+        /// Get the device Udid
+        /// </summary>
         public Ulid Udid
         {
             get
@@ -78,6 +107,9 @@ namespace IOSLib
                 return lockdown.DeviceUdid;
             }
         }
+        /// <summary>
+        /// Get the OS version information
+        /// </summary>
         public OSVersion OSVersion
         {
             get
@@ -85,6 +117,10 @@ namespace IOSLib
                 return OSVersion.FromDevice(this);
             }
         }
+
+        /// <summary>
+        /// Get battery information
+        /// </summary>
         public Battery Battery
         {
             get
@@ -92,6 +128,10 @@ namespace IOSLib
                 return new Battery(this);
             }
         }
+
+        /// <summary>
+        /// Get the device class
+        /// </summary>
         public DeviceClass DeviceClass
         {
             get
@@ -108,6 +148,9 @@ namespace IOSLib
             }
         }
 
+        /// <summary>
+        /// Get the product type
+        /// </summary>
         public string ProductType
         {
             get
@@ -117,6 +160,9 @@ namespace IOSLib
                 return pValue.Value;
             }
         }
+        /// <summary>
+        /// Get the model display name from the product type
+        /// </summary>
         public string ModelDisplayName
         {
             get
@@ -228,6 +274,10 @@ namespace IOSLib
                 };
             }
         }
+
+        /// <summary>
+        /// Get the serial number
+        /// </summary>
         public string SerialNumber
         {
             get
@@ -238,8 +288,16 @@ namespace IOSLib
             }
         }
 
+
+        /// <summary>
+        /// Occure when the language changed
+        /// </summary>
         [NotificationProxyEventName(NotificationProxyEvents.Recevable.NP_LANGUAGE_CHANGED)]
         public event EventHandler LanguageChanged;
+
+        /// <summary>
+        /// Get the <see cref="CultureInfo"/> representing the device language
+        /// </summary>
         public CultureInfo Language
         {
             get
@@ -256,6 +314,9 @@ namespace IOSLib
             }
         }
 
+        /// <summary>
+        /// Get the <see cref="RegionInfo"/> representing the device locale
+        /// </summary>
         public RegionInfo Locale
         {
             get
@@ -272,7 +333,9 @@ namespace IOSLib
             }
         }
 
-
+        /// <summary>
+        /// Get the device capacity as byte
+        /// </summary>
         public ulong Capacity
         {
             get
@@ -283,6 +346,9 @@ namespace IOSLib
             }
         }
 
+        /// <summary>
+        /// Get or set a value indicate if the wifi connection is enabled
+        /// </summary>
         public bool WifiConnectionEnabled
         {
             get
@@ -298,9 +364,15 @@ namespace IOSLib
             }
         }
 
-        
+        /// <summary>
+        /// Occure when <see cref="PhoneNumber"/> changed
+        /// </summary>
         [NotificationProxyEventName(NotificationProxyEvents.Recevable.NP_PHONE_NUMBER_CHANGED)]
         public event EventHandler PhoneNumberChanged;
+
+        /// <summary>
+        /// Get the Phone number of the device
+        /// </summary>
         public string PhoneNumber
         {
             get
@@ -311,7 +383,9 @@ namespace IOSLib
             }
         }
 
-
+        /// <summary>
+        /// Check if the device has telephony capability
+        /// </summary>
         public bool HasTelephonyCapability
         {
             get
@@ -321,6 +395,10 @@ namespace IOSLib
                 return pValue.Value;
             }
         }
+
+        /// <summary>
+        /// Get the wifi adress of the device
+        /// </summary>
         public PhysicalAddress WiFiAddress
         {
             get
@@ -337,6 +415,9 @@ namespace IOSLib
             }
         }
 
+        /// <summary>
+        /// Get the Ethernet adress of the device
+        /// </summary>
         public PhysicalAddress EthernetAddress
         {
             get
@@ -358,6 +439,9 @@ namespace IOSLib
             return PhysicalAddress.Parse(strAdress.Replace(":", string.Empty).ToUpperInvariant());
         }
 
+        /// <summary>
+        /// Get the Bluetooth adress of the device
+        /// </summary>
         public PhysicalAddress BluetoothAddress
         {
             get
@@ -374,6 +458,9 @@ namespace IOSLib
             }
         }
 
+        /// <summary>
+        /// Occure when <see cref="TimeZone"/> changed
+        /// </summary>
         [NotificationProxyEventName(NotificationProxyEvents.Recevable.NP_TIMEZONE_CHANGED)]
         public event EventHandler TimeZoneChanged;
         public TimeZoneInfo TimeZone
@@ -449,6 +536,9 @@ namespace IOSLib
             }
         }
 
+        /// <summary>
+        /// Get the Date and time of the device
+        /// </summary>
         public DateTimeOffset DeviceTime
         {
             get
@@ -473,6 +563,9 @@ namespace IOSLib
             }
         }
 
+        /// <summary>
+        /// Get the CPU architecture of the device
+        /// </summary>
         public string CPUArchitecture
         {
             get
@@ -484,6 +577,10 @@ namespace IOSLib
         }
 
         private bool _IsPared;
+
+        /// <summary>
+        /// Check if the device is pared whith the computer
+        /// </summary>
         public bool IsPaired { 
             get
             {

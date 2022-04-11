@@ -8,6 +8,9 @@ using System.Text.RegularExpressions;
 
 namespace IOSLib
 {
+    /// <summary>
+    /// Represent an OS apple build number
+    /// </summary>
     [Serializable]
     public sealed class BuildNumber : ICloneable, IComparable, IComparable<BuildNumber?>, IEquatable<BuildNumber?>
     {
@@ -17,6 +20,14 @@ namespace IOSLib
         private readonly int _Build; // Do not rename (binary serialization)
         private readonly char? _Revision; // Do not rename (binary serialization)
 
+        /// <summary>
+        /// Create an Apple OS build number.
+        /// </summary>
+        /// <param name="major">Major build number (generaly increased when the OS major version increased).<./param>
+        /// <param name="minor">Minor build number (generaly increased when the OS minor version increased).</param>
+        /// <param name="build">build build number (generaly increased when the OS minor or build version increased).</param>
+        /// <param name="revision">Generaly only present for beta release.</param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public BuildNumber(int major, char minor, int build, char? revision)
         {
             if (major < 0)
@@ -37,11 +48,21 @@ namespace IOSLib
             _Revision = revision;
         }
 
+        /// <summary>
+        /// Create an Apple OS build number.
+        /// </summary>
+        /// <param name="major">Major build number (generaly increased when the OS major version increased).</param>
+        /// <param name="minor">Minor build number (generaly increased when the OS minor version increased).</param>
+        /// <param name="build">build build number (generaly increased when the OS build version increased).</param>
         public BuildNumber(int major, char minor, int build) : this(major, minor, build, null)
         {
 
         }
 
+        /// <summary>
+        /// Create an Apple OS build from string
+        /// </summary>
+        /// <param name="buildNumber">The build number string</param>
         public BuildNumber(string buildNumber)
         {
             BuildNumber b = Parse(buildNumber);
@@ -123,20 +144,40 @@ namespace IOSLib
 
         public override string ToString() => $"{Major}{Minor}{Build}{(_Revision.HasValue ? _Revision : String.Empty)} ";
 
+        /// <inheritdoc/>
         public object Clone()
         {
             return new BuildNumber(this);
         }
 
         // Properties for setting and getting buildNumber numbers
+
+        /// <summary>
+        /// Get the major part of the build number (generaly increased when the OS major version increased.
+        /// </summary>
         public int Major => _Major;
 
+        /// <summary>
+        /// Get the minor part of the build number (generaly increased when the OS minor version increased.
+        /// </summary>
         public char Minor => _Minor;
 
+        /// <summary>
+        /// Get the build part of the build number (generaly increased when the OS minor or build version increased.
+        /// </summary>
         public int Build => _Build;
 
+        /// <summary>
+        /// Get the revision part of the build number (generaly only present for beta releasep.
+        /// </summary>
         public char? Revision => _Revision;
 
+        /// <summary>
+        /// Parse the <paramref name="input"/> <see cref="string"/> to a build number
+        /// </summary>
+        /// <param name="input">The imput string</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static BuildNumber Parse(string input)
         {
             if (input == null)
@@ -147,6 +188,15 @@ namespace IOSLib
             return ParseBuildNumber(input, throwOnFailure: true)!;
         }
 
+        /// <summary>
+        /// Tries to parse the <see cref="string"/> representation of a build number to an equivalent
+        /// <see cref="BuildNumber"/> object, and returns a value that indicates whether the conversion
+        /// succeeded.
+        /// </summary>
+        /// <param name="input">A string that contains a build number to convert.</param>
+        /// <param name="result">When this method returns, contains the <see cref="BuildNumber"/> equivalent of the values
+        /// that is contained in input, if the conversion succeeded, or null
+        /// if the conversion failed.
         public static bool TryParse(string? input, out BuildNumber? result)
         {
             if (input == null)

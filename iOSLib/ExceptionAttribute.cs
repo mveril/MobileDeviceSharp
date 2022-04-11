@@ -4,6 +4,9 @@ using System.Text;
 
 namespace IOSLib
 {
+    /// <summary>
+    /// Attribute used to generate exception from the hresult enum
+    /// </summary>
     [AttributeUsage(AttributeTargets.Enum)]
     public class ExceptionAttribute : Attribute
     {

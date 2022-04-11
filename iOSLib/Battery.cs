@@ -6,6 +6,9 @@ using IOSLib.PropertyList;
 
 namespace IOSLib
 {
+    /// <summary>
+    /// A class used to get the battery info of the device.
+    /// </summary>
     public class Battery
     {
         private readonly IDevice device;
@@ -16,6 +19,9 @@ namespace IOSLib
             device = iDevice;
         }
 
+        /// <summary>
+        /// Get the device battery state.
+        /// </summary>
         public UIDeviceBatteryState BatteryState
         {
             get
@@ -62,6 +68,9 @@ namespace IOSLib
             }
         }
 
+        /// <summary>
+        /// Get the device battery level.
+        /// </summary>
         public float BatteryLevel
         {
             get 
