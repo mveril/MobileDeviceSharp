@@ -9,7 +9,7 @@ namespace IOSLib.PropertyList
     /// Represent an abstract class for Plist node wich contain value.
     /// </summary>
     /// <typeparam name="T">The value type</typeparam>
-    public abstract class PlistValueNode<T> : PlistNode
+    public abstract class PlistValueNode<T> : PlistNode where T : notnull
     {
         protected PlistValueNode(PlistHandle handle) : base(handle)
         {
