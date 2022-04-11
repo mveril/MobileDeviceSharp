@@ -20,7 +20,7 @@ namespace IOSLib
         /// <param name="name">The event name</param>
         public NotificationProxyEventArgs(string name) : base()
         {
-            EventName = Name;
+            EventName = name;
         }
     }
 }
