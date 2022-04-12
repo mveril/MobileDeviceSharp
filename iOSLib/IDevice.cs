@@ -94,6 +94,11 @@ namespace IOSLib
                 using var lockdown = new LockdownSession(this,IsPaired);
                 return lockdown.DeviceName;
             }
+            set
+            {
+                using var lockdown = new LockdownSession(this, IsPaired);
+                lockdown.DeviceName = value;
+            }
         }
 
         /// <summary>
