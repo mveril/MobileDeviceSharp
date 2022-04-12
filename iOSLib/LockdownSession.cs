@@ -111,7 +111,7 @@ namespace IOSLib
             set
             {
                 using var PlistName = new PlistString(value);
-                SetValue("DeviceName", PlistName);
+                GetDomain()["DeviceName"] = PlistName;
             }
         }
 
