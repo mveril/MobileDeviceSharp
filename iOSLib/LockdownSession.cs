@@ -130,6 +130,20 @@ namespace IOSLib
 
         public LockdownDomain GetDomain() => GetDomain(null);
 
+        public bool TryGetDomain(string domainName, out LockdownDomain? domain)
+        {
+            try
+            {
+                domain = GetDomain(domainName);
+            }
+            catch (Exception)
+            {
+                domain = null;
+                return false;
+            }
+            return true;
+        }
+
         /// <summary>
         /// Get a value for the specified <paramref name="domain"/> and <paramref name="key"/>.
         /// </summary>
