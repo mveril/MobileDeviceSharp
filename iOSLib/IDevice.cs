@@ -82,7 +82,7 @@ namespace IOSLib
         /// Occure when the device name changed
         /// </summary>
         [NotificationProxyEventName(NotificationProxyEvents.Recevable.NP_DEVICE_NAME_CHANGED)]
-        public event EventHandler NameChanged;
+        public event EventHandler? NameChanged;
 
         /// <summary>
         /// Get the device name
@@ -293,7 +293,7 @@ namespace IOSLib
         /// Occure when the language changed
         /// </summary>
         [NotificationProxyEventName(NotificationProxyEvents.Recevable.NP_LANGUAGE_CHANGED)]
-        public event EventHandler LanguageChanged;
+        public event EventHandler? LanguageChanged;
 
         /// <summary>
         /// Get the <see cref="CultureInfo"/> representing the device language
@@ -368,7 +368,7 @@ namespace IOSLib
         /// Occure when <see cref="PhoneNumber"/> changed
         /// </summary>
         [NotificationProxyEventName(NotificationProxyEvents.Recevable.NP_PHONE_NUMBER_CHANGED)]
-        public event EventHandler PhoneNumberChanged;
+        public event EventHandler? PhoneNumberChanged;
 
         /// <summary>
         /// Get the Phone number of the device
@@ -462,7 +462,7 @@ namespace IOSLib
         /// Occure when <see cref="TimeZone"/> changed
         /// </summary>
         [NotificationProxyEventName(NotificationProxyEvents.Recevable.NP_TIMEZONE_CHANGED)]
-        public event EventHandler TimeZoneChanged;
+        public event EventHandler? TimeZoneChanged;
         public TimeZoneInfo TimeZone
         {
             get
