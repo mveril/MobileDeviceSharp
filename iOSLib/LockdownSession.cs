@@ -132,9 +132,9 @@ namespace IOSLib
         public LockdownDomain GetDomain() => GetDomain(null);
 
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_0_OR_GREATER
-        public bool TryGetDomain(string domainName, [MaybeNullWhen(false)] out LockdownDomain? domain)
+        public bool TryGetDomain(string domainName, [MaybeNullWhen(false)] out LockdownDomain domain)
 #else
-        public bool TryGetDomain(string domainName, out LockdownDomain? domain)
+        public bool TryGetDomain(string domainName, out LockdownDomain domain)
 #endif
         {
             try
