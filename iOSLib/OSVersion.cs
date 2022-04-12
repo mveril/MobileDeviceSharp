@@ -16,11 +16,12 @@ namespace IOSLib
             string sversion;
             using (var lockdown = new LockdownSession(idevice))
             {
-                using (var pValue = (PlistString)lockdown.GetValue("BuildVersion"))
+                var domain = lockdown.GetDomain();
+                using (var pValue = (PlistString)domain["BuildVersion"])
                 {
                     buildNumber = pValue.Value;
                 }
-                using (var pValue = (PlistString)lockdown.GetValue("ProductVersion"))
+                using (var pValue = (PlistString)domain["ProductVersion"])
                 {
                     sversion = pValue.Value;
                 }
@@ -39,7 +40,7 @@ namespace IOSLib
             OSDisplayName = iOS;
             switch (deviceClass)
             {
-                case DeviceClass.iPhone or IOSLib.DeviceClass.iPodTouch:
+                case DeviceClass.iPhone or DeviceClass.iPodTouch:
                     if (Version.Major < 4)
                     {
                         OSDisplayName = iPhoneOS;
