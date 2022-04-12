@@ -139,7 +139,7 @@ namespace IOSLib
                 string strClass = string.Empty;
                 using (var lockdown = new LockdownSession(this,IsPaired))
                 {
-                    using (PlistString deviceClassNode = (PlistString)lockdown.GetValue("DeviceClass"))
+                    using (PlistString deviceClassNode = (PlistString)lockdown.GetDomain()["DeviceClass"])
                     {
                         strClass = deviceClassNode.Value;
                     }
@@ -156,7 +156,7 @@ namespace IOSLib
             get
             {
                 using var lockdown = new LockdownSession(this,IsPaired);
-                using var pValue = (PlistString)lockdown.GetValue("ProductType");
+                using var pValue = (PlistString)lockdown.GetDomain()["ProductType"];
                 return pValue.Value;
             }
         }
@@ -283,7 +283,7 @@ namespace IOSLib
             get
             {
                 using var lockdown = new LockdownSession(this,IsPaired);
-                using var pValue = (PlistString)lockdown.GetValue("SerialNumber");
+                using var pValue = (PlistString)lockdown.GetDomain()["SerialNumber"];
                 return pValue.Value;
             }
         }
@@ -305,7 +305,7 @@ namespace IOSLib
                 string strLang = string.Empty;
                 using (var lockdown = new LockdownSession(this,IsPaired))
                 {
-                    using (PlistString deviceClassNode = (PlistString)lockdown.GetValue("com.apple.international", "Language"))
+                    using (PlistString deviceClassNode = (PlistString)lockdown.GetDomain("com.apple.international")["Language"])
                     {
                         strLang = deviceClassNode.Value;
                     }
@@ -324,7 +324,7 @@ namespace IOSLib
                 string strReg = string.Empty;
                 using (var lockdown = new LockdownSession(this,IsPaired))
                 {
-                    using (PlistString deviceClassNode = (PlistString)lockdown.GetValue("com.apple.international", "Locale"))
+                    using (PlistString deviceClassNode = (PlistString)lockdown.GetDomain("com.apple.international")["Locale"])
                     {
                         strReg = deviceClassNode.Value;
                     }
@@ -341,7 +341,7 @@ namespace IOSLib
             get
             {
                 using var lockdown = new LockdownSession(this,IsPaired);
-                using var pValue = (PlistInteger)lockdown.GetValue("com.apple.disk_usage", "TotalDiskCapacity");
+                using var pValue = (PlistInteger)lockdown.GetDomain("com.apple.disk_usage")["TotalDiskCapacity"];
                 return pValue.Value;
             }
         }
@@ -354,13 +354,13 @@ namespace IOSLib
             get
             {
                 using var lockdown = new LockdownSession(this, IsPaired);
-                using var pValue = (PlistBoolean)lockdown.GetValue("com.apple.mobile.wireless_lockdown", "EnableWifiConnections");
+                using var pValue = (PlistBoolean)lockdown.GetDomain("com.apple.mobile.wireless_lockdown")["EnableWifiConnections"];
                 return pValue.Value;
             }
             set
             {
                 using var lockdown = new LockdownSession(this, IsPaired);
-                lockdown.SetValue("com.apple.mobile.wireless_lockdown", "EnableWifiConnections",new PlistBoolean(value));
+                lockdown.GetDomain("com.apple.mobile.wireless_lockdown")["EnableWifiConnections"] = new PlistBoolean(value);
             }
         }
 
@@ -378,7 +378,7 @@ namespace IOSLib
             get
             {
                 using var lockdown = new LockdownSession(this,IsPaired);
-                using var pValue = (PlistString)lockdown.GetValue(nameof(PhoneNumber));
+                using var pValue = (PlistString)lockdown.GetDomain()[nameof(PhoneNumber)];
                 return pValue.Value;
             }
         }
@@ -391,7 +391,7 @@ namespace IOSLib
             get
             {
                 using var lockdown = new LockdownSession(this,IsPaired);
-                using var pValue = (PlistBoolean)lockdown.GetValue(nameof(HasTelephonyCapability));
+                using var pValue = (PlistBoolean)lockdown.GetDomain()[nameof(HasTelephonyCapability)];
                 return pValue.Value;
             }
         }
@@ -406,7 +406,7 @@ namespace IOSLib
                 string strAdress = string.Empty;
                 using (var lockdown = new LockdownSession(this,IsPaired))
                 {
-                    using (PlistString deviceClassNode = (PlistString)lockdown.GetValue(nameof(WiFiAddress)))
+                    using (PlistString deviceClassNode = (PlistString)lockdown.GetDomain()[nameof(WiFiAddress)])
                     {
                         strAdress = deviceClassNode.Value;
                     }
@@ -425,7 +425,7 @@ namespace IOSLib
                 string strAdress = string.Empty;
                 using (var lockdown = new LockdownSession(this,IsPaired))
                 {
-                    using (PlistString deviceClassNode = (PlistString)lockdown.GetValue(nameof(EthernetAddress)))
+                    using (PlistString deviceClassNode = (PlistString)lockdown.GetDomain()[nameof(EthernetAddress)])
                     {
                         strAdress = deviceClassNode.Value;
                     }
@@ -449,7 +449,7 @@ namespace IOSLib
                 string strAdress = string.Empty;
                 using (var lockdown = new LockdownSession(this,IsPaired))
                 {
-                    using (PlistString deviceClassNode = (PlistString)lockdown.GetValue(nameof(BluetoothAddress)))
+                    using (PlistString deviceClassNode = (PlistString)lockdown.GetDomain()[nameof(BluetoothAddress)])
                     {
                         strAdress = deviceClassNode.Value;
                     }
@@ -470,7 +470,7 @@ namespace IOSLib
                 string strTZ = string.Empty;
                 using (var lockdown = new LockdownSession(this,IsPaired))
                 {
-                    using (PlistString timeZoneNode = (PlistString)lockdown.GetValue(nameof(TimeZone)))
+                    using (PlistString timeZoneNode = (PlistString)lockdown.GetDomain()[nameof(TimeZone)])
                     {
                         strTZ = timeZoneNode.Value;
                     }
@@ -530,7 +530,7 @@ namespace IOSLib
                 {
                     using (PlistString timeZoneNode = new PlistString(strTZ))
                     {
-                        lockdown.SetValue(nameof(TimeZone), timeZoneNode);
+                        lockdown.GetDomain()[nameof(TimeZone)] = timeZoneNode;
                     }                    
                 }
             }
@@ -547,7 +547,7 @@ namespace IOSLib
                 using (
                     var lockdown = new LockdownSession(this,IsPaired))
                 {
-                    using (var intervalNode = (PlistReal)lockdown.GetValue("TimeIntervalSince1970"))
+                    using (var intervalNode = (PlistReal)lockdown.GetDomain()["TimeIntervalSince1970"])
                     {
                         offset = intervalNode.Value;
                     }
@@ -571,7 +571,7 @@ namespace IOSLib
             get
             {
                 using var lockdown = new LockdownSession(this,IsPaired);
-                using var pValue = (PlistString)lockdown.GetValue(nameof(CPUArchitecture));
+                using var pValue = (PlistString)lockdown.GetDomain()[nameof(CPUArchitecture)];
                 return pValue.Value;
             }
         }

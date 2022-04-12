@@ -26,17 +26,16 @@ namespace IOSLib
         {
             get
             {
-                LockdownError battryDataError = default;
-                PlistNode plist;
+                PlistDictionary dict;
                 using (var lockdown =new LockdownSession(device))
                 {
-                    battryDataError = lockdown.TryGetValues(BATTERY_LOCKDOWN_DOMAIN, out plist);
+                    var sucesss = lockdown.TryGetDomain(BATTERY_LOCKDOWN_DOMAIN, out var domain);
+                    if (!sucesss)
+                    {
+                        return UIDeviceBatteryState.Unknown;
+                    }
+                    dict = (PlistDictionary)domain;
                 }
-                if (battryDataError.IsError())
-                {
-                    return UIDeviceBatteryState.Unknown;
-                }
-                var dict = (PlistDictionary)plist!;
                 IReadOnlyDictionary<string, ValueTuple<bool, UIDeviceBatteryState>> statesDic
                 = new Dictionary<string, ValueTuple<bool, UIDeviceBatteryState>>
                 {
@@ -51,8 +50,7 @@ namespace IOSLib
                     var isValid = dict.TryGetValue(key, out var pValue);
                     if (!isValid)
                     {
-                        pValue.Dispose();
-                        plist!.Dispose();
+   
                         return UIDeviceBatteryState.Unknown;
                     }
                     else
@@ -76,7 +74,7 @@ namespace IOSLib
             get 
             {
                 using var lockdown = new LockdownSession(device);
-                using var pValue = (PlistInteger)lockdown.GetValue(BATTERY_LOCKDOWN_DOMAIN, "BatteryCurrentCapacity");
+                using var pValue = (PlistInteger)lockdown.GetDomain(BATTERY_LOCKDOWN_DOMAIN)["BatteryCurrentCapacity"];
                 return pValue.Value/100;
             }
         }
