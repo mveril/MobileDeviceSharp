@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using IOSLib.Native;
 using IOSLib.PropertyList;
@@ -59,19 +60,16 @@ namespace IOSLib
             /// </summary>
             /// <param name="key">The target key.</param>
             /// <param name="node">The result <see cref="PlistNode"/></param>
-            /// <returns>The lockdownError</returns>
-            public LockdownError TryGetValue(string key, out PlistNode? node)
+            /// <returns>True on sucess</returns>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_0_OR_GREATER
+            public bool TryGetValue(string key, [MaybeNullWhen(false)] out PlistNode node)
+#else
+            public bool TryGetValue(string key, out PlistNode node)
+#endif
             {
-                var err = lockdownd_get_value(Session.Handle, Name, key, out var plistHandle);
-                if (err == LockdownError.Success)
-                {
-                    node = PlistNode.From(plistHandle);
-                }
-                else
-                {
-                    node = null;
-                }
-                return err;
+                lockdownd_get_value(Session.Handle, Name, key, out var plistHandle);
+                node = PlistNode.From(plistHandle);
+                return node != null;
             }
 
             /// <summary>

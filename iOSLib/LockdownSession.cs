@@ -2,6 +2,7 @@
 using IOSLib.PropertyList;
 using IOSLib.PropertyList.Native;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -130,7 +131,11 @@ namespace IOSLib
 
         public LockdownDomain GetDomain() => GetDomain(null);
 
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_0_OR_GREATER
+        public bool TryGetDomain(string domainName, [MaybeNullWhen(false)] out LockdownDomain? domain)
+#else
         public bool TryGetDomain(string domainName, out LockdownDomain? domain)
+#endif
         {
             try
             {
@@ -177,7 +182,9 @@ namespace IOSLib
         [Obsolete("Use GetDomain(domain).TryGetValue(key, out node);")]
         public LockdownError TryGetValue(string? domain, string key, out PlistNode? node)
         {
-            return GetDomain(domain).TryGetValue(key, out node);
+            var hresult = lockdownd_get_value(Handle, domain, key, out var hNode);
+            node = PlistNode.From(hNode);
+            return hresult;
         }
 
         /// <summary>
@@ -187,9 +194,9 @@ namespace IOSLib
         /// <param name="node">The result <see cref="PlistNode"/></param>
         /// <returns>The lockdownError</returns>
         [Obsolete("Use GetDomain().TryGetValue(key, out node);")]
-        public LockdownError TryGetValue(string key, out PlistNode node)
+        public LockdownError TryGetValue(string key, out PlistNode? node)
         {
-            return GetDomain().TryGetValue(key, out node);
+            return TryGetValue(null,key,out node);
         }
 
         /// <summary>

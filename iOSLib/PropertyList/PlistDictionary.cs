@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System;
 
 namespace IOSLib.PropertyList
@@ -106,7 +107,11 @@ namespace IOSLib.PropertyList
         }
 
         /// <inheritdoc/>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_0_OR_GREATER
+        public bool TryGetValue(string key, [MaybeNullWhen(false)] out PlistNode value)
+#else
         public bool TryGetValue(string key, out PlistNode value)
+#endif
         {
             value = PlistNode.From(plist_dict_get_item(Handle, key));
             return value != null;

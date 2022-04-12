@@ -47,19 +47,17 @@ namespace IOSLib
                 {
                     var key = keyValue.Key;
                     var (val, state) = keyValue.Value;
-                    var isValid = dict.TryGetValue(key, out var pValue);
-                    if (!isValid)
-                    {
-   
-                        return UIDeviceBatteryState.Unknown;
-                    }
-                    else
+                    if (dict.TryGetValue(key, out var pValue))
                     {
                         var pbool = ((PlistBoolean)pValue).Value;
                         if (pbool == val)
                         {
                             return state;
                         }
+                    }
+                    else
+                    {
+                        return UIDeviceBatteryState.Unknown;
                     }
                 }
                 return UIDeviceBatteryState.Unknown;
