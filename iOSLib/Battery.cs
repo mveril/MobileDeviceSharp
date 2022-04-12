@@ -29,12 +29,14 @@ namespace IOSLib
                 PlistDictionary dict;
                 using (var lockdown =new LockdownSession(device))
                 {
-                    var sucesss = lockdown.TryGetDomain(BATTERY_LOCKDOWN_DOMAIN, out var domain);
-                    if (!sucesss)
+                    if(lockdown.TryGetDomain(BATTERY_LOCKDOWN_DOMAIN, out var domain))
+                    {
+                        dict = (PlistDictionary)domain;
+                    }
+                    else
                     {
                         return UIDeviceBatteryState.Unknown;
                     }
-                    dict = (PlistDictionary)domain;
                 }
                 IReadOnlyDictionary<string, ValueTuple<bool, UIDeviceBatteryState>> statesDic
                 = new Dictionary<string, ValueTuple<bool, UIDeviceBatteryState>>
