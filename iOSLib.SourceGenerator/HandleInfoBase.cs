@@ -68,8 +68,10 @@ namespace {0}
     /// <summary>
     /// Represents a wrapper class for {1} handles.
     /// </summary>
+#if !NETCOREAPP
     [SecurityPermission(SecurityAction.InheritanceDemand, UnmanagedCode=true)]
     [SecurityPermission(SecurityAction.Demand, UnmanagedCode=true)]
+#endif
     public partial class {1} : IOSLib.Native.IOSHandle
     {{
         /// <summary>
@@ -92,7 +94,9 @@ namespace {0}
         }}
 
         /// <inheritdoc/>
+#if !NETCOREAPP
         [ReliabilityContractAttribute(Consistency.WillNotCorruptState, Cer.MayFail)]
+#endif
         protected override bool ReleaseHandle()
         {{
 {2}
