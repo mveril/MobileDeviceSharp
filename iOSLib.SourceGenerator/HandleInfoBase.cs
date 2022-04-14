@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace IOSLib.SourceGenerator
+namespace iOSLib.SourceGenerator
 {
     internal abstract class HandleInfoBase : SourceCodeInfoBase
     {

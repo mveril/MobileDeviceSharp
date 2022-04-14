@@ -1,5 +1,4 @@
-﻿using IOSLib.SourceGenerator;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 

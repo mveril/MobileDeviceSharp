@@ -4,7 +4,7 @@ using System.Text;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 
-namespace IOSLib.SourceGenerator
+namespace iOSLib.SourceGenerator
 {
     internal class FreeableHandleInfo : HandleInfoBase
     {

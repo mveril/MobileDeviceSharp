@@ -9,43 +9,21 @@ using System.Text;
 using System.IO;
 using System;
 
-namespace IOSLib.SourceGenerator
+namespace iOSLib.SourceGenerator
 {
     [Generator]
     internal class HandleGenerator : ISourceGenerator
     {
-        const string AttrNamespace = "IOSLib.CompilerServices";
-        const string AttrName = "GenerateHandleAttribute";
-        const string PropName = "HandleName";
         public void Execute(GeneratorExecutionContext context)
         {
-            var attrSource = SourceText.From(GetAttrSorce(), Encoding.UTF8);
-            var compilation = context.Compilation;
-            IEnumerable<SyntaxNode> allNodes = compilation.SyntaxTrees.SelectMany(s => s.GetRoot().DescendantNodes());
-
-            IEnumerable<MethodDeclarationSyntax> allMethods = allNodes
-                .Where(d => d.IsKind(SyntaxKind.MethodDeclaration))
-                .OfType<MethodDeclarationSyntax>();
-            foreach (var method in allMethods)
+            
+            if (context.SyntaxContextReceiver is HandleSyntaxRecever handleSyntaxRecever)
             {
-                try
+                foreach (var info in handleSyntaxRecever.SourceCodeInfos)
                 {
-                    var info = TryGetHandleInfo(compilation, method);
-                    if (info != null)
-                    {
-                        var source = info.BuildSource();
-                        if (source != null)
-                        {
-                            info.AddTo(context);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex.ToString());
+                    context.AddSource(info);
                 }
             }
-
             var file = context.AdditionalFiles.FirstOrDefault(p => Path.GetFileName(p.Path).Equals("GenrateHandle.txt", StringComparison.OrdinalIgnoreCase));
             if (file != null)
             {
@@ -60,7 +38,10 @@ namespace IOSLib.SourceGenerator
                             if (!span.IsEmpty)
                             {
                                 var info = new NonFreeableHandleInfo(text.ToString(span));
-                                info.AddTo(context);
+                                foreach (var source in info.BuildSource())
+                                {
+                                    context.AddSource(source.Key, source.Value);
+                                }
                             }   
                         }
                         catch (Exception ex)
@@ -73,55 +54,10 @@ namespace IOSLib.SourceGenerator
             }
         }
 
-
-        private string GetAttrSorce()
-        {
-            var argName = (string)(PropName[0].ToString()).ToLower() + PropName.Substring(1);
-            return string.Format(@"using System;
-using IOSLib.;
-
-namespace {0}
-{{
-    [AttributeUsage(AttributeTargets.Method)]
-    public class {1} : Attribute
-    {{
-        public string {2} {{ get; }}
-
-        public {1}() : base()
-        {{
-
-        }}
-
-        public {1}(string {3}) : base()
-        {{
-            {2} = {3};
-        }}
-
-    }}
-}}", AttrNamespace, AttrName, PropName, argName);
-        }
-
         public void Initialize(GeneratorInitializationContext context)
         {
-            //Debugger.Launch();  
-        }
-        internal HandleInfoBase? TryGetHandleInfo(Compilation compilation, MethodDeclarationSyntax methodDeclaration)
-        {
-            var genAttrSymbol = compilation.GetTypeByMetadataName($"{AttrNamespace}.{AttrName}");
-            var semanticModel = compilation.GetSemanticModel(methodDeclaration.SyntaxTree);
-            var methodSymbol = semanticModel.GetDeclaredSymbol(methodDeclaration);
-            if (methodSymbol == null)
-            {
-                return null;
-            }
-            var genAttr = methodSymbol.GetAttributes().FirstOrDefault((attr) => attr.AttributeClass.Equals(genAttrSymbol, SymbolEqualityComparer.Default));
-            if (genAttr==null)
-            {
-                return null;
-            }
-            var genName = (string)genAttr.ConstructorArguments[0].Value!;
-            var info = new FreeableHandleInfo(methodSymbol, genName, compilation);
-            return info;
+            //Debugger.Launch();
+            context.RegisterForSyntaxNotifications(() => new HandleSyntaxRecever());
         }
     }
 }

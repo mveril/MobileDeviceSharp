@@ -12,60 +12,22 @@ namespace iOSLib.SourceGenerator
     [Generator]
     class NotificationProxyEventMappingGenerator : ISourceGenerator
     {
-        internal const string AttrNamespace = "IOSLib.CompilerServices";
-        internal const string AttrName = "NotificationProxyEventNameAttribute";
-        internal const string PropName = "Name";
 
         public void Execute(GeneratorExecutionContext context)
         {
-            var compilation = context.Compilation;
-            IEnumerable<SyntaxNode> allNodes = compilation.SyntaxTrees.SelectMany(s => s.GetRoot().DescendantNodes());
-
-            IEnumerable<ClassDeclarationSyntax> allClass = allNodes
-                .Where(d => d.IsKind(SyntaxKind.ClassDeclaration))
-                .OfType<ClassDeclarationSyntax>();
-            foreach (var type in allClass)
-            {           
-                try
+            var recever = context.SyntaxContextReceiver as NotificationProxyEventMappingSyntaxRecever;
+            if (recever != null)
+            {
+                foreach (var info in recever.SourceCodeInfos)
                 {
-                    var info = TryGetNPMapingInfo(compilation, type);
-                    if (info != null)
-                    {
-                       info.AddTo(context);
-                    }
+                    context.AddSource(info);
                 }
-                catch (Exception ex)
-                {
-
-                    Debug.WriteLine(ex.ToString());
-                }
-                
             }
         }
 
         public void Initialize(GeneratorInitializationContext context)
         {
-            //Debugger.Launch();
+            context.RegisterForSyntaxNotifications(()=> new NotificationProxyEventMappingSyntaxRecever());
         }
-
-        internal NotificationProxyEventMappingInfo? TryGetNPMapingInfo(Compilation compilation, TypeDeclarationSyntax typeDeclaration)
-        {
-            if (typeDeclaration.Kind() == Microsoft.CodeAnalysis.CSharp.SyntaxKind.ClassDeclaration)
-            {
-                var semanticModel = compilation.GetSemanticModel(typeDeclaration.SyntaxTree);
-                var target = compilation.GetTypeByMetadataName("IOSLib.IDevice");
-                var declaredsymbol = semanticModel.GetDeclaredSymbol(typeDeclaration);
-                if (declaredsymbol == null)
-                    return null;
-                INamedTypeSymbol typeSymbol = (INamedTypeSymbol)declaredsymbol;
-                var npNameAttrSymbol = compilation.GetTypeByMetadataName($"{AttrNamespace}.{AttrName}");
-                if (typeSymbol.GetMembers().Any(m => m.Kind == SymbolKind.Event && ((IEventSymbol)m).GetAttributes().Any(a => a.AttributeClass.Equals(npNameAttrSymbol, SymbolEqualityComparer.Default))))
-                {
-                    return new NotificationProxyEventMappingInfo(typeSymbol, compilation);
-                }
-            }            
-            return null;
-        }
-
     }
 }

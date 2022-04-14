@@ -1,5 +1,4 @@
-﻿using IOSLib.SourceGenerator;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -21,7 +20,7 @@ namespace iOSLib.SourceGenerator
         {
             className = Type.Name;
             classNameSpace = Type.ContainingNamespace;
-            npNameAttrSymbol = compilation.GetTypeByMetadataName($"{NotificationProxyEventMappingGenerator.AttrNamespace}.{NotificationProxyEventMappingGenerator.AttrName}");
+            npNameAttrSymbol = compilation.GetTypeByMetadataName($"{NotificationProxyEventMappingSyntaxRecever.AttrNamespace}.{NotificationProxyEventMappingSyntaxRecever.AttrName}");
             Events = Type.GetMembers().Where(s => s.Kind == SymbolKind.Event).Where(e => e.GetAttributes().Any(a => a.AttributeClass.Equals(npNameAttrSymbol, SymbolEqualityComparer.Default))).Cast<IEventSymbol>();
         }
         internal override IReadOnlyDictionary<string, string> BuildSource()

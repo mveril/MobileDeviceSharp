@@ -1,5 +1,4 @@
-﻿using IOSLib.SourceGenerator;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
@@ -17,36 +16,18 @@ namespace iOSLib.SourceGenerator
     {
         public void Execute(GeneratorExecutionContext context)
         {
-            var compilation = context.Compilation;
-            IEnumerable<SyntaxNode> allNodes = compilation.SyntaxTrees.SelectMany(s => s.GetRoot().DescendantNodes());
-
-            IEnumerable<EnumDeclarationSyntax> allEnum = allNodes
-                .Where(d => d.IsKind(SyntaxKind.EnumDeclaration))
-                .OfType<EnumDeclarationSyntax>();
-            foreach (var @enum in allEnum)
+            if (context.SyntaxContextReceiver is ExceptionSyntaxRecever recver)
             {
-                var info = TryGetExceptionInfo(compilation, @enum);
-                if (info != null)
+                foreach (var info in recver.SourceCodeInfos)
                 {
-                    info.AddTo(context);
+                    context.AddSource(info);
                 }
             }
         }
 
-        private ExceptionInfo? TryGetExceptionInfo(Compilation compilation, EnumDeclarationSyntax @enum)
-        {
-            if (@enum.Identifier.ToString().EndsWith("Error"))
-            {
-                var enumSymbol = compilation.GetSemanticModel(@enum.SyntaxTree).GetDeclaredSymbol(@enum);
-                if (enumSymbol != null)
-                  return new ExceptionInfo(compilation, enumSymbol);
-            }
-            return null;
-        }
-
         public void Initialize(GeneratorInitializationContext context)
         {
-            //Debugger.Launch(); 
+            context.RegisterForSyntaxNotifications(() => new ExceptionSyntaxRecever());
         }
 
    }

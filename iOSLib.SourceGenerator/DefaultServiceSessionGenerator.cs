@@ -14,54 +14,18 @@ namespace iOSLib.SourceGenerator
     {
         public void Execute(GeneratorExecutionContext context)
         {
-            var compilation = context.Compilation;
-            IEnumerable<SyntaxNode> allNodes = compilation.SyntaxTrees.SelectMany(s => s.GetRoot().DescendantNodes());
-
-            IEnumerable<ClassDeclarationSyntax> allClass = allNodes
-                .Where(d => d.IsKind(SyntaxKind.ClassDeclaration))
-                .OfType<ClassDeclarationSyntax>();
-            foreach (var type in allClass)
+            if (context.SyntaxContextReceiver is DefaultServiceSessionSytaxRecever recever)
             {
-                try
+                foreach (var info in recever.SourceCodeInfos)
                 {
-                                        var info = TryGetServiceBaseInfo(compilation, type);
-                    if (info != null)
-                    {
-                        info.AddTo(context);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex.ToString());
+                    context.AddSource(info);
                 }
             }
-        }
-
-        private DefaultServiceSessionInfo? TryGetServiceBaseInfo(Compilation compilation, ClassDeclarationSyntax type)
-        {
-            var serviceSessionBase = compilation.GetTypeByMetadataName("IOSLib.ServiceSessionBase`2");
-            if (type.Identifier.ToString().EndsWith("Base"))
-            {
-                var typeSymbol = compilation.GetSemanticModel(type.SyntaxTree).GetDeclaredSymbol(type);
-                if (typeSymbol != null)
-                {
-                    var bt = typeSymbol.BaseType;
-                    var btbt = bt?.OriginalDefinition;
-                    if ((btbt?.IsGenericType).GetValueOrDefault(false))
-                    {
-                        if (btbt!.OriginalDefinition.Equals(serviceSessionBase, SymbolEqualityComparer.Default))
-                        {
-                            return new DefaultServiceSessionInfo(typeSymbol);
-                        }
-                    }
-                }
-            }
-            return null;
         }
 
         public void Initialize(GeneratorInitializationContext context)
         {
-            
+            context.RegisterForSyntaxNotifications(() => new DefaultServiceSessionSytaxRecever());
         }
     }
 }

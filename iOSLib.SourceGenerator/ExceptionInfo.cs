@@ -1,5 +1,4 @@
-﻿using IOSLib.SourceGenerator;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
@@ -9,7 +8,7 @@ namespace iOSLib.SourceGenerator
 {
     internal class ExceptionInfo : SourceCodeInfoBase
     {
-        private readonly INamedTypeSymbol baseType;
+        private readonly INamedTypeSymbol _baseType;
 
         internal ExceptionInfo(Compilation compilation, ITypeSymbol enumSymbol)
         {
@@ -25,13 +24,13 @@ namespace iOSLib.SourceGenerator
             }
             else
             {
-                baseType = _baseType;
+                this._baseType = _baseType;
             }
 
         }
         internal ITypeSymbol EnumSymbol { get; set; }
 
-        override internal IReadOnlyDictionary<string,string> BuildSource()
+        internal override IReadOnlyDictionary<string,string> BuildSource()
         {
             var dic = new Dictionary<string, string>();
             var enumName = EnumSymbol.Name;
@@ -40,8 +39,8 @@ namespace iOSLib.SourceGenerator
             var count = "Error".Length;
             var enumNameWithoutError = enumName.Substring(0, enumName.Length - count);
             var exceptionName = $"{enumNameWithoutError}{nameof(Exception)}";
-            var baseName = baseType.ToDisplayString(new SymbolDisplayFormat(typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypes));
-            var baseNameSpaceName = baseType.ContainingNamespace.ToDisplayString();
+            var baseName = _baseType.ToDisplayString(new SymbolDisplayFormat(typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypes));
+            var baseNameSpaceName = _baseType.ContainingNamespace.ToDisplayString();
             var sourceExtension = string.Format(@"namespace {0}
 {{
     public static class {1}Extension
