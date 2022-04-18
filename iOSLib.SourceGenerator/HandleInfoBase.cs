@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -39,9 +40,10 @@ namespace iOSLib.SourceGenerator
 
         private string GetIndentedFreeCode()
         {
-            var indent = "            ";
             var reader=new StringReader(GetFreeCode());
             var sb=new StringBuilder();
+            var sw =new IndentedTextWriter(new StringWriter(sb), "    ");
+            sw.Indent = 3;
             while (true)
             {
                 string? line = reader.ReadLine();
@@ -49,8 +51,9 @@ namespace iOSLib.SourceGenerator
                 {
                     break;
                 }
-                sb.AppendLine($"{indent}{line}");
+                sw.WriteLine(line);
             }
+            sw.Close();
             return sb.ToString();
         }
 
