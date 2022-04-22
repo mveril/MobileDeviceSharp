@@ -1,16 +1,4 @@
-﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading;
-
-namespace iOSLib.SourceGenerator
+﻿namespace iOSLib.SourceGenerator
 {
     [Generator]
     class ExceptionGenerator : IIncrementalGenerator

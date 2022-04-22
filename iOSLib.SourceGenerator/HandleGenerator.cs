@@ -1,14 +1,4 @@
-﻿using System.Linq;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
-using System.Text;
-using System.IO;
-using System;
-using System.Threading;
-
-namespace iOSLib.SourceGenerator
+﻿namespace iOSLib.SourceGenerator
 {
     [Generator]
     internal class HandleGenerator : IIncrementalGenerator
