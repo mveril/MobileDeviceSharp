@@ -252,7 +252,7 @@ namespace {0}
                 {
                     throw new NotSupportedException();
                 }
-                return $"return ({methodcall} == {retval});";
+                return $"return {methodcall} == {retval};";
             }
         } 
     }
