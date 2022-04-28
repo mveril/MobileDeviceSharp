@@ -1,4 +1,5 @@
-﻿namespace iOSLib.SourceGenerator
+﻿using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+namespace iOSLib.SourceGenerator
 {
     [Generator]
     internal class HandleGenerator : IIncrementalGenerator
@@ -19,15 +20,41 @@
                 .Select((line, token) => line.Text!.ToString(line.Span));
             context.RegisterSourceOutput(nonFreeableFullNames, NonFreeableProducer);
             var freeableMethods = context.SyntaxProvider.CreateSyntaxProvider(MethodPredicate, MethodTransformer);
-            context.RegisterSourceOutput<(string, string, string)?>(freeableMethods, FreableProducer);
+            context.RegisterSourceOutput(freeableMethods, FreableProducer);
         }
 
-        private void FreableProducer(SourceProductionContext context, (string namespaceName, string className, string freeCode)? methodData)
+        MethodDeclarationSyntax GetFreeMethod()
         {
+            return GetFreeMethod(SingletonList<StatementSyntax>(GetFreeCode()));
+        }
+
+        MethodDeclarationSyntax GetFreeMethod(SyntaxList<StatementSyntax> statements)
+        {
+            return GetFreeMethodCore().WithBody(Block(statements));
+        }
+
+        MethodDeclarationSyntax GetFreeMethodCore()
+        {
+            var member = ParseMemberDeclaration(@"/// <inheritdoc/>
+#if !NETCOREAPP
+        [ReliabilityContractAttribute(Consistency.WillNotCorruptState, Cer.MayFail)]
+#endif
+        protected override bool ReleaseHandle()
+        {
+
+        }");
+            System.Diagnostics.Debug.Assert(member != null);
+            return (MethodDeclarationSyntax)member!;
+        }
+
+        private void FreableProducer(SourceProductionContext context, (string namespaceName, string className, SyntaxList<StatementSyntax> freeCode)? methodData)
+        {
+            
             if (methodData.HasValue)
             {
+                MethodDeclarationSyntax method;
                 var (nameSpace, className, freeCode) = methodData.Value;
-                var (fileName,source) = GetSource(nameSpace, className, freeCode);
+                var (fileName, source) = GetSource(nameSpace, className, GetFreeMethod(freeCode));
                 context.AddSource(fileName, source);
             }
         }
@@ -37,11 +64,11 @@
             var index = fullClassName.LastIndexOf(".");
             var namespaceName = fullClassName.Substring(0, index);
             var handleBaseName = fullClassName.Substring(index + 1);
-            var (fileName, source) = GetSource(namespaceName, handleBaseName,GetFreeCode());
+            var (fileName, source) = GetSource(namespaceName, handleBaseName, GetFreeMethod());
             context.AddSource(fileName, source);
         }
 
-        private (string name, SourceText source) GetSource(string namespaceName, string handleBaseName, string freeCode)
+        private (string name, SourceText source) GetSource(string namespaceName, string handleBaseName, MethodDeclarationSyntax ReleaseHandleDeclaration)
         {
             const string sourceFormat = @"using System;
 using System.Diagnostics;
@@ -80,14 +107,7 @@ namespace {0}
             }}
         }}
 
-        /// <inheritdoc/>
-#if !NETCOREAPP
-        [ReliabilityContractAttribute(Consistency.WillNotCorruptState, Cer.MayFail)]
-#endif
-        protected override bool ReleaseHandle()
-        {{
 {2}
-        }}
 
         /// <inheritdoc/>
         public override string ToString()
@@ -171,10 +191,11 @@ namespace {0}
 }}
 ";
             var className = $"{handleBaseName}Handle";
-            var indentedFreeCode = string.Join(Environment.NewLine, freeCode.Split(new string[] { Environment.NewLine }, StringSplitOptions.None).Select((l)=>new string(' ',3*4)+l));
-            var source = string.Format(sourceFormat, namespaceName, className, indentedFreeCode);
-            return ($"{className}.g.cs", SourceText.From(source, Encoding.UTF8));
+            var source = string.Format(sourceFormat, namespaceName, className, ReleaseHandleDeclaration.NormalizeWhitespace().ToFullString());
+            var srcstring = CSharpSyntaxTree.ParseText(source).GetRoot().NormalizeWhitespace().ToFullString();
+            return ($"{className}.g.cs", SourceText.From(srcstring, Encoding.UTF8));
         }
+        
 
         private bool MethodPredicate(SyntaxNode node, CancellationToken token)
         {
@@ -186,7 +207,7 @@ namespace {0}
             return false;
         }
 
-        private (string namespaceName, string className, string freeCode)? MethodTransformer(GeneratorSyntaxContext context, CancellationToken token)
+        private (string namespaceName, string className, SyntaxList<StatementSyntax> freeCode)? MethodTransformer(GeneratorSyntaxContext context, CancellationToken token)
         {
             var genAttrSymbol = context.SemanticModel.Compilation.GetTypeByMetadataName($"{AttrNamespace}.{AttrName}");
             if (genAttrSymbol == null)
@@ -197,44 +218,46 @@ namespace {0}
             var genattr=freeMethodSymbol.GetAttributes().FirstOrDefault(a => a.AttributeClass != null && a.AttributeClass.Equals(genAttrSymbol, SymbolEqualityComparer.Default));
             if (genattr!=null)
             {
-                return (freeMethodSymbol.ContainingNamespace.ToDisplayString(), (string)genattr.ConstructorArguments[0].Value!, GetFreeCode(freeMethodSymbol,context.SemanticModel.Compilation));
+                return (freeMethodSymbol.ContainingNamespace.ToDisplayString(), (string)genattr.ConstructorArguments[0].Value!, GetFreeCode(freeMethodSymbol, context.SemanticModel.Compilation));
             }
             return null;
         }
         
-        public string GetFreeCode()
+        public ReturnStatementSyntax GetFreeCode()
         {
-            return "return true;";
+            return ReturnStatement(LiteralExpression(SyntaxKind.TrueLiteralExpression));
         }
-        public string GetFreeCode(IMethodSymbol freeMethod, Compilation compilation)
+
+        public SyntaxList<StatementSyntax> GetFreeCode(IMethodSymbol freeMethod, Compilation compilation)
         {
             var methodFormat = new SymbolDisplayFormat(memberOptions: SymbolDisplayMemberOptions.IncludeContainingType);
             var returnFormat = new SymbolDisplayFormat(memberOptions: SymbolDisplayMemberOptions.IncludeContainingType);
             var argFormat = new SymbolDisplayFormat(typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces);
             var freeReturn = freeMethod.ReturnType;
             var argType = freeMethod.Parameters.First().Type;
-            var freeArg = "this";
+            var freeArg = Argument(ThisExpression());
             if (argType.Equals(compilation.GetSpecialType(SpecialType.System_IntPtr), SymbolEqualityComparer.Default))
             {
-                freeArg = "this.handle";
+                freeArg = Argument(MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
+                    ThisExpression(), IdentifierName("handle")));
             }
-            var methodcall = $"{freeMethod.ToDisplayString(methodFormat)}({freeArg})";
+            var methodcall = InvocationExpression(ParseExpression(freeMethod.ToDisplayString(methodFormat))).AddArgumentListArguments(freeArg); ;
             if (freeReturn.Equals(compilation.GetSpecialType(SpecialType.System_Void), SymbolEqualityComparer.Default))
             {
-                return $"{methodcall};\n{GetFreeCode()}";
+                return List(new StatementSyntax[] { ExpressionStatement(methodcall), GetFreeCode() });
             }
             else
             {
-                string retval;
+                ExpressionSyntax retval;
                 if (freeReturn.Equals(compilation.GetSpecialType(SpecialType.System_Int32), SymbolEqualityComparer.Default) || freeReturn.TypeKind == TypeKind.Enum)
                 {
-                    retval = "0";
+                    retval = LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0));
                     if (freeReturn.TypeKind == TypeKind.Enum)
                     {
                         var field = freeReturn.GetMembers().OfType<IFieldSymbol>().FirstOrDefault(f => f.HasConstantValue && f.ConstantValue.Equals(0));
                         if (field != null)
                         {
-                            retval = field.ToDisplayString(returnFormat);
+                            retval = ParseExpression(field.ToDisplayString(returnFormat));
                         }
                     }
                 }
@@ -242,8 +265,10 @@ namespace {0}
                 {
                     throw new NotSupportedException();
                 }
-                return $"return {methodcall} == {retval};";
+                return SingletonList<StatementSyntax>(ReturnStatement(BinaryExpression(SyntaxKind.EqualsExpression,
+                    methodcall,
+                    retval)));
             }
-        } 
+        }
     }
 }

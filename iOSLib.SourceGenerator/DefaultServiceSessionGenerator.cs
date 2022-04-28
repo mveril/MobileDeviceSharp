@@ -33,14 +33,29 @@
         {
             string nameSpaceName = typeSymbol!.ContainingNamespace.ToDisplayString();
             string className = typeSymbol.Name.Remove(typeSymbol.Name.Length - 4, 4);
-            var sourceFormat = @"namespace {0}
-{{
-    public partial class {1} : {1}Base
-    {{
-        public {1}(IDevice device) : base(device) {{ }}
-    }}
-}}";
-            context.AddSource($"{className}.g.cs", string.Format(sourceFormat, nameSpaceName, className));
+            var param = SyntaxFactory.Identifier("device");
+            var source = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName(nameSpaceName))
+                .AddMembers(
+                    SyntaxFactory.ClassDeclaration(className)
+                    .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword), SyntaxFactory.Token(SyntaxKind.PartialKeyword))
+                    .AddBaseListTypes(SyntaxFactory.SimpleBaseType(SyntaxFactory.ParseTypeName(typeSymbol.Name)))
+                    .AddMembers(
+                        SyntaxFactory.ConstructorDeclaration(className)
+                        .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
+                        .WithParameterList(
+                            SyntaxFactory.ParameterList()
+                            .AddParameters(
+                                SyntaxFactory.Parameter(param)
+                                .WithType(
+                                    SyntaxFactory.ParseTypeName("IDevice"))))
+                        .WithInitializer(
+                            SyntaxFactory.ConstructorInitializer(
+                                SyntaxKind.BaseConstructorInitializer, SyntaxFactory.ArgumentList(
+                                    SyntaxFactory.SingletonSeparatedList<ArgumentSyntax>(SyntaxFactory.Argument(
+                                        SyntaxFactory.IdentifierName(param))))))
+                        .WithBody(SyntaxFactory.Block())));
+            var src = source.NormalizeWhitespace().ToFullString();
+            context.AddSource($"{className}.g.cs", src);
         }
 
     }
