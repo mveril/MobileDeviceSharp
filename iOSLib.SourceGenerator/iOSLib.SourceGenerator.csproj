@@ -1,7 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <IsRoslynComponent>true</IsRoslynComponent>
     <LangVersion>10.0</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -12,10 +13,10 @@
     <Using Include="Microsoft.CodeAnalysis.CSharp" />
     <Using Include="Microsoft.CodeAnalysis.CSharp.Syntax" />
     <Using Include="Microsoft.CodeAnalysis.Text" />
-    <Using Include="System.Collections.Immutable"/>
-    <Using Include="System.Text"/>
-    <Using Remove="System.Net.Http"/>
-    <Using Remove="System.Threading.Tasks"/>
+    <Using Include="System.Collections.Immutable" />
+    <Using Include="System.Text" />
+    <Using Remove="System.Net.Http" />
+    <Using Remove="System.Threading.Tasks" />
   </ItemGroup>
 
   <ItemGroup>
