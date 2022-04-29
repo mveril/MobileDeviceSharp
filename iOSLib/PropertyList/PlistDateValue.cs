@@ -14,11 +14,11 @@ namespace IOSLib.PropertyList
             {
                 (int sec, int microsec) = d;
                 var milisec = microsec * 1e-3;
-                return baseDateTime.AddSeconds(sec).AddMilliseconds(milisec);
+                return s_baseDateTime.AddSeconds(sec).AddMilliseconds(milisec);
             }
             public static explicit operator DateValue(DateTime dt)
             {
-                var timespan = dt - baseDateTime;
+                var timespan = dt - s_baseDateTime;
                 int sec = (int)timespan.TotalSeconds;
                 timespan = timespan.Subtract(TimeSpan.FromSeconds(sec));
                 int microsec = (int)(timespan.Ticks / (TimeSpan.TicksPerMillisecond * 1e-3));

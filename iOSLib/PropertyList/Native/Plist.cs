@@ -110,7 +110,7 @@ namespace IOSLib.PropertyList.Native
         /// the created item
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_new_data", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static unsafe extern PlistHandle plist_new_data(byte* val, ulong length);
+        public static extern unsafe PlistHandle plist_new_data(byte* val, ulong length);
 
         /// <summary>
         /// Create a new PlistHandle type #PLIST_DATE

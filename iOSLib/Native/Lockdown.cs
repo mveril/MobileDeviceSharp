@@ -8,7 +8,7 @@ using IOSLib.PropertyList.Native;
 
 namespace IOSLib.Native
 {
-    public static class Lockdown
+    internal static class Lockdown
     {
         public const string LibraryName = "imobiledevice";
 
@@ -377,7 +377,7 @@ namespace IOSLib.Native
         /// LOCKDOWN_E_INVALID_HOST_ID if the device does not know the caller's host id
         /// </returns>
         [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_validate_pair", CallingConvention = CallingConvention.Cdecl)]
-        public static unsafe extern LockdownError lockdownd_validate_pair_intptr(LockdownClientHandle client, void* pairRecord);
+        public static extern unsafe LockdownError lockdownd_validate_pair_intptr(LockdownClientHandle client, void* pairRecord);
 
         /// <summary>
         /// Unpairs the device with the given HostID and removes the pairing records

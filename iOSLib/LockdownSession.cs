@@ -15,7 +15,7 @@ namespace IOSLib
     /// </summary>
     public partial class LockdownSession : IOSHandleWrapperBase<LockdownClientHandle>
     {
-        private readonly IDevice device;
+        private readonly IDevice _device;
 
         /// <summary>
         /// Create lockdown session for the specified <paramref name="device"/>, the specified <paramref name="label"/> and with handshake or not.
@@ -25,12 +25,12 @@ namespace IOSLib
         /// <param name="WithHandShake">Create lockdown session with handshake or not.</param>
         public LockdownSession(IDevice device, string? label, bool WithHandShake) : base(GetHandle(device, label, WithHandShake))
         {
-            this.device = device;
+            _device = device;
         }
 
         private static LockdownClientHandle GetHandle(IDevice device, string? label, bool withHandShake)
         {
-            var handle = LockdownClientHandle.Zero;
+            LockdownClientHandle handle;
             LockdownException? ex;
             if (withHandShake)
             {
@@ -127,7 +127,7 @@ namespace IOSLib
             }
         }
 
-        public LockdownDomain GetDomain(string? domainName) => new LockdownDomain(this, domainName);
+        public LockdownDomain GetDomain(string? domainName) => new(this, domainName);
 
         public LockdownDomain GetDomain() => GetDomain(null);
 
@@ -296,7 +296,7 @@ namespace IOSLib
         /// <returns>Return true if the operation succeed</returns>
         public Task<bool> PairAsync(LockdownPairRecordHandle pairRecordHandle,CancellationToken cancellationToken)
         {
-            TaskCompletionSource<bool> tsk = new TaskCompletionSource<bool>();
+            var tsk = new TaskCompletionSource<bool>();
             if (cancellationToken.IsCancellationRequested)
             {
                 tsk.TrySetCanceled(cancellationToken);
@@ -306,15 +306,15 @@ namespace IOSLib
             switch (err)
             {
                 case LockdownError.Success:
-                    device.IsPaired = true;
+                    _device.IsPaired = true;
                     tsk.SetResult(true);
                     break;
                 case LockdownError.UserDeniedPairing:
                     tsk.SetResult(false);
-                    device.IsPaired = false;
+                    _device.IsPaired = false;
                     break;
                 case LockdownError.PairingDialogResponsePending:
-                    var np = new InsecureNotificationProxySession(device);
+                    var np = new InsecureNotificationProxySession(_device);
                     np.ObserveNotification("com.apple.mobile.lockdown.request_pair");
                     np.NotificationProxyEvent += async (s, e) =>
                     {
@@ -324,7 +324,7 @@ namespace IOSLib
                     break;
                 case LockdownError.InvalidHostId:
                     tsk.SetResult(false);
-                    device.IsPaired = false;
+                    _device.IsPaired = false;
                     break;
                 default:
                     tsk.SetException(err.GetException());
@@ -370,7 +370,7 @@ namespace IOSLib
         public bool Unpair(LockdownPairRecordHandle pairRecordHandle)
         {
             var b = !lockdownd_unpair(Handle, pairRecordHandle).IsError();
-            device.IsPaired = !b;
+            _device.IsPaired = !b;
             return b;
         }
 

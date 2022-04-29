@@ -24,7 +24,7 @@ namespace IOSLib.PropertyList
         /// <inheritdoc/>
         public abstract int Count { get; }
         bool ICollection.IsSynchronized => false;
-        private object _syncRoot = new object();
+        private object _syncRoot = new();
         object ICollection.SyncRoot => _syncRoot;
 
         /// <summary>
@@ -75,22 +75,30 @@ namespace IOSLib.PropertyList
         /// </summary>
         /// <param name="xml">XML string</param>
         /// <returns>PlistContainer</returns>
-        public static PlistContainer FromXml(string xml)
+        public static PlistContainer? FromXml(string xml)
         {
             int length = Encoding.UTF8.GetByteCount(xml);
             plist_from_xml(xml, (uint)length, out var handle);
-            var container = (PlistContainer)PlistNode.From(handle);
-            container.IsBinary = false;
-            return container;
+            var node = From(handle);
+            if (node is PlistContainer container)
+            {
+                container.IsBinary = false;
+                return container;
+            }
+            return null;
         }
 
-        private static unsafe PlistContainer FromBin(byte[] bin)
+        public static PlistContainer? FromBin(byte[] bin)
         {
             uint length = (uint)bin.Length;
             plist_from_bin(bin, length, out var handle);
-            var structure = (PlistContainer)PlistNode.From(handle);
-            structure.IsBinary = plist_is_binary(bin, length) != 0;
-            return structure;
+            using var node = From(handle);
+            if (node is PlistContainer container)
+            {
+                container.IsBinary = true;
+                return container;
+            }
+            return null;
         }
 
         /// <summary>
@@ -100,7 +108,7 @@ namespace IOSLib.PropertyList
         /// <returns>The plist container</returns>
         public static PlistContainer FromFile(string path)
         {
-            using FileStream fileStream = new FileStream(path, FileMode.Open);
+            using var fileStream = new FileStream(path, FileMode.Open);
             return FromStream(fileStream);
         }
 
@@ -109,13 +117,13 @@ namespace IOSLib.PropertyList
         /// </summary>
         /// <param name="stream">The stream</param>
         /// <returns>The plist container</returns>
-        public static unsafe PlistContainer FromStream(Stream stream)
+        public static unsafe PlistContainer? FromStream(Stream stream)
         {
             byte[] buffer;
             var length = stream.Length;
-            if (stream is MemoryStream)
+            if (stream is MemoryStream ms)
             {
-                buffer = ((MemoryStream)stream).GetBuffer();
+                buffer = ms.GetBuffer();
             }
             else
             {
@@ -124,9 +132,13 @@ namespace IOSLib.PropertyList
                 stream.CopyTo(memoryStream);
             }
             plist_from_memory(buffer, (uint)length, out var handle);
-            var container = (PlistContainer)PlistNode.From(handle);
-            container.IsBinary = plist_is_binary(buffer, (uint)length) != 0;
-            return container;
+            var node = From(handle);
+            if (node is PlistContainer container)
+            {
+                container.IsBinary = plist_is_binary(buffer, (uint)length) != 0;
+                return container;
+            }
+            return null;
         }
 
         void ICollection.CopyTo(Array array, int index)

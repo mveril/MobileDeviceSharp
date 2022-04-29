@@ -40,7 +40,7 @@ namespace IOSLib.PropertyList
         {
             foreach (var item in source)
             {
-                this.Add(item);
+                Add(item);
             }
         }
 
@@ -49,7 +49,12 @@ namespace IOSLib.PropertyList
         {
             get
             {
-                return PlistNode.From(plist_array_get_item(Handle, (uint)index));
+                var childHandle = plist_array_get_item(Handle, (uint)index);
+                if (childHandle.IsInvalid && !Handle.IsInvalid)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(index));
+                }
+                return From(childHandle)!;
             }
             set
             {

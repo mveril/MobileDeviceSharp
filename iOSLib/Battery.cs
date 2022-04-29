@@ -11,12 +11,12 @@ namespace IOSLib
     /// </summary>
     public class Battery
     {
-        private readonly IDevice device;
+        private readonly IDevice _device;
 
         private const string BATTERY_LOCKDOWN_DOMAIN = "com.apple.mobile.battery";
         internal Battery(IDevice iDevice)
         {
-            device = iDevice;
+            _device = iDevice;
         }
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace IOSLib
             get
             {
                 PlistDictionary dict;
-                using (var lockdown =new LockdownSession(device))
+                using (var lockdown =new LockdownSession(_device))
                 {
                     if(lockdown.TryGetDomain(BATTERY_LOCKDOWN_DOMAIN, out var domain))
                     {
@@ -73,7 +73,7 @@ namespace IOSLib
         {
             get 
             {
-                using var lockdown = new LockdownSession(device);
+                using var lockdown = new LockdownSession(_device);
                 using var pValue = (PlistInteger)lockdown.GetDomain(BATTERY_LOCKDOWN_DOMAIN)["BatteryCurrentCapacity"];
                 return pValue.Value/100;
             }

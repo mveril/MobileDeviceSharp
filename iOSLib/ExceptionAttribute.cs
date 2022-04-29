@@ -16,18 +16,18 @@ namespace IOSLib
         {
             ExceptionType = exceptionType;
         }
-        Type _ExceptionType;
+        Type _exceptionType;
         public Type ExceptionType
         {
             get
             {
-                return _ExceptionType;
+                return _exceptionType;
             }
             set
             {
                 if (typeof(MobileDeviceException).IsAssignableFrom(value))
                 {
-                    _ExceptionType = value;
+                    _exceptionType = value;
                 }
             }
         }

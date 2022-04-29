@@ -10,7 +10,7 @@ namespace IOSLib.Native
 {
     public class UTF8DictionaryMarshaler : CustomMashaler<IReadOnlyDictionary<string,string>>
     {
-        static Lazy<UTF8DictionaryMarshaler> static_instance = new Lazy<UTF8DictionaryMarshaler>();
+        private static readonly Lazy<UTF8DictionaryMarshaler> s_static_instance = new();
         public override void CleanUpManagedData(IReadOnlyDictionary<string, string> ManagedObj)
         {
             
@@ -60,12 +60,12 @@ namespace IOSLib.Native
 
         public static ICustomMarshaler GetInstance(string cookie)
         {
-            return static_instance.Value;
+            return s_static_instance.Value;
         }
 
         public static UTF8DictionaryMarshaler GetInstance()
         {
-            return static_instance.Value;
+            return s_static_instance.Value;
         }
     }
 }

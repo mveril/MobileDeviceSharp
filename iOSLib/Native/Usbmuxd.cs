@@ -6,7 +6,7 @@ using IOSLib.CompilerServices;
 
 namespace IOSLib.Native
 {
-    class Usbmuxd
+    internal class Usbmuxd
     {
         public const string LibraryName = "usbmuxd";
 

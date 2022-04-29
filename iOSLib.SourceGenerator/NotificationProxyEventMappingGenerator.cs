@@ -51,13 +51,13 @@ namespace {0}
 
         private void Execute(SourceProductionContext context, Compilation compilation, ImmutableArray<IEventSymbol> events)
         {
-            INamedTypeSymbol npNameAttrSymbol = compilation.GetTypeByMetadataName(AttributeFullName);
+            INamedTypeSymbol npNameAttrSymbol = compilation.GetTypeByMetadataName(AttributeFullName)!;
             string GetSwitchCode(IEnumerable<IEventSymbol> events)
             {
                 var sb = new StringBuilder();
                 foreach (var item in events)
                 {
-                    var npName = item.GetAttributes().First(a => a.AttributeClass.Equals(npNameAttrSymbol, SymbolEqualityComparer.Default)).ConstructorArguments.First().Value;
+                    var npName = item.GetAttributes().First(a => a.AttributeClass!.Equals(npNameAttrSymbol, SymbolEqualityComparer.Default)).ConstructorArguments.First().Value;
                     sb.AppendLine($"                case \"{npName}\":");
                     sb.AppendLine($"                    On{item.Name}();");
                     sb.AppendLine($"                    break;");
@@ -103,13 +103,12 @@ namespace {0}
             var declaration = (EventFieldDeclarationSyntax)context.Node;
             var node = declaration.Declaration.Variables.First();
             var symbol = context.SemanticModel.GetDeclaredSymbol(node);
-            IEventSymbol eventSymbol = (IEventSymbol)symbol;
-            var classSymbol = eventSymbol.ContainingType;
+            IEventSymbol eventSymbol = (IEventSymbol)symbol!;
             foreach (var attribute in eventSymbol.GetAttributes())
             {
                 if (token.IsCancellationRequested)
                     break;
-                string fullName = attribute.AttributeClass.ToDisplayString();
+                string fullName = attribute.AttributeClass!.ToDisplayString();
                 // Is the attribute the [NotificationProxyEventNameAttribute] attribute?
                 if (fullName == AttributeFullName)
                 {

@@ -18,6 +18,7 @@ namespace IOSLib.Native
 #else
             LoadMobileDeviceLibrary();
             LoadUsbmuxdLibrary();
+            LoadPlistLibrary();
 #endif
         }
 
@@ -70,7 +71,7 @@ namespace IOSLib.Native
 
         private static IntPtr LoadPlistLibrary()
         {
-            IntPtr lib = IntPtr.Zero;
+            IntPtr lib;
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
@@ -109,7 +110,7 @@ namespace IOSLib.Native
 
         private static IntPtr LoadUsbmuxdLibrary()
         {
-            IntPtr lib = IntPtr.Zero;
+            IntPtr lib;
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
@@ -143,7 +144,7 @@ namespace IOSLib.Native
 
         private static IntPtr LoadMobileDeviceLibrary()
         {
-            IntPtr lib = IntPtr.Zero;
+            IntPtr lib;
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
@@ -188,7 +189,7 @@ namespace IOSLib.Native
 
         private static IntPtr LoadDeviceActivationLibrary()
         {
-            IntPtr lib = IntPtr.Zero;
+            IntPtr lib;
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
@@ -253,7 +254,6 @@ namespace IOSLib.Native
         private string getRuntimeIdentifier()
         {
             string? OS = null;
-            string? archi = null;
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 OS = "win";
@@ -266,12 +266,12 @@ namespace IOSLib.Native
             {
                 return "linux";
             }
-            archi = RuntimeInformation.OSArchitecture.ToString().ToLower();
             if (OS== null)
             {
                 throw new PlatformNotSupportedException();
             }
-            return OS + "-" + archi;
+            string archi = RuntimeInformation.OSArchitecture.ToString().ToLower();
+            return $"{OS}-{archi}";
         }
     }
 #endif

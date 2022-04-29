@@ -20,7 +20,7 @@ namespace IOSLib.AFC
 
         public StreamWriter AppendText()
         {
-            var stream = new AFCStream(Session, this.Path, FileMode.Append, FileAccess.Write, AFCLockOp.LockEx);
+            var stream = new AFCStream(Session, Path, FileMode.Append, FileAccess.Write, AFCLockOp.LockEx);
             return new StreamWriter(stream);
         }
         public AFCStream Create()

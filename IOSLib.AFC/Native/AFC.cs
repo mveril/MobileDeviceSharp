@@ -6,7 +6,7 @@ using System.Text;
 
 namespace IOSLib.AFC.Native
 {
-    public class AFC
+    internal class AFC
     {
         public const string LibraryName = "imobiledevice";
 
@@ -223,7 +223,7 @@ namespace IOSLib.AFC.Native
         /// AFC_E_SUCCESS on success or an AFC_E_* error value.
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(AFC.LibraryName, EntryPoint = "afc_file_read", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static unsafe extern AFCError afc_file_read(AFCClientHandle client, ulong handle, byte* data, uint length, out uint bytesRead);
+        public static extern unsafe AFCError afc_file_read(AFCClientHandle client, ulong handle, byte* data, uint length, out uint bytesRead);
 
         /// <summary>
         /// Writes a given number of bytes to a file.
@@ -271,7 +271,7 @@ namespace IOSLib.AFC.Native
         /// AFC_E_SUCCESS on success or an AFC_E_* error value.
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(AFC.LibraryName, EntryPoint = "afc_file_write", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static unsafe extern AFCError afc_file_write(AFCClientHandle client, ulong handle, byte* data, uint length, out uint bytesWritten);
+        public static extern unsafe AFCError afc_file_write(AFCClientHandle client, ulong handle, byte* data, uint length, out uint bytesWritten);
 
         /// <summary>
         /// Seeks to a given position of a pre-opened file on the device.

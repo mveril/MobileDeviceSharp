@@ -10,7 +10,7 @@ namespace IOSLib
     /// </summary>
     public class OSVersion
     {
-        static internal OSVersion FromDevice(IDevice idevice)
+        internal static OSVersion FromDevice(IDevice idevice)
         {
             string buildNumber;
             string sversion;

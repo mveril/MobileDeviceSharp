@@ -12,11 +12,11 @@ namespace IOSLib.PropertyList
             IEnumerable<PlistNode>,
             IReadOnlyCollection<PlistNode>
         {
-            private readonly PlistDictionary dict;
+            private readonly PlistDictionary _dict;
 
             public ValuesCollection(PlistDictionary plistDictionary)
             {
-                this.dict = plistDictionary;
+                _dict = plistDictionary;
             }
 
             public int Count => throw new System.NotImplementedException();
@@ -35,7 +35,7 @@ namespace IOSLib.PropertyList
 
             public bool Contains(PlistNode item)
             {
-                return item.Parent.Equals(dict);
+                return item.Parent.Equals(_dict);
             }
 
             public void CopyTo(PlistNode[] array, int arrayIndex)
@@ -50,7 +50,7 @@ namespace IOSLib.PropertyList
 
             public IEnumerator<PlistNode> GetEnumerator()
             {
-                return dict.Select(i => i.Value).GetEnumerator();
+                return _dict.Select(i => i.Value).GetEnumerator();
             }
 
             bool ICollection<PlistNode>.Remove(PlistNode item)

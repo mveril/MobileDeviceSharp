@@ -5,14 +5,17 @@ using System.Text;
 
 namespace IOSLib.Native
 {
+#pragma warning disable IDE1006 // Naming styles (because this struct is used for PInvoke)
     [StructLayout(LayoutKind.Sequential)]
     internal struct lockdownd_client_private
     {
         internal IntPtr parent;
+
         internal int ssl_enabled;
         internal IntPtr session_id;
         internal IntPtr udid;
         internal IntPtr label;
-        internal UInt32 mux_id;
+        internal uint mux_id;
     }
+#pragma warning restore IDE1006 // Naming styles (because this struct is used for PInvoke)
 }

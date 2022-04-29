@@ -84,7 +84,7 @@ namespace IOSLib.PropertyList
         /// <inheritdoc/>
         public bool Equals(PlistNode other)
         {
-            return this.Handle == other.Handle;
+            return Handle == other.Handle;
         }
         
         /// <inheritdoc/>
@@ -100,7 +100,7 @@ namespace IOSLib.PropertyList
         /// <inheritdoc/>
         public override int GetHashCode()
         {
-            return this.Handle.GetHashCode();
+            return Handle.GetHashCode();
         }
         /// <summary>
         /// Get the type of the current Plist node.

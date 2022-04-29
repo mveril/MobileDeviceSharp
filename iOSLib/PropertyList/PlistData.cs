@@ -42,7 +42,7 @@ namespace IOSLib.PropertyList
 
         }
 
-        private unsafe static PlistHandle Create(ReadOnlySpan<byte> value)
+        private static unsafe PlistHandle Create(ReadOnlySpan<byte> value)
         {
             fixed(byte* ptr = value)
             {

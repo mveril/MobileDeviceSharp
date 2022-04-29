@@ -35,7 +35,7 @@ namespace IOSLib.PropertyList
         }
 
 
-        private static readonly DateTime baseDateTime = new DateTime(2001, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        private static readonly DateTime s_baseDateTime = new(2001, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         /// <inheritdoc/>
         public override DateTime Value

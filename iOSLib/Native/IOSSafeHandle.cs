@@ -20,7 +20,7 @@ namespace IOSLib.Native
 
         protected IOSHandle(IntPtr Handle, bool ownsHandle) : base(ownsHandle)
         {
-            this.SetHandle(handle);
+            SetHandle(handle);
         }
 
         protected IOSHandle(bool ownsHandle) : this(IntPtr.Zero, ownsHandle)

@@ -22,11 +22,14 @@ namespace IOSLib.PropertyList
                 plist_array_new_iter(_root.Handle, out _iter_handle);
             }
 
-            private PlistNode current;
-            /// <inheritdoc/>
-            public PlistNode Current => current;
+#pragma warning disable IDE0032 // Use auto-property (auto readonly property not working because we set the _current in MoveNext)
+            private PlistNode _current;
+#pragma warning restore IDE0032 // Use auto-property (auto readonly property not working because we set the _current in MoveNext)
 
-            object IEnumerator.Current => current;
+            /// <inheritdoc/>
+            public PlistNode Current => _current;
+
+            object IEnumerator.Current => _current;
 
             /// <inheritdoc/>
             public void Dispose()
@@ -39,7 +42,10 @@ namespace IOSLib.PropertyList
             {
                 plist_array_next_item(_root.Handle, _iter_handle, out var currentHandle);
                 var success = !currentHandle.IsInvalid;
-                current = PlistNode.From(currentHandle);
+                if (success)
+                {
+                    _current = From(currentHandle)!;
+                }
                 return success;
             }
 

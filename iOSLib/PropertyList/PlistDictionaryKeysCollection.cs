@@ -11,14 +11,14 @@ namespace IOSLib.PropertyList
             IEnumerable<string>,
             IReadOnlyCollection<string>
     {
-        private readonly PlistDictionary dict;
+        private readonly PlistDictionary _dict;
 
         public KeysCollection(PlistDictionary plistDictionary)
         {
-            this.dict = plistDictionary;
+            _dict = plistDictionary;
         }
 
-        public int Count => dict.Count;
+        public int Count => _dict.Count;
 
         public bool IsReadOnly => true;
 
@@ -34,7 +34,7 @@ namespace IOSLib.PropertyList
 
         public bool Contains(string item)
         {
-            return dict.ContainsKey(item);
+            return _dict.ContainsKey(item);
         }
 
         public void CopyTo(string[] array, int arrayIndex)
@@ -49,7 +49,7 @@ namespace IOSLib.PropertyList
 
         public IEnumerator<string> GetEnumerator()
         {
-            return dict.Select(i => i.Key).GetEnumerator();
+            return _dict.Select(i => i.Key).GetEnumerator();
         }
 
         bool ICollection<string>.Remove(string item)

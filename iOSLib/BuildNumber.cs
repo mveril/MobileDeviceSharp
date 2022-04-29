@@ -15,10 +15,10 @@ namespace IOSLib
     public sealed class BuildNumber : ICloneable, IComparable, IComparable<BuildNumber?>, IEquatable<BuildNumber?>
     {
         // AssemblyName depends on the order staying the same
-        private readonly int _Major; // Do not rename (binary serialization)
-        private readonly char _Minor; // Do not rename (binary serialization)
-        private readonly int _Build; // Do not rename (binary serialization)
-        private readonly char? _Revision; // Do not rename (binary serialization)
+        private readonly int _major; // Do not rename (binary serialization)
+        private readonly char _minor; // Do not rename (binary serialization)
+        private readonly int _build; // Do not rename (binary serialization)
+        private readonly char? _revision; // Do not rename (binary serialization)
 
         /// <summary>
         /// Create an Apple OS build number.
@@ -42,10 +42,10 @@ namespace IOSLib
             if (revision.HasValue && !char.IsLower(revision.Value))
                 throw new ArgumentOutOfRangeException(nameof(revision));
 
-            _Major = major;
-            _Minor = minor;
-            _Build = build;
-            _Revision = revision;
+            _major = major;
+            _minor = minor;
+            _build = build;
+            _revision = revision;
         }
 
         /// <summary>
@@ -66,20 +66,20 @@ namespace IOSLib
         public BuildNumber(string buildNumber)
         {
             BuildNumber b = Parse(buildNumber);
-            _Major = b.Major;
-            _Minor = b.Minor;
-            _Build = b.Build;
-            _Revision = b._Revision;
+            _major = b.Major;
+            _minor = b.Minor;
+            _build = b.Build;
+            _revision = b._revision;
         }
 
         private BuildNumber(BuildNumber buildNumber)
         {
             Debug.Assert(buildNumber != null);
 
-            _Major = buildNumber._Major;
-            _Minor = buildNumber._Minor;
-            _Build = buildNumber._Build;
-            _Revision = buildNumber._Revision;
+            _major = buildNumber._major;
+            _minor = buildNumber._minor;
+            _build = buildNumber._build;
+            _revision = buildNumber._revision;
         }
 
         public int CompareTo(object? buildNumber)
@@ -94,7 +94,7 @@ namespace IOSLib
                 return CompareTo(v);
             }
 
-            throw new ArgumentException();
+            throw new ArgumentException(nameof(buildNumber));
         }
 
         public int CompareTo(BuildNumber? value)
@@ -102,10 +102,10 @@ namespace IOSLib
             return
                 object.ReferenceEquals(value, this) ? 0 :
                 value is null ? 1 :
-                _Major != value._Major ? (_Major > value._Major ? 1 : -1) :
-                _Minor != value._Minor ? (_Minor > value._Minor ? 1 : -1) :
-                _Build != value._Build ? (_Build > value._Build ? 1 : -1) :
-                _Revision != value._Revision ? (_Revision.GetValueOrDefault('\0') > value._Revision.GetValueOrDefault('\0') ? 1 : -1) :
+                _major != value._major ? (_major > value._major ? 1 : -1) :
+                _minor != value._minor ? (_minor > value._minor ? 1 : -1) :
+                _build != value._build ? (_build > value._build ? 1 : -1) :
+                _revision != value._revision ? (_revision.GetValueOrDefault('\0') > value._revision.GetValueOrDefault('\0') ? 1 : -1) :
                 0;
         }
 
@@ -117,11 +117,11 @@ namespace IOSLib
         public bool Equals(BuildNumber? obj)
         {
             return object.ReferenceEquals(obj, this) ||
-                (!(obj is null) &&
-                _Major == obj._Major &&
-                _Minor == obj._Minor &&
-                _Build == obj._Build &&
-                _Revision == obj._Revision);
+                (obj is not null &&
+                _major == obj._major &&
+                _minor == obj._minor &&
+                _build == obj._build &&
+                _revision == obj._revision);
         }
 
         public override int GetHashCode()
@@ -131,18 +131,18 @@ namespace IOSLib
 
             int accumulator = 0;
 
-            accumulator |= (_Major & 0x0000000F) << 28;
-            accumulator |= (_Minor - 'A' & 0x000000FF) << 20;
-            accumulator |= (_Build & 0x000000FF << 12);
-            if (_Revision != null)
+            accumulator |= (_major & 0x0000000F) << 28;
+            accumulator |= (_minor - 'A' & 0x000000FF) << 20;
+            accumulator |= (_build & 0x000000FF << 12);
+            if (_revision != null)
             {
-                accumulator |= (_Revision.Value - 'a' + 1 & 0x00000FFF);
+                accumulator |= (_revision.Value - 'a' + 1 & 0x00000FFF);
             }
 
             return accumulator;
         }
 
-        public override string ToString() => $"{Major}{Minor}{Build}{(_Revision.HasValue ? _Revision : String.Empty)} ";
+        public override string ToString() => $"{Major}{Minor}{Build}{(_revision.HasValue ? _revision : string.Empty)} ";
 
         /// <inheritdoc/>
         public object Clone()
@@ -155,22 +155,22 @@ namespace IOSLib
         /// <summary>
         /// Get the major part of the build number (generaly increased when the OS major version increased.
         /// </summary>
-        public int Major => _Major;
+        public int Major => _major;
 
         /// <summary>
         /// Get the minor part of the build number (generaly increased when the OS minor version increased.
         /// </summary>
-        public char Minor => _Minor;
+        public char Minor => _minor;
 
         /// <summary>
         /// Get the build part of the build number (generaly increased when the OS minor or build version increased.
         /// </summary>
-        public int Build => _Build;
+        public int Build => _build;
 
         /// <summary>
         /// Get the revision part of the build number (generaly only present for beta releasep.
         /// </summary>
-        public char? Revision => _Revision;
+        public char? Revision => _revision;
 
         /// <summary>
         /// Parse the <paramref name="input"/> <see cref="string"/> to a build number
@@ -215,7 +215,7 @@ namespace IOSLib
             {
                 if (throwOnFailure)
                 {
-                    throw new ArgumentException();
+                    throw new ArgumentException(input);
                 }
                 return null;
             }
@@ -235,7 +235,7 @@ namespace IOSLib
             }
 
             // Quick reference equality test prior to calling the virtual Equality
-            return ReferenceEquals(v2, v1) ? true : v2.Equals(v1);
+            return ReferenceEquals(v2, v1) || v2.Equals(v1);
         }
 
         public static bool operator !=(BuildNumber? v1, BuildNumber? v2) => !(v1 == v2);
@@ -244,7 +244,7 @@ namespace IOSLib
         {
             if (v1 is null)
             {
-                return !(v2 is null);
+                return v2 is not null;
             }
 
             return v1.CompareTo(v2) < 0;

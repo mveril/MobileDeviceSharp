@@ -9,9 +9,9 @@ namespace IOSLib
     /// </summary>
     public class InsecureNotificationProxySession : NotificationProxySessionBase
     {
-        const string serviceID = "com.apple.mobile.insecure_notification_proxy";
+        const string ServiceID = "com.apple.mobile.insecure_notification_proxy";
 
         /// <inheritdoc/>
-        public InsecureNotificationProxySession(IDevice device) : base(device, serviceID, false) { } 
+        public InsecureNotificationProxySession(IDevice device) : base(device, ServiceID, false) { } 
     }
 }

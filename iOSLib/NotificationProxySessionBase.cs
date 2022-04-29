@@ -17,16 +17,16 @@ namespace IOSLib
         /// </summary>
         public event NotificationProxyEventHandler? NotificationProxyEvent;
 
-        private static readonly StartServiceCallback<NotificationProxyClientHandle, NotificationProxyError> startCallback = np_client_start_service;
+        private static readonly StartServiceCallback<NotificationProxyClientHandle, NotificationProxyError> s_startCallback = np_client_start_service;
 
-        private static readonly ClientNewCallback<NotificationProxyClientHandle, NotificationProxyError> clientNewCallback = np_client_new ;
+        private static readonly ClientNewCallback<NotificationProxyClientHandle, NotificationProxyError> s_clientNewCallback = np_client_new;
         /// <summary>
         /// Initialize the service using the specified <paramref name="device"/> <paramref name="ServiceID"/> and <paramref name="withEscrowBag"/>.
         /// </summary>
         /// <param name="device">The target device</param>
         /// <param name="ServiceID">The service id</param>
         /// <param name="withEscrowBag">If <see langword="true"/> use escrowbag</param>
-        public NotificationProxySessionBase(IDevice device, string ServiceID, bool withEscrowBag) : base(device, ServiceID, withEscrowBag,new ClientNewCallback<NotificationProxyClientHandle, NotificationProxyError>(np_client_new))
+        public NotificationProxySessionBase(IDevice device, string ServiceID, bool withEscrowBag) : base(device, ServiceID, withEscrowBag, s_clientNewCallback)
         {
             
         }
@@ -35,7 +35,7 @@ namespace IOSLib
         /// Initialize the service using the specified <paramref name="device"/>.
         /// </summary>
         /// <param name="device"></param>
-        public NotificationProxySessionBase(IDevice device) : base(device, startCallback)
+        public NotificationProxySessionBase(IDevice device) : base(device, s_startCallback)
         {
 
         }

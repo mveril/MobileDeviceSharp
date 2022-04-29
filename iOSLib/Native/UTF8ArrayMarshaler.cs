@@ -9,7 +9,7 @@ namespace IOSLib.Native
 {
     public class UTF8ArrayMarshaler : CustomMashaler<string[]>
     {
-        static Lazy<UTF8ArrayMarshaler> static_instance = new Lazy<UTF8ArrayMarshaler>();
+        private static readonly Lazy<UTF8ArrayMarshaler> s_static_instance = new();
 
         public override unsafe IntPtr MarshalManagedToNative(string[] managedObj)
         {
@@ -88,12 +88,12 @@ namespace IOSLib.Native
 
         public static ICustomMarshaler GetInstance(string cookie)
         {
-            return static_instance.Value;
+            return s_static_instance.Value;
         }
 
         public static UTF8ArrayMarshaler GetInstance()
         {
-            return static_instance.Value;
+            return s_static_instance.Value;
         }
     }
 }

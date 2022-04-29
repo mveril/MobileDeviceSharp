@@ -16,7 +16,7 @@
         private bool Predicate(SyntaxNode node, CancellationToken token) => node.IsKind(SyntaxKind.EnumDeclaration) && ((EnumDeclarationSyntax)node).Identifier.ToString().EndsWith("Error");
         private ITypeSymbol Transform(GeneratorSyntaxContext context, CancellationToken token)
         {
-            return (ITypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node);
+            return (ITypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!;
         }
 
         private static void Producer(SourceProductionContext context, ITypeSymbol EnumSymbol)

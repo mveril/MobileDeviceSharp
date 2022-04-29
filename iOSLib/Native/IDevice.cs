@@ -6,7 +6,7 @@ using IOSLib.CompilerServices;
 
 namespace IOSLib.Native
 {
-    public class IDevice
+    internal class IDevice
     {
         public const string LibraryName = "imobiledevice";
 

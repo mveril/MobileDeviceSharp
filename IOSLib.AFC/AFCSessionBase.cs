@@ -9,30 +9,30 @@ namespace IOSLib.AFC
 {
     public abstract class AFCSessionBase : ServiceSessionBase<AFCClientHandle,AFCError>
     {
-        private static readonly StartServiceCallback<AFCClientHandle, AFCError> startCallback = afc_client_start_service;
+        private static readonly StartServiceCallback<AFCClientHandle, AFCError> s_startCallback = afc_client_start_service;
 
-        private static readonly ClientNewCallback<AFCClientHandle, AFCError> clientNewCallback = afc_client_new;
+        private static readonly ClientNewCallback<AFCClientHandle, AFCError> s_clientNewCallback = afc_client_new;
 
-        protected AFCSessionBase(IDevice device, string serviceID) : base(device, serviceID, true, clientNewCallback)
+        protected AFCSessionBase(IDevice device, string serviceID) : base(device, serviceID, true, s_clientNewCallback)
         {
 
         }
 
-        protected AFCSessionBase(IDevice device) : base(device, startCallback)
+        protected AFCSessionBase(IDevice device) : base(device, s_startCallback)
         {
 
         }
 
         public abstract string RootPath { get; }
 
-        public AFCDirectory Root => new AFCDirectory(this,"/");
+        public AFCDirectory Root => new(this,"/");
 
         public AFCItemType GetItemType(string path)
         {
             return GetItemType(GetFileInfo(path));
         }
 
-        internal AFCItemType GetItemType(IReadOnlyDictionary<string,string> fileInfo)
+        internal static AFCItemType GetItemType(IReadOnlyDictionary<string,string> fileInfo)
         {
             return AFCItemType.Create(fileInfo["st_ifmt"]);
         }

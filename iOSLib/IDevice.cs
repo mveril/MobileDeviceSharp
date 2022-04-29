@@ -172,7 +172,7 @@ namespace IOSLib
         {
             get
             {
-                return this.ProductType switch
+                return ProductType switch
                 {
                     "iPhone13,1" => "iPhone 12 mini",
                     "iPhone13,2" => "iPhone 12",
@@ -275,7 +275,7 @@ namespace IOSLib
                     "iPad2,2" => "iPad 2 GSM",
                     "iPad2,1" => "iPad 2 Wi-Fi",
                     "iPad1,1" => "iPad",
-                    _ => this.ProductType,
+                    _ => ProductType,
                 };
             }
         }
@@ -533,10 +533,8 @@ namespace IOSLib
 #endif
                 using (var lockdown = new LockdownSession(this, IsPaired))
                 {
-                    using (PlistString timeZoneNode = new PlistString(strTZ))
-                    {
-                        lockdown.GetDomain()[nameof(TimeZone)] = timeZoneNode;
-                    }                    
+                    using var timeZoneNode = new PlistString(strTZ);
+                    lockdown.GetDomain()[nameof(TimeZone)] = timeZoneNode;                   
                 }
             }
         }
@@ -581,7 +579,7 @@ namespace IOSLib
             }
         }
 
-        private bool _IsPared;
+        private bool _isPared;
 
         /// <summary>
         /// Check if the device is pared whith the computer
@@ -589,12 +587,12 @@ namespace IOSLib
         public bool IsPaired { 
             get
             {
-                return _IsPared;
+                return _isPared;
             }
             internal set {
-                if (_IsPared != value)
+                if (_isPared != value)
                 {
-                    _IsPared = value;
+                    _isPared = value;
                     if (value)
                     {
                         InitEventWatching(this);

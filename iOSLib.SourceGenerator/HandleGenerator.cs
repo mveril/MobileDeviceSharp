@@ -6,7 +6,6 @@ namespace iOSLib.SourceGenerator
     {
         const string AttrNamespace = "IOSLib.CompilerServices";
         const string AttrName = "GenerateHandleAttribute";
-        const string PropName = "HandleName";
 
         
         public void Initialize(IncrementalGeneratorInitializationContext context)
@@ -52,7 +51,6 @@ namespace iOSLib.SourceGenerator
             
             if (methodData.HasValue)
             {
-                MethodDeclarationSyntax method;
                 var (nameSpace, className, freeCode) = methodData.Value;
                 var (fileName, source) = GetSource(nameSpace, className, GetFreeMethod(freeCode));
                 context.AddSource(fileName, source);

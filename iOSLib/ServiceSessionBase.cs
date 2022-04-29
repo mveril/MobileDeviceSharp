@@ -19,8 +19,7 @@ namespace IOSLib
             Device = device;
             using var ld = new LockdownSession(device);
             var descriptor = ld.StartService(serviceID, withEscrowBag);
-            THandle handle;
-            var error = init(device.Handle, descriptor, out handle);
+            var error = init(device.Handle, descriptor, out THandle handle);
             var ex = ExceptionUtils.GetException(error);
             if (ex != null)
             {
@@ -33,8 +32,7 @@ namespace IOSLib
         {
             var init = startService;
             Device = device;
-            THandle handle;
-            var error = init(device.Handle, out handle, null);
+            var error = init(device.Handle, out THandle handle, null);
             var ex = ExceptionUtils.GetException(error);
             if (ex != null)
             {

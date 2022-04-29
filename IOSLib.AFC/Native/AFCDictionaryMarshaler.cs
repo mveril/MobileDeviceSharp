@@ -9,7 +9,7 @@ namespace IOSLib.AFC.Native
     class AFCDictionaryMarshaler : UTF8DictionaryMarshaler
     {
 
-        static Lazy<AFCDictionaryMarshaler> static_instance = new Lazy<AFCDictionaryMarshaler>();
+        private static readonly Lazy<AFCDictionaryMarshaler> s_static_instance = new();
 
         public override void CleanUpNativeData(IntPtr pNativeData)
         {
@@ -18,12 +18,12 @@ namespace IOSLib.AFC.Native
 
         public static new ICustomMarshaler GetInstance(string cookie)
         {
-            return static_instance.Value;
+            return s_static_instance.Value;
         }
 
         public static new AFCDictionaryMarshaler GetInstance()
         {
-            return static_instance.Value;
+            return s_static_instance.Value;
         }
     }
 }

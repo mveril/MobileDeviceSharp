@@ -6,7 +6,7 @@ using IOSLib.CompilerServices;
 
 namespace IOSLib.Native
 {
-    public partial class NotificationProxy
+    internal partial class NotificationProxy
     {
 
         public const string LibraryName = "imobiledevice";

@@ -8,7 +8,7 @@ namespace IOSLib.Native
 {
     class IDeviceListExtendedMarshaler : IDeviceListMarshaler
     {
-        static Lazy<IDeviceListExtendedMarshaler> static_instance = new Lazy<IDeviceListExtendedMarshaler>();
+        private static readonly Lazy<IDeviceListExtendedMarshaler> s_static_instance = new();
 
         public override void CleanUpNativeData(IntPtr pNativeData)
         {
@@ -17,12 +17,12 @@ namespace IOSLib.Native
 
         public static new IDeviceListExtendedMarshaler GetInstance()
         {
-            return static_instance.Value;
+            return s_static_instance.Value;
         }
 
         public static new ICustomMarshaler GetInstance(string cookie)
         {
-            return static_instance.Value;
+            return s_static_instance.Value;
         }
     }
 }

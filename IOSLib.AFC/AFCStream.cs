@@ -10,14 +10,14 @@ namespace IOSLib.AFC
 
         public AFCSessionBase Session { get;  }
 
-        private readonly string path;
-        private ulong fHandle;
+        private readonly string _path;
+        private ulong _fHandle;
 
         public AFCStream(AFCSessionBase session, string path, FileMode mode, FileAccess access, AFCLockOp fileLock)
         {
             var file = new AFCFile(session, path);
             Session = session;
-            this.path = path;
+            _path = path;
             FileAccess = access;
             var needTruncate = mode == FileMode.Truncate || mode == FileMode.Create;
             bool isNew = false;
@@ -69,7 +69,7 @@ namespace IOSLib.AFC
                 (FileAccess.ReadWrite, FileMode.Create) => AFCFileMode.FopenRw, // rw+  
                 _ => throw new InvalidOperationException(),
             };
-            var hresult = afc_file_open(Session.Handle, path, AFCMode, out fHandle);
+            var hresult = afc_file_open(Session.Handle, path, AFCMode, out _fHandle);
             switch (hresult)
             {
                 case AFCError.Success:
@@ -90,13 +90,13 @@ namespace IOSLib.AFC
             Lock(fileLock);
             if (!isNew && needTruncate)
             {
-                afc_file_truncate(session.Handle, fHandle, 0);
+                afc_file_truncate(session.Handle, _fHandle, 0);
             }
         }
 
         public void Lock(AFCLockOp operation)
         {
-            AFCException ex = afc_file_lock(Session.Handle, fHandle, operation).GetException();
+            AFCException ex = afc_file_lock(Session.Handle, _fHandle, operation).GetException();
             if (ex != null)
                 throw ex;
         }
@@ -113,7 +113,7 @@ namespace IOSLib.AFC
             get
             {
                 ValidateHandle();
-                return long.Parse(Session.GetFileInfo(path)["st_size"]);
+                return long.Parse(Session.GetFileInfo(_path)["st_size"]);
             }
         }
 
@@ -122,7 +122,7 @@ namespace IOSLib.AFC
             get
             {
                 ValidateHandle();
-                var ex = afc_file_tell(Session.Handle, fHandle, out var position).GetException();
+                var ex = afc_file_tell(Session.Handle, _fHandle, out var position).GetException();
                 if (ex != null)
                     throw  new IOException("An exception occure when we triy to get the stream position",ex);
                 return (long)position;
@@ -184,7 +184,7 @@ namespace IOSLib.AFC
         private int ReadInternal(byte[] buffer, int count)
         {
             
-            AFCException ex = afc_file_read(Session.Handle, fHandle, buffer, (uint)count, out var byteread).GetException();
+            AFCException ex = afc_file_read(Session.Handle, _fHandle, buffer, (uint)count, out var byteread).GetException();
             if (ex != null)
                 throw ex;
             return (int)byteread;
@@ -198,7 +198,7 @@ namespace IOSLib.AFC
             {
                 fixed (byte* bptr = buffer)
                 {
-                    ex = afc_file_read(Session.Handle, fHandle, bptr, (uint)buffer.Length, out byteread).GetException();
+                    ex = afc_file_read(Session.Handle, _fHandle, bptr, (uint)buffer.Length, out byteread).GetException();
                 }
             }
             if (ex != null)
@@ -217,7 +217,7 @@ namespace IOSLib.AFC
                 SeekOrigin.End => (offset, 1)
             };
             ValidateHandle();
-            AFCException ex = afc_file_seek(Session.Handle, fHandle, values.Item1, values.Item2).GetException();
+            AFCException ex = afc_file_seek(Session.Handle, _fHandle, values.Item1, values.Item2).GetException();
             if (ex != null)
                 throw new IOException("Seek operation failed.", ex);
             return Position;
@@ -234,7 +234,7 @@ namespace IOSLib.AFC
                 if (CanWrite)
                 {
 
-                    AFCException? ex = afc_file_truncate(Session.Handle, fHandle, (ulong)value).GetException();
+                    AFCException? ex = afc_file_truncate(Session.Handle, _fHandle, (ulong)value).GetException();
                     if (ex != null)
                         throw new IOException("Truncate operation failed", ex);
                 }
@@ -269,7 +269,7 @@ namespace IOSLib.AFC
 
         public void WriteInternal(byte[] buffer, int count)
         {
-            AFCException ex = afc_file_write(Session.Handle, fHandle, buffer, (uint)count, out _).GetException();
+            AFCException ex = afc_file_write(Session.Handle, _fHandle, buffer, (uint)count, out _).GetException();
             if (ex != null)
                 throw ex;
         }
@@ -281,7 +281,7 @@ namespace IOSLib.AFC
             {
                 fixed (byte* bptr = buffer)
                 {
-                    ex = afc_file_write(Session.Handle, fHandle, bptr, (uint)buffer.Length, out _).GetException();
+                    ex = afc_file_write(Session.Handle, _fHandle, bptr, (uint)buffer.Length, out _).GetException();
                 }
             }
             if (ex != null)
@@ -289,7 +289,7 @@ namespace IOSLib.AFC
         }
         private  void ValidateHandle()
         {
-            if (_IsDisposed)
+            if (_isDisposed)
             {
                 throw new ObjectDisposedException("The file is closed");
             }
@@ -299,15 +299,15 @@ namespace IOSLib.AFC
             }
         }
 
-        private bool _IsDisposed = false;
+        private bool _isDisposed = false;
 
 
         protected override void Dispose(bool disposing)
         {
             ValidateHandle();
-            afc_file_close(Session.Handle, fHandle);
-            _IsDisposed = true;
-            fHandle = 0;
+            afc_file_close(Session.Handle, _fHandle);
+            _isDisposed = true;
+            _fHandle = 0;
             base.Dispose(disposing);
         }
     }

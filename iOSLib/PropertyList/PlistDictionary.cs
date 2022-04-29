@@ -74,7 +74,7 @@ namespace IOSLib.PropertyList
         {
             foreach (var item in source)
             {
-                this.Add(item);
+                Add(item);
             }
         }
         /// <inheritdoc/>
@@ -113,7 +113,7 @@ namespace IOSLib.PropertyList
         public bool TryGetValue(string key, out PlistNode value)
 #endif
         {
-            value = PlistNode.From(plist_dict_get_item(Handle, key));
+            value = From(plist_dict_get_item(Handle, key));
             return value != null;
         }
 
@@ -126,7 +126,7 @@ namespace IOSLib.PropertyList
         /// <inheritdoc/>
         public void Clear()
         {
-            var keyscopy = this.Keys.ToList();
+            var keyscopy = Keys.ToList();
             foreach  (string key in keyscopy)
             {
                 Remove(key);
