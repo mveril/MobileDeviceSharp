@@ -9,7 +9,7 @@ namespace IOSLib.PropertyList
     /// Represent an abstract class for Plist node wich contain value.
     /// </summary>
     /// <typeparam name="T">The value type</typeparam>
-    public abstract class PlistValueNode<T> : PlistNode, IEquatable<PlistValueNode<T>> where T : notnull
+    public abstract class PlistValueNode<T> : PlistNode where T : notnull
     {
         protected PlistValueNode(PlistHandle handle) : base(handle)
         {
@@ -28,9 +28,5 @@ namespace IOSLib.PropertyList
 
         public static explicit operator T(PlistValueNode<T> node) => node.Value;
 
-        public bool Equals(PlistValueNode<T> other)
-        {
-            return this.Value.Equals(other.Value) || base.Equals(other);
-        }
     }
 }
