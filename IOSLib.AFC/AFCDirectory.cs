@@ -29,7 +29,7 @@ namespace IOSLib.AFC
 
         public AFCDirectory CreateSubDirectory(string name)
         {
-            var sub = GetSubDirectory(Path);
+            var sub = GetSubDirectory(UnixPath.Combine(Path ,name));
             sub.Create();
             return sub;
         }
