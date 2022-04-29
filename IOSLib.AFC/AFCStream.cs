@@ -15,17 +15,58 @@ namespace IOSLib.AFC
 
         public AFCStream(AFCSessionBase session, string path, FileMode mode, FileAccess access, AFCLockOp fileLock)
         {
+            var file = new AFCFile(session, path);
             Session = session;
             this.path = path;
             FileAccess = access;
+            var needTruncate = mode == FileMode.Truncate || mode == FileMode.Create;
+            bool isNew = false;
+            void CreateNew()
+            {
+                if (!file.Exists)
+                {
+                    Console.WriteLine(file.Path);
+                    Console.WriteLine(file.Parent?.Exists);
+                    var err=afc_file_open(session.Handle, path, AFCFileMode.FopenWronly, out ulong tmpfhandle);
+                    Console.WriteLine(err.ToString());
+                    isNew = true;
+                    afc_file_close(session.Handle, tmpfhandle);
+                }
+            }
+            switch (mode)
+            {
+                case FileMode.Append:
+                case FileMode.Open:
+                case FileMode.Truncate:
+                                        if (!file.Exists)
+                        throw new InvalidOperationException();
+                    break;
+                case FileMode.CreateNew:
+                    if (file.Exists)
+                        throw new InvalidOperationException();
+                    if (access == FileAccess.ReadWrite)
+                    {
+                        CreateNew();
+                    }
+                    break;
+                case FileMode.Create:
+                case FileMode.OpenOrCreate:
+                    if (access == FileAccess.ReadWrite)
+                    {
+                        CreateNew();
+                    }
+                    break;
+                default:
+                    break;
+            }
             AFCFileMode AFCMode = (access, mode) switch
             {
                 (FileAccess.Read, FileMode.Open) => AFCFileMode.FopenRdonly, // r
-                (FileAccess.ReadWrite, FileMode.OpenOrCreate) => AFCFileMode.FopenRw, //r+
-                (FileAccess.Write, FileMode.Truncate) => AFCFileMode.FopenWronly, //w
-                (FileAccess.ReadWrite, FileMode.Truncate) => AFCFileMode.FopenWr, //w+
-                (FileAccess.Write, FileMode.Append) => AFCFileMode.FopenAppend, //a
+                (FileAccess.ReadWrite, FileMode.Open or FileMode.Truncate or FileMode.OpenOrCreate) => AFCFileMode.FopenRw, //r+
+                (FileAccess.Write, FileMode.Open or FileMode.Truncate or FileMode.CreateNew or FileMode.OpenOrCreate or FileMode.Create) => AFCFileMode.FopenWronly, // w
                 (FileAccess.ReadWrite, FileMode.Append) => AFCFileMode.FopenRdappend, //a+
+                (FileAccess.Write, FileMode.Append or FileMode.OpenOrCreate) => AFCFileMode.FopenAppend, //a+
+                (FileAccess.ReadWrite, FileMode.Create) => AFCFileMode.FopenRw, // rw+  
                 _ => throw new InvalidOperationException(),
             };
             var hresult = afc_file_open(Session.Handle, path, AFCMode, out fHandle);
@@ -47,6 +88,10 @@ namespace IOSLib.AFC
                     throw hresult.GetException();
             }
             Lock(fileLock);
+            if (!isNew && needTruncate)
+            {
+                afc_file_truncate(session.Handle, fHandle, 0);
+            }
         }
 
         public void Lock(AFCLockOp operation)
