@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using static IOSLib.AFC.Native.AFC;
-using IOSLib.AFC.Native;
 using System.Text;
 
 namespace IOSLib.AFC
@@ -36,7 +35,7 @@ namespace IOSLib.AFC
 
         public AFCStream Open(FileMode mode, FileAccess access, AFCLockOp @lock)
         {
-            return new AFCStream(Session, this.Path, mode, access, @lock);
+            return new AFCStream(Session, Path, mode, access, @lock);
         }
 
         public AFCStream OpenRead()

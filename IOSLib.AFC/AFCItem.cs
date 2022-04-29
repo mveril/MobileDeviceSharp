@@ -15,12 +15,12 @@ namespace IOSLib.AFC
 
         internal IReadOnlyDictionary<string, string> GetFileInfo()
         {
-            return Session.GetFileInfo(this.Path);
+            return Session.GetFileInfo(Path);
         }
 
         internal AFCItemType GetItemType()
         {
-            return Session.GetItemType(this.Path);
+            return Session.GetItemType(Path);
         }
 
 
@@ -54,7 +54,6 @@ namespace IOSLib.AFC
         {
             Path = path;
             Session = session;
-            var infos = session.GetFileInfo(path);
         }
 
         public void Delete()
@@ -101,7 +100,7 @@ namespace IOSLib.AFC
         }
         public AFCItem MakeLink(AFCLinkType linkType, string linkPath)
         {
-            var ex = afc_make_link(Session.Handle, linkType, this.Path, linkPath).GetException();
+            var ex = afc_make_link(Session.Handle, linkType, Path, linkPath).GetException();
             if (ex != null)
                 throw ex;
             return Session.Root.GetItem(linkPath);
