@@ -142,7 +142,7 @@ namespace IOSLib
             return accumulator;
         }
 
-        public override string ToString() => $"{Major}{Minor}{Build}{(_revision.HasValue ? _revision : string.Empty)} ";
+        public override string ToString() => $"{Major}{Minor}{Build}{(_revision.HasValue ? _revision : string.Empty)}";
 
         /// <inheritdoc/>
         public object Clone()
