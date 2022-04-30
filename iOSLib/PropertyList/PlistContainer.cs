@@ -117,7 +117,7 @@ namespace IOSLib.PropertyList
         /// </summary>
         /// <param name="stream">The stream</param>
         /// <returns>The plist container</returns>
-        public static unsafe PlistContainer? FromStream(Stream stream)
+        public static PlistContainer? FromStream(Stream stream)
         {
             byte[] buffer;
             var length = stream.Length;
