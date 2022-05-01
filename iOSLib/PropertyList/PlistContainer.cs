@@ -106,7 +106,7 @@ namespace IOSLib.PropertyList
         /// </summary>
         /// <param name="path"></param>
         /// <returns>The plist container</returns>
-        public static PlistContainer FromFile(string path)
+        public static PlistContainer? FromFile(string path)
         {
             using var fileStream = new FileStream(path, FileMode.Open);
             return FromStream(fileStream);
@@ -119,26 +119,34 @@ namespace IOSLib.PropertyList
         /// <returns>The plist container</returns>
         public static PlistContainer? FromStream(Stream stream)
         {
-            byte[] buffer;
-            var length = stream.Length;
-            if (stream is MemoryStream ms)
+            PlistContainer? container;
+
+            uint leight = (uint)stream.Length;
+            unsafe
             {
-                buffer = ms.GetBuffer();
+                byte* ptr;
+#if NET6_0_OR_GREATER
+                ptr = (byte*)NativeMemory.Alloc(leight);
+#else
+                ptr = (byte*)Marshal.AllocHGlobal((nint)leight).ToPointer();
+#endif
+                var ums = new UnmanagedMemoryStream(ptr, stream.Length,stream.Length, FileAccess.Write);
+                stream.CopyTo(ums);
+                stream.Close();
+                plist_from_memory(ptr, leight, out var handle);
+                var node = From(handle);{
+                container = node as PlistContainer;
+                if (container is not null)
+                    container.IsBinary = plist_is_binary(ptr, leight) != 0;
+                }
+
+#if NET6_0_OR_GREATER
+                NativeMemory.Free(ptr);
+#else
+                Marshal.FreeHGlobal((IntPtr)ptr);
+#endif             
             }
-            else
-            {
-                buffer = new byte[length];
-                var memoryStream = new MemoryStream(buffer);
-                stream.CopyTo(memoryStream);
-            }
-            plist_from_memory(buffer, (uint)length, out var handle);
-            var node = From(handle);
-            if (node is PlistContainer container)
-            {
-                container.IsBinary = plist_is_binary(buffer, (uint)length) != 0;
-                return container;
-            }
-            return null;
+            return container;
         }
 
         void ICollection.CopyTo(Array array, int index)
