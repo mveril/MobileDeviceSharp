@@ -292,74 +292,122 @@ namespace IOSLib
         /// Start a pairing operatoion with the specified <paramref name="pairRecordHandle"/>.
         /// </summary>
         /// <param name="pairRecordHandle">The handle of the pairRecord</param>
+        /// <param name="progress">Used to report the progress</param>
         /// <param name="cancellationToken">A cancelation token used to cancel stop the operation</param>
-        /// <returns>Return true if the operation succeed</returns>
-        public Task<bool> PairAsync(LockdownPairRecordHandle pairRecordHandle,CancellationToken cancellationToken)
+        /// <returns>Return <see langword="true"/> if the user accept pairng else <see langword="false"/>.</returns>
+        public async Task<bool> PairAsync(LockdownPairRecordHandle pairRecordHandle, IProgress<PairingState> progress, CancellationToken cancellationToken)
         {
             var tsk = new TaskCompletionSource<bool>();
             if (cancellationToken.IsCancellationRequested)
-            {
                 tsk.TrySetCanceled(cancellationToken);
-            }
             cancellationToken.Register(() => tsk.TrySetCanceled(cancellationToken));
-            var err = lockdownd_pair(Handle, pairRecordHandle);
-            switch (err)
+            async Task InterpreteError(LockdownError err)
             {
-                case LockdownError.Success:
-                    _device.IsPaired = true;
-                    tsk.SetResult(true);
-                    break;
-                case LockdownError.UserDeniedPairing:
-                    tsk.SetResult(false);
-                    _device.IsPaired = false;
-                    break;
-                case LockdownError.PairingDialogResponsePending:
-                    var np = new InsecureNotificationProxySession(_device);
-                    np.ObserveNotification("com.apple.mobile.lockdown.request_pair");
-                    np.NotificationProxyEvent += async (s, e) =>
-                    {
-                        tsk.SetResult(await PairAsync(pairRecordHandle, cancellationToken));
-                        np.Dispose();
-                    };
-                    break;
-                case LockdownError.InvalidHostId:
-                    tsk.SetResult(false);
-                    _device.IsPaired = false;
-                    break;
-                default:
-                    tsk.SetException(err.GetException());
-                    break;
+                switch (err)
+                {
+                    case LockdownError.Success:
+                        _device.IsPaired = true;
+                        progress.Report(PairingState.Success);
+                        tsk.SetResult(true);
+                        break;
+                    case LockdownError.UserDeniedPairing:
+                        progress.Report(PairingState.UserDeniedPairing);
+                        tsk.SetResult(false);
+                        _device.IsPaired = false;
+                        break;
+                    case LockdownError.PasswordProtected:
+                        progress.Report(PairingState.PasswordProtected);
+                        while (true)
+                        {
+                            await Task.Delay(200,cancellationToken);
+                            if (cancellationToken.IsCancellationRequested)
+                                tsk.TrySetCanceled(cancellationToken);
+                            var result = lockdownd_pair(Handle, pairRecordHandle);
+                            if (result != LockdownError.PasswordProtected)
+                            {
+                                await InterpreteError(result);
+                                break;
+                            }
+                        }
+                        break;
+                    case LockdownError.PairingDialogResponsePending:
+                        progress.Report(PairingState.PairingDialogResponsePending);
+                        var np = new InsecureNotificationProxySession(_device);
+                        np.ObserveNotification("com.apple.mobile.lockdown.request_pair");
+                        np.NotificationProxyEvent += async (s, e) =>
+                        {
+                            tsk.SetResult(await PairAsync(pairRecordHandle, progress, cancellationToken));
+                            np.Dispose();
+                        };
+                        break;
+                    default:
+                        tsk.SetException(err.GetException());
+                        break;
+                }
             }
-            return tsk.Task;
-        }
-
-        /// <summary>
-        /// Start a pairing operatoion.
-        /// </summary>
-        /// <returns>Return true if the operation succeed</returns>
-        public Task<bool> PairAsync()
-        {
-            return PairAsync(LockdownPairRecordHandle.Zero,CancellationToken.None);
+            var err = lockdownd_pair(Handle, pairRecordHandle);
+            await InterpreteError(err);
+            return await tsk.Task;
         }
 
         /// <summary>
         /// Start a pairing operatoion with the specified <paramref name="pairRecordHandle"/>.
         /// </summary>
-        /// <param name="pairRecordHandle">The handle of the pairRecord.</param>
-        /// <returns>Return true if the operation succeed</returns>
-        public Task<bool> PairAsync(LockdownPairRecordHandle pairRecordHandle)
+        /// <returns>Return <see langword="true"/> if the user accept pairng else <see langword="false"/>.</returns>
+        public Task<bool> PairAsync()
         {
-            return PairAsync(pairRecordHandle, CancellationToken.None);
+            return PairAsync(LockdownPairRecordHandle.Zero, new Progress<PairingState>(), CancellationToken.None);
         }
 
         /// <summary>
-        /// Start a pairing operatoion.
+        /// Start a pairing operatoion with the specified <paramref name="pairRecordHandle"/>.
+        /// </summary>
+        /// <param name="pairRecordHandle">The handle of the pairRecord</param>
+        /// <returns>Return <see langword="true"/> if the user accept pairng else <see langword="false"/>.</returns>
+        public Task<bool> PairAsync(LockdownPairRecordHandle pairRecordHandle)
+        {
+            return PairAsync(pairRecordHandle, new Progress<PairingState>(), CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Start a pairing operatoion with the specified <paramref name="pairRecordHandle"/>.
+        /// </summary>
+        /// <param name="pairRecordHandle">The handle of the pairRecord</param>
+        /// <param name="progress">Used to report the progress</param>
+        /// <returns>Return <see langword="true"/> if the user accept pairng else <see langword="false"/>.</returns>
+        public Task<bool> PairAsync(LockdownPairRecordHandle pairRecordHandle, IProgress<PairingState> progress)
+        {
+            return PairAsync(pairRecordHandle, progress, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Start a pairing operatoion with the specified <paramref name="pairRecordHandle"/>.
+        /// </summary>
+        /// <param name="pairRecordHandle">The handle of the pairRecord</param>
+        /// <returns>Return <see langword="true"/> if the user accept pairng else <see langword="false"/>.</returns>
+        public Task<bool> PairAsync(LockdownPairRecordHandle pairRecordHandle, CancellationToken token)
+        {
+            return PairAsync(pairRecordHandle, new Progress<PairingState>(), token);
+        }
+
+        /// <summary>
+        /// Start a pairing operatoion with the specified <paramref name="pairRecordHandle"/>.
         /// </summary>
         /// <param name="cancellationToken">A cancelation token used to cancel stop the operation</param>
-        /// <returns>Return true if the operation succeed</returns>
+        /// <returns>Return <see langword="true"/> if the user accept pairng else <see langword="false"/>.</returns>
         public Task<bool> PairAsync(CancellationToken cancellationToken)
         {
-            return PairAsync(LockdownPairRecordHandle.Zero, cancellationToken);
+            return PairAsync(LockdownPairRecordHandle.Zero, new Progress<PairingState>(), cancellationToken);
+        }
+
+        /// <summary>
+        /// Start a pairing operatoion with the specified <paramref name="pairRecordHandle"/>.
+        /// </summary>
+        /// <param name="progress">Used to report the progress</param>
+        /// <returns>Return <see langword="true"/> if the user accept pairng else <see langword="false"/>.</returns>
+        public Task<bool> PairAsync(IProgress<PairingState> progress)
+        {
+            return PairAsync(LockdownPairRecordHandle.Zero, progress, CancellationToken.None);
         }
 
         /// <summary>
