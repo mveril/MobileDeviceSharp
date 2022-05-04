@@ -1,6 +1,7 @@
 ﻿using IOSLib.AFC.Native;
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using static IOSLib.AFC.Native.AFC;
 
 namespace IOSLib.AFC
@@ -38,7 +39,7 @@ namespace IOSLib.AFC
                 case FileMode.Append:
                 case FileMode.Open:
                 case FileMode.Truncate:
-                                        if (!file.Exists)
+                   if (!file.Exists)
                         throw new InvalidOperationException();
                     break;
                 case FileMode.CreateNew:
@@ -162,50 +163,12 @@ namespace IOSLib.AFC
         public override int Read(byte[] buffer, int offset, int count)
         {
             ValidateBufferArguments(buffer, offset, count);
-            try
-            {
-                if (offset == 0)
-                {
-                    return ReadInternal(buffer, count);
-                }
-                else
-                {
-                    var targetSpan = new Span<byte>(buffer, offset, count);
-                    return ReadInternal(targetSpan);
-                }
-            }
-            catch (AFCException ex)
-            {
-
+            var offsetbuffer = new ArrayWithOffset(buffer, offset);
+            AFCException ex = afc_file_read(Session.Handle, _fHandle, offsetbuffer, (uint)count, out var byteread).GetException();
+            if (ex != null)
                 throw new IOException("Read operation failed", ex);
-            }
-        }
-
-        private int ReadInternal(byte[] buffer, int count)
-        {
-            
-            AFCException ex = afc_file_read(Session.Handle, _fHandle, buffer, (uint)count, out var byteread).GetException();
-            if (ex != null)
-                throw ex;
             return (int)byteread;
         }
-
-        private int ReadInternal(Span<byte> buffer)
-        {
-            AFCException ex;
-            uint byteread;
-            unsafe
-            {
-                fixed (byte* bptr = buffer)
-                {
-                    ex = afc_file_read(Session.Handle, _fHandle, bptr, (uint)buffer.Length, out byteread).GetException();
-                }
-            }
-            if (ex != null)
-                throw ex;
-            return (int)byteread;
-        }
-
 
         public override long Seek(long offset, SeekOrigin origin)
         {
@@ -249,44 +212,13 @@ namespace IOSLib.AFC
         {
             ValidateBufferArguments(buffer, offset, count);
             ValidateHandle();
-            try
-            {
-                if (offset == 0)
-                {
-                    WriteInternal(buffer, count);
-                }
-                else
-                {
-                    var targetSpan = new ReadOnlySpan<byte>(buffer, offset, count);
-                    WriteInternal(targetSpan);
-                }
-            }
-            catch (AFCException ex)
-            {
+
+            var offsetbuffer = new ArrayWithOffset(buffer, offset);
+            AFCException ex = afc_file_write(Session.Handle, _fHandle, offsetbuffer, (uint)count, out _).GetException();
+            if (ex != null)
                 throw new IOException("Write operation failed.", ex);
-            }
         }
 
-        public void WriteInternal(byte[] buffer, int count)
-        {
-            AFCException ex = afc_file_write(Session.Handle, _fHandle, buffer, (uint)count, out _).GetException();
-            if (ex != null)
-                throw ex;
-        }
-
-        public void WriteInternal(ReadOnlySpan<byte> buffer)
-        {
-            AFCException ex;
-            unsafe
-            {
-                fixed (byte* bptr = buffer)
-                {
-                    ex = afc_file_write(Session.Handle, _fHandle, bptr, (uint)buffer.Length, out _).GetException();
-                }
-            }
-            if (ex != null)
-                throw ex;
-        }
         private  void ValidateHandle()
         {
             if (_isDisposed)

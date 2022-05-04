@@ -223,6 +223,30 @@ namespace IOSLib.AFC.Native
         /// AFC_E_SUCCESS on success or an AFC_E_* error value.
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(AFC.LibraryName, EntryPoint = "afc_file_read", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
+        public static extern AFCError afc_file_read(AFCClientHandle client, ulong handle, [In, Out] ArrayWithOffset data, uint length, out uint bytesRead);
+
+        /// <summary>
+        /// Attempts to the read the given number of bytes from the given file.
+        /// </summary>
+        /// <param name="client">
+        /// The relevant AFC client
+        /// </param>
+        /// <param name="handle">
+        /// File handle of a previously opened file
+        /// </param>
+        /// <param name="data">
+        /// The pointer to the memory region to store the read data
+        /// </param>
+        /// <param name="length">
+        /// The number of bytes to read
+        /// </param>
+        /// <param name="bytes_read">
+        /// The number of bytes actually read.
+        /// </param>
+        /// <returns>
+        /// AFC_E_SUCCESS on success or an AFC_E_* error value.
+        /// </returns>
+        [System.Runtime.InteropServices.DllImportAttribute(AFC.LibraryName, EntryPoint = "afc_file_read", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
         public static extern unsafe AFCError afc_file_read(AFCClientHandle client, ulong handle, byte* data, uint length, out uint bytesRead);
 
         /// <summary>
@@ -248,6 +272,30 @@ namespace IOSLib.AFC.Native
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(AFC.LibraryName, EntryPoint = "afc_file_write", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
         public static extern AFCError afc_file_write(AFCClientHandle client, ulong handle, byte[] data, uint length, out uint bytesWritten);
+
+        /// <summary>
+        /// Writes a given number of bytes to a file.
+        /// </summary>
+        /// <param name="client">
+        /// The client to use to write to the file.
+        /// </param>
+        /// <param name="handle">
+        /// File handle of previously opened file.
+        /// </param>
+        /// <param name="data">
+        /// The data to write to the file.
+        /// </param>
+        /// <param name="length">
+        /// How much data to write.
+        /// </param>
+        /// <param name="bytes_written">
+        /// The number of bytes actually written to the file.
+        /// </param>
+        /// <returns>
+        /// AFC_E_SUCCESS on success or an AFC_E_* error value.
+        /// </returns>
+        [System.Runtime.InteropServices.DllImportAttribute(AFC.LibraryName, EntryPoint = "afc_file_write", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
+        public static extern AFCError afc_file_write(AFCClientHandle client, ulong handle, [In, Out] ArrayWithOffset data, uint length, out uint bytesWritten);
 
         /// <summary>
         /// Writes a given number of bytes to a file.
