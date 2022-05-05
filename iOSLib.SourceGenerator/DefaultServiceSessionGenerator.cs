@@ -5,8 +5,8 @@
     {
         public void Initialize(IncrementalGeneratorInitializationContext context)
         {
-            var source = context.SyntaxProvider.CreateSyntaxProvider(Predicate, Transformer).Where((c) => c != null);
-            context.RegisterSourceOutput(source, Producer);
+            var source = context.SyntaxProvider.CreateSyntaxProvider(Predicate, Transformer).Where((c) => c is not null);
+            context.RegisterSourceOutput(source.Collect(), Producer);
         }
 
         private bool Predicate(SyntaxNode node, CancellationToken token) => node.IsKind(SyntaxKind.ClassDeclaration) && ((ClassDeclarationSyntax)node).Identifier.Text.EndsWith("Base");
@@ -29,6 +29,20 @@
             }
             return null;
         }
+
+        private void Producer(SourceProductionContext context, ImmutableArray<INamedTypeSymbol?> typeSymbols)
+        {
+            
+            foreach (INamedTypeSymbol item in typeSymbols.Distinct(SymbolEqualityComparer.Default))
+            {
+                if (context.CancellationToken.IsCancellationRequested)
+                {
+                    break;
+                }
+                Producer(context, item);
+            }
+        }
+
         private void Producer(SourceProductionContext context, INamedTypeSymbol? typeSymbol)
         {
             string nameSpaceName = typeSymbol!.ContainingNamespace.ToDisplayString();
