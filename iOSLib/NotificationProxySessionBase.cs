@@ -4,13 +4,16 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using System.Threading.Tasks;
+using System.Threading;
+using System.Linq;
 
 namespace IOSLib
 {
     /// <summary>
     /// Represente a session of the <see href="https://docs.libimobiledevice.org/libimobiledevice/latest/notification__proxy_8h.html">NotificationProxy</see> service.
     /// </summary>
-    public abstract class NotificationProxySessionBase : ServiceSessionBase<NotificationProxyClientHandle,NotificationProxyError>
+    public abstract partial class NotificationProxySessionBase : ServiceSessionBase<NotificationProxyClientHandle,NotificationProxyError>
     {
         /// <summary>
         /// Event fired when a subcribed event occurs.
@@ -28,7 +31,11 @@ namespace IOSLib
         /// <param name="withEscrowBag">If <see langword="true"/> use escrowbag</param>
         public NotificationProxySessionBase(IDevice device, string ServiceID, bool withEscrowBag) : base(device, ServiceID, withEscrowBag, s_clientNewCallback)
         {
-            
+            var ex = np_set_notify_callback(Handle, Callback, IntPtr.Zero).GetException();
+            if (ex != null)
+            {
+                throw ex;
+            }
         }
 
         /// <summary>
@@ -37,44 +44,22 @@ namespace IOSLib
         /// <param name="device"></param>
         public NotificationProxySessionBase(IDevice device) : base(device, s_startCallback)
         {
-
-        }
-        /// <summary>
-        /// Run these method to define the notification we want to observe a lot of constants are available on <see cref="NotificationProxyEvents.Recevable"/>
-        /// </summary>
-        /// <param name="notification"></param>
-        public void ObserveNotification(params string[] notification)
-        {
-            var ex = np_observe_notifications(Handle, notification).GetException();
-            if (ex != null)
-            {
-                throw ex;
-            }
-            ex = np_set_notify_callback(Handle, callBack, IntPtr.Zero).GetException();
+            var ex = np_set_notify_callback(Handle, Callback, IntPtr.Zero).GetException();
             if (ex != null)
             {
                 throw ex;
             }
         }
 
-        private void callBack(string notification, IntPtr userData)
+        private void UpdateObservation()
         {
-            DeviceRaiseEvent(new NotificationProxyEventArgs(notification));
+            np_observe_notifications(this.Handle, _tasksDic.Keys.Concat(_eventIDS).ToArray());
         }
 
-        private void DeviceRaiseEvent(NotificationProxyEventArgs e)
+        private void Callback(string notification, IntPtr userData)
         {
-            NotificationProxyEvent?.Invoke(this ,e);
-        }
-
-        /// <summary>
-        /// Raise event to the device <see cref="NotificationProxyEvents.Sendable"/>
-        /// </summary>
-        /// <param name="e">The event args</param>
-        public void RaiseEvent(NotificationProxyEventArgs e)
-        {
-            np_post_notification(Handle, e.EventName);
-            NotificationProxyEvent?.Invoke(this, e);
+            TaskCallBack(notification, userData);
+            EventCallback(notification, userData);
         }
     }
 }

@@ -319,7 +319,7 @@ namespace IOSLib
                         progress.Report(PairingState.PasswordProtected);
                         while (true)
                         {
-                            await Task.Delay(200,cancellationToken);
+                            await Task.Delay(200,cancellationToken).ConfigureAwait(false);
                             if (cancellationToken.IsCancellationRequested)
                                 tsk.TrySetCanceled(cancellationToken);
                             var result = lockdownd_pair(Handle, pairRecordHandle);
@@ -333,12 +333,7 @@ namespace IOSLib
                     case LockdownError.PairingDialogResponsePending:
                         progress.Report(PairingState.PairingDialogResponsePending);
                         var np = new InsecureNotificationProxySession(_device);
-                        np.ObserveNotification("com.apple.mobile.lockdown.request_pair");
-                        np.NotificationProxyEvent += async (s, e) =>
-                        {
-                            tsk.SetResult(await PairAsync(pairRecordHandle, progress, cancellationToken));
-                            np.Dispose();
-                        };
+                        await np.ObserveNotificationAsync("com.apple.mobile.lockdown.request_pair", cancellationToken).ContinueWith((_)=> np.Dispose()).ConfigureAwait(false);
                         break;
                     default:
                         tsk.SetException(err.GetException());
@@ -346,7 +341,7 @@ namespace IOSLib
                 }
             }
             var err = lockdownd_pair(Handle, pairRecordHandle);
-            await InterpreteError(err);
+            await InterpreteError(err).ConfigureAwait(false);
             return await tsk.Task;
         }
 
