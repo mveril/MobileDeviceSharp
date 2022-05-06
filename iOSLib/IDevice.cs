@@ -134,6 +134,16 @@ namespace IOSLib
             }
         }
 
+        public string RawDeviceClass
+        {
+            get
+            {
+                using var lockdown = new LockdownSession(this, IsPaired);
+                using PlistString deviceClassNode = (PlistString)lockdown.GetDomain()["DeviceClass"];
+                return deviceClassNode.Value;
+            }
+        }
+
         /// <summary>
         /// Get the device class
         /// </summary>
@@ -141,15 +151,14 @@ namespace IOSLib
         {
             get
             {
-                string strClass = string.Empty;
-                using (var lockdown = new LockdownSession(this,IsPaired))
+                if (Enum.TryParse<DeviceClass>(this.RawDeviceClass, out var dClass))
                 {
-                    using (PlistString deviceClassNode = (PlistString)lockdown.GetDomain()["DeviceClass"])
-                    {
-                        strClass = deviceClassNode.Value;
-                    }
+                    return (dClass);
                 }
-                return (DeviceClass)Enum.Parse(typeof(DeviceClass), strClass);
+                else
+                {
+                    return DeviceClass.Unknow;
+                }
             }
         }
 

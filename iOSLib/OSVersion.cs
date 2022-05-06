@@ -37,10 +37,12 @@ namespace IOSLib
             const string iOS = nameof(iOS);
             const string iPadOS = nameof(iPadOS);
             const string iPhoneOS = nameof(iPhoneOS);
+            const string watchOS = nameof(watchOS);
+            const string tvOS = nameof(tvOS);
             OSDisplayName = iOS;
             switch (deviceClass)
             {
-                case DeviceClass.iPhone or DeviceClass.iPodTouch:
+                case DeviceClass.iPhone or DeviceClass.iPod:
                     if (Version.Major < 4)
                     {
                         OSDisplayName = iPhoneOS;
@@ -50,6 +52,15 @@ namespace IOSLib
                     if (Version.Major > 12)
                     {
                         OSDisplayName = iPadOS;
+                    }
+                    break;
+                case DeviceClass.Watch:
+                    OSDisplayName = watchOS;
+                    break;
+                case DeviceClass.AppleTV:
+                    if (Version.Major > 8)
+                    {
+                        OSDisplayName = tvOS;
                     }
                     break;
             };

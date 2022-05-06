@@ -18,8 +18,16 @@
         /// </summary>
         iPad,
         /// <summary>
-        /// Represent an iPod Touch
+        /// Represent an iPod
         /// </summary>
-        iPodTouch,
+        iPod,
+        /// <summary>
+        /// Represent an Apple Watch
+        /// </summary>
+        Watch,
+        /// <summary>
+        /// Represent an AppleTV
+        /// </summary>
+        AppleTV
     }
 }
