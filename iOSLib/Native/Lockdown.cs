@@ -229,7 +229,7 @@ namespace IOSLib.Native
         /// LOCKDOWN_E_SSL_ERROR if enabling SSL communication failed
         /// </returns>
         [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_start_session", CallingConvention = CallingConvention.Cdecl)]
-        public static extern LockdownError lockdownd_start_session(LockdownClientHandle client, [MarshalAsAttribute(UnmanagedType.LPStr)] string hostId, out System.IntPtr sessionId, ref int sslEnabled);
+        public static extern LockdownError lockdownd_start_session(LockdownClientHandle client, [MarshalAsAttribute(UnmanagedType.LPStr)] string hostId, out System.IntPtr sessionId, out int sslEnabled);
 
         /// <summary>
         /// Closes the lockdownd session by sending the StopSession request.

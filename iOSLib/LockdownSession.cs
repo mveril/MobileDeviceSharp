@@ -118,12 +118,12 @@ namespace IOSLib
         /// <summary>
         /// Get the device <see cref="Ulid"/>
         /// </summary>
-        public Ulid DeviceUdid
+        public string DeviceUdid
         {
             get
             {
                 lockdownd_get_device_udid(Handle, out var udid);
-                return Ulid.Parse(udid);
+                return udid;
             }
         }
 
@@ -301,7 +301,7 @@ namespace IOSLib
             if (cancellationToken.IsCancellationRequested)
                 tsk.TrySetCanceled(cancellationToken);
             cancellationToken.Register(() => tsk.TrySetCanceled(cancellationToken));
-            async Task InterpreteError(LockdownError err)
+            async Task InterpretePairingError(LockdownError err)
             {
                 switch (err)
                 {
@@ -325,7 +325,7 @@ namespace IOSLib
                             var result = lockdownd_pair(Handle, pairRecordHandle);
                             if (result != LockdownError.PasswordProtected)
                             {
-                                await InterpreteError(result);
+                                await InterpretePairingError(result);
                                 break;
                             }
                         }
@@ -341,8 +341,42 @@ namespace IOSLib
                 }
             }
             var err = lockdownd_pair(Handle, pairRecordHandle);
-            await InterpreteError(err).ConfigureAwait(false);
-            return await tsk.Task;
+            await InterpretePairingError(err).ConfigureAwait(false);
+            var result = await tsk.Task;
+            if (result)
+            {
+                PerformHandshake();
+            }
+            return result;
+        }
+
+        private void PerformHandshake()
+        {
+            PerformHandshake(LockdownPairRecordHandle.Zero);
+        }
+
+        private void PerformHandshake(LockdownPairRecordHandle pairRecordHandle)
+        {
+            var hresult = LockdownError.Success;
+            if (GetOSVersion() < new Version(7, 0) && GetDeviceClass() != DeviceClass.Watch)
+            {
+                hresult = lockdownd_validate_pair(Handle, pairRecordHandle);
+                if (hresult.IsError())
+                    throw hresult.GetException();
+            }
+            using var doc = UsbMuxdService.ReadPairRecord(DeviceUdid);
+            using var hostId=(PlistString)((PlistDictionary)doc.RootNode)["HostID"];
+            hresult = lockdownd_start_session(Handle, hostId.Value, out _, out _);
+            if (hresult.IsError())
+            {
+                throw hresult.GetException();
+            }
+        }
+
+        internal Version GetOSVersion()
+        {
+            using PlistString plVersion = (PlistString)GetDomain()["ProductVersion"];
+            return new Version(plVersion.Value);
         }
 
         /// <summary>
@@ -444,9 +478,9 @@ namespace IOSLib
 
         internal DeviceClass GetDeviceClass()
         {
-            if (Enum.TryParse<DeviceClass>(this.GetRawDeviceClass(), out var dClass))
+            if (Enum.TryParse<DeviceClass>(GetRawDeviceClass(), out var dClass))
             {
-                return (dClass);
+                return dClass;
             }
             else
             {

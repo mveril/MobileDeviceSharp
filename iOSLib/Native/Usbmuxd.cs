@@ -287,7 +287,7 @@ namespace IOSLib.Native
         /// 0 on success, a negative error value otherwise.
         /// </returns>
         [DllImportAttribute(Usbmuxd.LibraryName, EntryPoint = "usbmuxd_read_pair_record", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int usbmuxd_read_pair_record([MarshalAsAttribute(UnmanagedType.LPStr)] string recordId, out System.IntPtr recordData, ref uint recordSize);
+        public static extern int usbmuxd_read_pair_record([MarshalAsAttribute(UnmanagedType.LPStr)] string recordId, out System.IntPtr recordData, out uint recordSize);
 
         /// <summary>
         /// Save a pairing record

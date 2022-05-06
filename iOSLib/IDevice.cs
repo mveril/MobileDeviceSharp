@@ -104,7 +104,7 @@ namespace IOSLib
         /// <summary>
         /// Get the device Udid
         /// </summary>
-        public Ulid Udid
+        public string Udid
         {
             get
             {
