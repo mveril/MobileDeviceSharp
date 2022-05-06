@@ -139,8 +139,7 @@ namespace IOSLib
             get
             {
                 using var lockdown = new LockdownSession(this, IsPaired);
-                using PlistString deviceClassNode = (PlistString)lockdown.GetDomain()["DeviceClass"];
-                return deviceClassNode.Value;
+                return lockdown.GetRawDeviceClass();
             }
         }
 
@@ -151,14 +150,8 @@ namespace IOSLib
         {
             get
             {
-                if (Enum.TryParse<DeviceClass>(this.RawDeviceClass, out var dClass))
-                {
-                    return (dClass);
-                }
-                else
-                {
-                    return DeviceClass.Unknow;
-                }
+                using var lockdown = new LockdownSession(this, IsPaired);
+                return lockdown.GetDeviceClass();              
             }
         }
 

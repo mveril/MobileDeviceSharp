@@ -434,5 +434,24 @@ namespace IOSLib
         {
             return lockdownd_enter_recovery(Handle);
         }
+
+
+        internal string GetRawDeviceClass()
+        {
+            using PlistString deviceClassNode = (PlistString)GetDomain()["DeviceClass"];
+            return deviceClassNode.Value;
+        }
+
+        internal DeviceClass GetDeviceClass()
+        {
+            if (Enum.TryParse<DeviceClass>(this.GetRawDeviceClass(), out var dClass))
+            {
+                return (dClass);
+            }
+            else
+            {
+                return DeviceClass.Unknow;
+            }
+        }
     }
 }
