@@ -31,10 +31,10 @@ namespace IOSLib
         /// <param name="withEscrowBag">If <see langword="true"/> use escrowbag</param>
         public NotificationProxySessionBase(IDevice device, string ServiceID, bool withEscrowBag) : base(device, ServiceID, withEscrowBag, s_clientNewCallback)
         {
-            var ex = np_set_notify_callback(Handle, Callback, IntPtr.Zero).GetException();
-            if (ex != null)
+            var result = np_set_notify_callback(Handle, Callback, IntPtr.Zero);
+            if (result.IsError())
             {
-                throw ex;
+                throw result.GetException();
             }
         }
 
@@ -44,22 +44,26 @@ namespace IOSLib
         /// <param name="device"></param>
         public NotificationProxySessionBase(IDevice device) : base(device, s_startCallback)
         {
-            var ex = np_set_notify_callback(Handle, Callback, IntPtr.Zero).GetException();
-            if (ex != null)
+            var result = np_set_notify_callback(Handle, Callback, IntPtr.Zero);
+            if (result.IsError())
             {
-                throw ex;
+                throw result.GetException();
             }
-        }
-
-        private void UpdateObservation()
-        {
-            np_observe_notifications(this.Handle, _tasksDic.Keys.Concat(_eventIDS).ToArray());
         }
 
         private void Callback(string notification, IntPtr userData)
         {
-            TaskCallBack(notification, userData);
-            EventCallback(notification, userData);
+            TaskCallBack(notification);
+            EventCallback(notification);
+        }
+
+        /// <summary>
+        /// Raise event to the device <see cref="NotificationProxyEvents.Sendable"/>
+        /// </summary>
+        /// <param name="eventName">The event args</param>
+        public void RaiseEvent(string eventName)
+        {
+            np_post_notification(Handle, eventName);
         }
     }
 }

@@ -13,17 +13,41 @@ namespace IOSLib
         /// <summary>
         /// Run these method to define the notification we want to observe a lot of constants are available on <see cref="NotificationProxyEvents.Recevable"/>
         /// </summary>
-        /// <param name="notification"></param>
+        /// <param name="notifications"></param>
         public void ObserveNotification(params string[] notifications)
         {
-            foreach (var notification in notifications)
+            var result = np_observe_notifications(Handle, notifications);
+            if (result.IsError())
+            {
+                throw result.GetException();
+            }
+            else
+            {
+                foreach (var notification in notifications)
+                {
+                    _eventIDS.Add(notification);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Run these method to define the notification we want to observe a lot of constants are available on <see cref="NotificationProxyEvents.Recevable"/>
+        /// </summary>
+        /// <param name="notification"></param>
+        public void ObserveNotification(string notification)
+        {
+            var result = np_observe_notification(Handle, notification);
+            if (result.IsError())
+            {
+                throw result.GetException();
+            }
+            else
             {
                 _eventIDS.Add(notification);
             }
-            UpdateObservation();
         }
 
-        private void EventCallback(string notification, IntPtr userData)
+        private void EventCallback(string notification)
         {
             DeviceRaiseEvent(new NotificationProxyEventArgs(notification));
         }
@@ -39,8 +63,7 @@ namespace IOSLib
         /// <param name="e">The event args</param>
         public void RaiseEvent(NotificationProxyEventArgs e)
         {
-            np_post_notification(Handle, e.EventName);
-            NotificationProxyEvent?.Invoke(this, e);
+            RaiseEvent(e.EventName);
         }
     }
 }

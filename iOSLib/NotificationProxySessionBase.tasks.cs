@@ -13,9 +13,9 @@ namespace IOSLib
     public abstract partial class NotificationProxySessionBase
     {
 #if NET5_0_OR_GREATER
-        ConcurrentDictionary<string, ConcurrentBag<TaskCompletionSource>> _tasksDic = new();
+        ConcurrentDictionary<string, ConcurrentQueue<TaskCompletionSource>> _tasksDic = new();
 #else
-        ConcurrentDictionary<string, ConcurrentBag<TaskCompletionSource<object?>>> _tasksDic = new();
+        ConcurrentDictionary<string, ConcurrentQueue<TaskCompletionSource<object?>>> _tasksDic = new();
 #endif
 
         /// <summary>
@@ -23,34 +23,45 @@ namespace IOSLib
         /// </summary>
         /// <param name="notification"></param>
         /// <param name="token"></param>
-        public async Task ObserveNotificationAsync(string notification, CancellationToken token)
+        public Task ObserveNotificationAsync(string notification, CancellationToken token)
         {
+            if (token.IsCancellationRequested)
+            {
+                return Task.FromCanceled(token);
+            }
+            var result = np_observe_notification(Handle, notification);
+            if (result.IsError())
+            {
+                return Task.FromException(result.GetException());
+            }
+            else
+            {
 #if NET5_0_OR_GREATER
-            var tcs = new TaskCompletionSource();
+                var tcs = new TaskCompletionSource();
 #else
-            var tcs = new TaskCompletionSource<object?>();
+                var tcs = new TaskCompletionSource<object?>();
 #endif
-            _tasksDic.AddOrUpdate(notification, (key) => BagFactory(tcs), (_, value) => BagFactory(value, tcs));
-            token.Register(() => tcs.TrySetCanceled(token));
-            UpdateObservation();
-            await tcs.Task.ConfigureAwait(false);
+                token.Register(() => tcs.TrySetCanceled(token));
+                _tasksDic.AddOrUpdate(notification, (_) => QueueFactory(tcs), (_, value) => QueueFactory(value, tcs));
+                return tcs.Task;
+            }
         }
 #if NET5_0_OR_GREATER
-        private static ConcurrentBag<TaskCompletionSource> BagFactory(TaskCompletionSource tcs)
+        private static ConcurrentQueue<TaskCompletionSource> QueueFactory(TaskCompletionSource tcs)
 #else
-        private ConcurrentBag<TaskCompletionSource<object?>> BagFactory(TaskCompletionSource<object?> tcs)
+        private ConcurrentQueue<TaskCompletionSource<object?>> QueueFactory(TaskCompletionSource<object?> tcs)
 #endif
         {
-            return BagFactory(new(), tcs);
+            return QueueFactory(new(), tcs);
         }
 #if NET5_0_OR_GREATER
-        private static ConcurrentBag<TaskCompletionSource> BagFactory(ConcurrentBag<TaskCompletionSource> bag, TaskCompletionSource tcs)
+        private static ConcurrentQueue<TaskCompletionSource> QueueFactory(ConcurrentQueue<TaskCompletionSource> queue, TaskCompletionSource tcs)
 #else
-        private ConcurrentBag<TaskCompletionSource<object?>> BagFactory(ConcurrentBag<TaskCompletionSource<object?>> bag, TaskCompletionSource<object?> tcs)
+        private ConcurrentQueue<TaskCompletionSource<object?>> QueueFactory(ConcurrentQueue<TaskCompletionSource<object?>> queue, TaskCompletionSource<object?> tcs)
 #endif
         {
-            bag.Add(tcs);
-            return bag;
+            queue.Enqueue(tcs);
+            return queue;
         }
 
         /// <summary>
@@ -62,11 +73,11 @@ namespace IOSLib
             await ObserveNotificationAsync(notification, CancellationToken.None);
         }
 
-        private void TaskCallBack(string notification, IntPtr userData)
+        private void TaskCallBack(string notification)
         {
             if(_tasksDic.TryGetValue(notification, out var tcss))
             {
-                while (tcss.TryTake(out var tcs))
+                while (tcss.TryDequeue(out var tcs))
                 {
 #if NET5_0_OR_GREATER
                     tcs.TrySetResult();
