@@ -444,6 +444,17 @@ namespace IOSLib
         }
 
         /// <summary>
+        /// Start a pairing operatoion with the specified <paramref name="pairRecordHandle"/>.
+        /// </summary>
+        /// <param name="progress">Used to report the progress</param>
+        /// <param name="cancellationToken">A cancelation token used to cancel stop the operation</param>
+        /// <returns>Return <see langword="true"/> if the user accept pairng else <see langword="false"/>.</returns>
+        public Task<bool> PairAsync(IProgress<PairingState> progress, CancellationToken cancellationToken)
+        {
+            return PairAsync(LockdownPairRecordHandle.Zero, progress, cancellationToken);
+        }
+
+        /// <summary>
         /// Try to unpair the device with the specified <paramref name="pairRecordHandle"/>.
         /// </summary>
         /// <param name="pairRecordHandle">The handle of the pairRecord.</param>
