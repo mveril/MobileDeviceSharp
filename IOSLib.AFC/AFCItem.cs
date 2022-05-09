@@ -58,16 +58,16 @@ namespace IOSLib.AFC
 
         public void Delete()
         {
-            var ex = afc_remove_path(Session.Handle, Path).GetException();
-            if (ex != null)
-                throw ex;
+            var hresult = afc_remove_path(Session.Handle, Path);
+            if (hresult.IsError())
+                throw hresult.GetException();
         }
 
         public AFCItem MakeLink(string path, AFCLinkType linkType)
         {
-            var ex = afc_make_link(Session.Handle, linkType, Path, path).GetException();
-            if (ex != null)
-                throw ex;
+            var hresult = afc_make_link(Session.Handle, linkType, Path, path);
+            if (hresult.IsError())
+                throw hresult.GetException();
             return Session.Root.GetItem(path);
         }
 
@@ -93,16 +93,16 @@ namespace IOSLib.AFC
 
         public void MoveTo(string to)
         {
-            var ex = afc_rename_path(Session.Handle, Path, to).GetException();
-            if (ex != null)
-                throw ex;
+            var hresult = afc_rename_path(Session.Handle, Path, to);
+            if (hresult.IsError())
+                throw hresult.GetException();
             Path = to;
         }
         public AFCItem MakeLink(AFCLinkType linkType, string linkPath)
         {
-            var ex = afc_make_link(Session.Handle, linkType, Path, linkPath).GetException();
-            if (ex != null)
-                throw ex;
+            var hresult = afc_make_link(Session.Handle, linkType, Path, linkPath);
+            if (hresult.IsError())
+                throw hresult.GetException();
             return Session.Root.GetItem(linkPath);
         }
 

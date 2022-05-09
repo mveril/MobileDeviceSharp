@@ -97,9 +97,9 @@ namespace IOSLib.AFC
 
         public void Lock(AFCLockOp operation)
         {
-            AFCException ex = afc_file_lock(Session.Handle, _fHandle, operation).GetException();
-            if (ex != null)
-                throw ex;
+            var hresult = afc_file_lock(Session.Handle, _fHandle, operation);
+            if (hresult.IsError())
+                throw hresult.GetException();
         }
 
         public FileAccess FileAccess { get; }
@@ -123,9 +123,9 @@ namespace IOSLib.AFC
             get
             {
                 ValidateHandle();
-                var ex = afc_file_tell(Session.Handle, _fHandle, out var position).GetException();
-                if (ex != null)
-                    throw  new IOException("An exception occure when we triy to get the stream position",ex);
+                var hresult = afc_file_tell(Session.Handle, _fHandle, out var position);
+                if (hresult.IsError())
+                    throw  new IOException("An exception occure when we triy to get the stream position",hresult.GetException());
                 return (long)position;
             }
 
@@ -164,9 +164,9 @@ namespace IOSLib.AFC
         {
             ValidateBufferArguments(buffer, offset, count);
             var offsetbuffer = new ArrayWithOffset(buffer, offset);
-            AFCException ex = afc_file_read(Session.Handle, _fHandle, offsetbuffer, (uint)count, out var byteread).GetException();
-            if (ex != null)
-                throw new IOException("Read operation failed", ex);
+            var hresult = afc_file_read(Session.Handle, _fHandle, offsetbuffer, (uint)count, out var byteread);
+            if (hresult.IsError())
+                throw new IOException("Read operation failed", hresult.GetException());
             return (int)byteread;
         }
 
@@ -180,9 +180,9 @@ namespace IOSLib.AFC
                 SeekOrigin.End => (offset, 1)
             };
             ValidateHandle();
-            AFCException ex = afc_file_seek(Session.Handle, _fHandle, values.Item1, values.Item2).GetException();
-            if (ex != null)
-                throw new IOException("Seek operation failed.", ex);
+            var hresult = afc_file_seek(Session.Handle, _fHandle, values.Item1, values.Item2);
+            if(hresult.IsError())
+                throw new IOException("Seek operation failed.", hresult.GetException());
             return Position;
         }
 
@@ -197,9 +197,9 @@ namespace IOSLib.AFC
                 if (CanWrite)
                 {
 
-                    AFCException? ex = afc_file_truncate(Session.Handle, _fHandle, (ulong)value).GetException();
-                    if (ex != null)
-                        throw new IOException("Truncate operation failed", ex);
+                    var hresult = afc_file_truncate(Session.Handle, _fHandle, (ulong)value);
+                    if (hresult.IsError())
+                        throw new IOException("Truncate operation failed", hresult.GetException());
                 }
                 else
                 {
@@ -214,9 +214,9 @@ namespace IOSLib.AFC
             ValidateHandle();
 
             var offsetbuffer = new ArrayWithOffset(buffer, offset);
-            AFCException ex = afc_file_write(Session.Handle, _fHandle, offsetbuffer, (uint)count, out _).GetException();
-            if (ex != null)
-                throw new IOException("Write operation failed.", ex);
+            var hresult = afc_file_write(Session.Handle, _fHandle, offsetbuffer, (uint)count, out _);
+            if (hresult.IsError())
+                throw new IOException("Write operation failed.", hresult.GetException());
         }
 
         private  void ValidateHandle()

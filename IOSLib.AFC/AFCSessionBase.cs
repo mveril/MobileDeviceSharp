@@ -41,9 +41,9 @@ namespace IOSLib.AFC
         {
             try
             {
-                var ex = afc_get_file_info(Handle, path, out var col).GetException();
-                if (ex != null)
-                    throw ex;
+                var hresult = afc_get_file_info(Handle, path, out var col);
+                if (hresult.IsError())
+                    throw hresult.GetException();
                 return col;
             }
             catch (AFCException ex) when (ex.ErrorCode == (int)AFCError.ObjectNotFound)

@@ -40,11 +40,9 @@ namespace IOSLib
 
         private static IDeviceHandle GetHandle(string udid, UsbmuxConnectionType connectionType = UsbmuxConnectionType.All)
         {
-            var ex = idevice_new_with_options(out var deviceHandle, udid, connectionType).GetException();
-            if (ex != null)
-            {
-                throw ex;
-            }
+            var hresult = idevice_new_with_options(out var deviceHandle, udid, connectionType);
+            if (hresult.IsError())
+                throw hresult.GetException();
             return deviceHandle;
         }
 
@@ -55,11 +53,9 @@ namespace IOSLib
         public static IEnumerable<IDevice> List()
         {
             int count = 0;
-            var ex = idevice_get_device_list(out var udids, ref count).GetException();
-            if (ex != null)
-            {
-                throw ex;
-            }
+            var hresult = idevice_get_device_list(out var udids, ref count);
+            if (hresult.IsError())
+                throw hresult.GetException();
             return udids.Select(id => new IDevice(id));
         }
 
@@ -70,11 +66,9 @@ namespace IOSLib
         public static IEnumerable<IDevice> ListExtended()
         {
             int count = 0;
-            var ex = idevice_get_device_list_extended(out var udids, ref count).GetException();
-            if (ex != null)
-            {
-                throw ex;
-            }
+            var hresult = idevice_get_device_list_extended(out var udids, ref count);
+            if (hresult.IsError())
+                throw hresult.GetException();
             return udids.Select(id => new IDevice(id));
         }
 

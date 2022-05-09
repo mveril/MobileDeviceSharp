@@ -33,63 +33,51 @@ namespace IOSLib.DiagnosticsRelay
 
         public void Reboot(DiagnosticsRelayAction action)
         {
-            var ex = diagnostics_relay_restart(Handle, action).GetException();
-            if (ex != null)
-            {
-                throw ex;
-            }
+            var hresult = diagnostics_relay_restart(Handle, action);
+            if (hresult.IsError())
+                throw hresult.GetException();
         }
 
         public void Shutdown(DiagnosticsRelayAction action)
         {
-            var ex = diagnostics_relay_shutdown(Handle, action).GetException();
-            if (ex != null)
-            {
-                throw ex;
-            }
+            var hresult = diagnostics_relay_shutdown(Handle, action);
+            if (hresult.IsError())
+                throw hresult.GetException();
         }
         public PlistNode RequestDiagnostics(string type)
         {
-            var ex = diagnostics_relay_request_diagnostics(Handle, type, out var plistHandle).GetException();
-            if (ex != null)
-            {
-                throw ex;
-            }
+            var hresult = diagnostics_relay_request_diagnostics(Handle, type, out var plistHandle);
+            if (hresult.IsError())
+                throw hresult.GetException();
             return PlistNode.From(plistHandle);
         }
 
         public PlistNode QueryMobilegestalt(string key)
         {
-            Exception ex;
+            DiagnosticsRelayError hresult;
             PlistHandle result;
             using (var keynode = new PlistKey(key))
             {
-                ex = diagnostics_relay_query_mobilegestalt(Handle, keynode.Handle, out result).GetException();
+                hresult = diagnostics_relay_query_mobilegestalt(Handle, keynode.Handle, out result);
             }
-            if (ex != null)
-            {
-                throw ex;
-            }
+            if (hresult.IsError())
+                throw hresult.GetException();
             return PlistNode.From(result);
         }
 
         public PlistNode QueryIoregistryEntry(string entryName,string entryClass)
         {
-            var ex = diagnostics_relay_query_ioregistry_entry(Handle, entryName, entryClass, out var result).GetException();
-            if (ex != null)
-            {
-                throw ex;
-            }
+            var hresult = diagnostics_relay_query_ioregistry_entry(Handle, entryName, entryClass, out var result);
+            if (hresult.IsError())
+                throw hresult.GetException();
             return PlistNode.From(result);
         }
 
         public PlistNode QueryIoregistryPlane(string plane)
         {
-            var ex = diagnostics_relay_query_ioregistry_plane(Handle, plane, out var result).GetException();
-            if (ex != null)
-            {
-                throw ex;
-            }
+            var hresult = diagnostics_relay_query_ioregistry_plane(Handle, plane, out var result);
+            if (hresult.IsError())
+                throw hresult.GetException();
             return PlistNode.From(result);
         }
     }

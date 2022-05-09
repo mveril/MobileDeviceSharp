@@ -22,9 +22,9 @@ namespace IOSLib.AFC
 
         public void Create()
         {
-            var ex = afc_make_directory(Session.Handle, Path).GetException();
-            if (ex != null)
-                throw ex;
+            var hresult = afc_make_directory(Session.Handle, Path);
+            if (hresult.IsError())
+                throw hresult.GetException();
         }
 
         public AFCDirectory CreateSubDirectory(string name)
@@ -94,9 +94,9 @@ namespace IOSLib.AFC
         {
             if (recursive)
             {
-                var ex = afc_remove_path_and_contents(Session.Handle, Path).GetException();
-                if (ex != null)
-                    throw ex;
+                var hresult = afc_remove_path_and_contents(Session.Handle, Path);
+                if (hresult.IsError())
+                    throw hresult.GetException();
             }
             else
             {

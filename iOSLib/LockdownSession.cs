@@ -31,19 +31,17 @@ namespace IOSLib
         private static LockdownClientHandle GetHandle(IDevice device, string? label, bool withHandShake)
         {
             LockdownClientHandle handle;
-            LockdownException? ex;
+            LockdownError hresult;
             if (withHandShake)
             {
-                ex = lockdownd_client_new_with_handshake(device.Handle, out handle, label).GetException();
+                hresult = lockdownd_client_new_with_handshake(device.Handle, out handle, label);
             }
             else
             {
-                ex = lockdownd_client_new(device.Handle, out handle, label).GetException();
+                hresult = lockdownd_client_new(device.Handle, out handle, label);
             }
-            if (ex != null)
-            {
-                throw ex;
-            }
+            if (hresult.IsError())
+                throw hresult.GetException();
             if (withHandShake)
             {
                 device.IsPaired = true;
@@ -257,11 +255,9 @@ namespace IOSLib
         /// <returns></returns>
         public LockdownServiceDescriptorHandle StartService(string serviceID)
         {
-            var ex = lockdownd_start_service(Handle, serviceID, out var serviceDescriptorHandle).GetException();
-            if (ex != null)
-            {
-                throw ex;
-            }
+            var hresult = lockdownd_start_service(Handle, serviceID, out var serviceDescriptorHandle);
+            if (hresult.IsError())
+                throw hresult.GetException();
             return serviceDescriptorHandle;
         }
 
@@ -275,10 +271,10 @@ namespace IOSLib
         {
             if (withEscrowBag)
             {
-                var ex = lockdownd_start_service_with_escrow_bag(Handle, serviceID, out var serviceDescriptorHandle).GetException();
-                if (ex != null)
+                var hresult = lockdownd_start_service_with_escrow_bag(Handle, serviceID, out var serviceDescriptorHandle);
+                if (hresult.IsError())
                 {
-                    throw ex;
+                    throw hresult.GetException();
                 }
                 return serviceDescriptorHandle;
             }
