@@ -208,9 +208,11 @@ namespace IOSLib
             return (result = ParseBuildNumber(input, throwOnFailure: false)) != null;
         }
 
+        private static Regex s_buildRegex = new Regex(@"^(\d+)([A-Z])(\d+)([a-z])?$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+
         private static BuildNumber? ParseBuildNumber(string input, bool throwOnFailure)
         {
-            var m= Regex.Match(input, @"^(\d+)([A-Z])(\d+)([a-z])?$");
+            var m= s_buildRegex.Match(input);
             if (!m.Success)
             {
                 if (throwOnFailure)
