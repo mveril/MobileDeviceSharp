@@ -134,10 +134,7 @@ namespace IOSLib
             accumulator |= (_major & 0x0000000F) << 28;
             accumulator |= (_minor - 'A' & 0x000000FF) << 20;
             accumulator |= (_build & 0x000000FF << 12);
-            if (_revision != null)
-            {
-                accumulator |= (_revision.Value - 'a' + 1 & 0x00000FFF);
-            }
+            accumulator |= ((_revision.HasValue ? _revision.Value - 'a' + 1 : 0) & 0x00000FFF);
 
             return accumulator;
         }
