@@ -33,13 +33,13 @@ namespace IOSLib
             if (major < 0)
                 throw new ArgumentOutOfRangeException(nameof(major));
 
-            if (!char.IsUpper(minor))
+            if (minor is < 'A' or > 'Z')
                 throw new ArgumentOutOfRangeException(nameof(minor));
 
             if (build < 0)
                 throw new ArgumentOutOfRangeException(nameof(build));
 
-            if (revision.HasValue && !char.IsLower(revision.Value))
+            if (revision.HasValue && revision.Value is < 'a' or > 'z')
                 throw new ArgumentOutOfRangeException(nameof(revision));
 
             _major = major;
