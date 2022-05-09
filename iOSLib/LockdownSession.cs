@@ -156,7 +156,7 @@ namespace IOSLib
         /// <param name="key">The target key.</param>
         /// <returns>A <see cref="PlistNode"/> contained the result value</returns>
         [Obsolete("Use GetDomain(domain)[key];")]
-        public PlistNode GetValue(string? domain,string key)
+        public PlistNode GetValue(string? domain, string key)
         {
             return GetDomain(domain)[key];
         }
@@ -196,7 +196,7 @@ namespace IOSLib
         [Obsolete("Use GetDomain().TryGetValue(key, out node);")]
         public LockdownError TryGetValue(string key, out PlistNode? node)
         {
-            return TryGetValue(null,key,out node);
+            return TryGetValue(null, key, out node);
         }
 
         /// <summary>
@@ -295,64 +295,68 @@ namespace IOSLib
         /// <param name="progress">Used to report the progress</param>
         /// <param name="cancellationToken">A cancelation token used to cancel stop the operation</param>
         /// <returns>Return <see langword="true"/> if the user accept pairng else <see langword="false"/>.</returns>
-        public async Task<bool> PairAsync(LockdownPairRecordHandle pairRecordHandle, IProgress<PairingState> progress, CancellationToken cancellationToken)
+        private async Task<bool> PairAsync(LockdownPairRecordHandle pairRecordHandle, IProgress<PairingState> progress, CancellationToken cancellationToken)
         {
-            var tsk = new TaskCompletionSource<bool>();
-            if (cancellationToken.IsCancellationRequested)
-                tsk.TrySetCanceled(cancellationToken);
-            cancellationToken.Register(() => tsk.TrySetCanceled(cancellationToken));
-            async Task InterpretePairingError(LockdownError err)
-            {
-                switch (err)
-                {
-                    case LockdownError.Success:
-                        _device.IsPaired = true;
-                        progress.Report(PairingState.Success);
-                        tsk.SetResult(true);
-                        break;
-                    case LockdownError.UserDeniedPairing:
-                        progress.Report(PairingState.UserDeniedPairing);
-                        tsk.SetResult(false);
-                        _device.IsPaired = false;
-                        break;
-                    case LockdownError.PasswordProtected:
-                        progress.Report(PairingState.PasswordProtected);
-                        while (true)
-                        {
-                            await Task.Delay(200,cancellationToken).ConfigureAwait(false);
-                            if (cancellationToken.IsCancellationRequested)
-                                tsk.TrySetCanceled(cancellationToken);
-                            var result = lockdownd_pair(Handle, pairRecordHandle);
-                            if (result != LockdownError.PasswordProtected)
-                            {
-                                await InterpretePairingError(result);
-                                break;
-                            }
-                        }
-                        break;
-                    case LockdownError.PairingDialogResponsePending:
-                        progress.Report(PairingState.PairingDialogResponsePending);
-                        var np = new InsecureNotificationProxySession(_device);
-                        await np.ObserveNotificationAsync("com.apple.mobile.lockdown.request_pair", cancellationToken).ContinueWith((_)=> np.Dispose()).ConfigureAwait(false);
-                        break;
-                    default:
-                        tsk.SetException(err.GetException());
-                        break;
-                }
-            }
-            var err = lockdownd_pair(Handle, pairRecordHandle);
-            await InterpretePairingError(err).ConfigureAwait(false);
-            var result = await tsk.Task;
+            var result = await PairCoreAsync(pairRecordHandle, progress, cancellationToken).ConfigureAwait(false);
             if (result)
             {
-                PerformHandshake();
+                PerformHandshake(pairRecordHandle);
             }
             return result;
         }
-
-        private void PerformHandshake()
+        private async Task<bool> PairCoreAsync(LockdownPairRecordHandle pairRecordHandle, IProgress<PairingState> progress, CancellationToken cancellationToken)
         {
-            PerformHandshake(LockdownPairRecordHandle.Zero);
+            var err = LockdownError.UnknownError;
+            do
+            {
+                err = lockdownd_pair(Handle, pairRecordHandle);
+                switch (err)
+                {
+                    case LockdownError.Success:
+                        progress.Report(PairingState.Success);
+                        break;
+                    case LockdownError.UserDeniedPairing:
+                        progress.Report(PairingState.UserDeniedPairing);
+                        break;
+                    case LockdownError.PasswordProtected:
+                        progress.Report(PairingState.PasswordProtected);
+                        do
+                        {
+                            await Task.Delay(200, cancellationToken);
+                            cancellationToken.ThrowIfCancellationRequested();
+                            err = lockdownd_pair(Handle, pairRecordHandle);
+                        } while (err is LockdownError.PasswordProtected);
+                        break;
+                    case LockdownError.PairingDialogResponsePending:
+                        progress.Report(PairingState.PairingDialogResponsePending);
+                        using (var np = new InsecureNotificationProxySession(_device))
+                        {
+                            await np.ObserveNotificationAsync("com.apple.mobile.lockdown.request_pair", cancellationToken).ConfigureAwait(false);
+                        }
+                        cancellationToken.ThrowIfCancellationRequested();
+                        break;
+                    default:
+                        throw err.GetException();
+                        break;
+                }
+            } while (err is not (LockdownError.Success or LockdownError.UserDeniedPairing));
+            if (err.IsError())
+            {
+                _device.IsPaired = false;
+                if (err is LockdownError.UserDeniedPairing)
+                {
+                    return false;
+                }
+                else
+                {
+                    throw err.GetException();
+                }
+            }
+            else
+            {
+                _device.IsPaired = true;
+                return true;
+            }
         }
 
         private void PerformHandshake(LockdownPairRecordHandle pairRecordHandle)
@@ -365,7 +369,7 @@ namespace IOSLib
                     throw hresult.GetException();
             }
             using var doc = UsbMuxdService.ReadPairRecord(DeviceUdid);
-            using var hostId=(PlistString)((PlistDictionary)doc.RootNode)["HostID"];
+            using var hostId = (PlistString)((PlistDictionary)doc.RootNode)["HostID"];
             hresult = lockdownd_start_session(Handle, hostId.Value, out _, out _);
             if (hresult.IsError())
             {
@@ -464,7 +468,7 @@ namespace IOSLib
         /// Try to put the device into recovery mode
         /// </summary>
         /// <returns>The error code</returns>
-        public LockdownError TryEnterRecovery() 
+        public LockdownError TryEnterRecovery()
         {
             return lockdownd_enter_recovery(Handle);
         }
