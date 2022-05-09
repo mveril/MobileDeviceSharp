@@ -49,7 +49,7 @@ namespace IOSLib
 
         private void EventCallback(string notification)
         {
-            DeviceRaiseEvent(new NotificationProxyEventArgs(notification));
+            _context.Post(_ => DeviceRaiseEvent(new NotificationProxyEventArgs(notification)), null);            
         }
 
         private void DeviceRaiseEvent(NotificationProxyEventArgs e)

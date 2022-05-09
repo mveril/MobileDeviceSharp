@@ -23,6 +23,8 @@ namespace IOSLib
         private static readonly StartServiceCallback<NotificationProxyClientHandle, NotificationProxyError> s_startCallback = np_client_start_service;
 
         private static readonly ClientNewCallback<NotificationProxyClientHandle, NotificationProxyError> s_clientNewCallback = np_client_new;
+        private SynchronizationContext _context = new SynchronizationContext();
+
         /// <summary>
         /// Initialize the service using the specified <paramref name="device"/> <paramref name="ServiceID"/> and <paramref name="withEscrowBag"/>.
         /// </summary>
@@ -53,8 +55,8 @@ namespace IOSLib
 
         private void Callback(string notification, IntPtr userData)
         {
-            TaskCallBack(notification);
             EventCallback(notification);
+            TaskCallBack(notification);       
         }
 
         /// <summary>
