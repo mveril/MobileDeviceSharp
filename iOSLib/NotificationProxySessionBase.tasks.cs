@@ -12,55 +12,35 @@ namespace IOSLib
 {
     public abstract partial class NotificationProxySessionBase
     {
-#if NET5_0_OR_GREATER
-        ConcurrentDictionary<string, ConcurrentQueue<TaskCompletionSource>> _tasksDic = new();
-#else
-        ConcurrentDictionary<string, ConcurrentQueue<TaskCompletionSource<object?>>> _tasksDic = new();
-#endif
+        ConcurrentDictionary<string, ConcurrentQueue<SemaphoreSlim>> _tasksDic = new();
 
         /// <summary>
         /// Run these method to define the notification we want to observe a lot of constants are available on <see cref="NotificationProxyEvents.Recevable"/>
         /// </summary>
         /// <param name="notification"></param>
         /// <param name="token"></param>
-        public Task ObserveNotificationAsync(string notification, CancellationToken token)
+        public async Task ObserveNotificationAsync(string notification, CancellationToken token)
         {
-            if (token.IsCancellationRequested)
-            {
-                return Task.FromCanceled(token);
-            }
+            token.ThrowIfCancellationRequested();
             var result = np_observe_notification(Handle, notification);
             if (result.IsError())
             {
-                return Task.FromException(result.GetException());
+                throw result.GetException();
             }
             else
             {
-#if NET5_0_OR_GREATER
-                var tcs = new TaskCompletionSource();
-#else
-                var tcs = new TaskCompletionSource<object?>();
-#endif
-                token.Register(() => tcs.TrySetCanceled(token));
-                _tasksDic.AddOrUpdate(notification, (_) => QueueFactory(tcs), (_, value) => QueueFactory(value, tcs));
-                return tcs.Task;
+                var sem = new SemaphoreSlim(0);
+                _tasksDic.AddOrUpdate(notification, (_) => QueueFactory(sem), (_, value) => QueueFactory(sem));
+                await sem.WaitAsync(token);
             }
         }
-#if NET5_0_OR_GREATER
-        private static ConcurrentQueue<TaskCompletionSource> QueueFactory(TaskCompletionSource tcs)
-#else
-        private ConcurrentQueue<TaskCompletionSource<object?>> QueueFactory(TaskCompletionSource<object?> tcs)
-#endif
+        private static ConcurrentQueue<SemaphoreSlim> QueueFactory(SemaphoreSlim sem)
         {
-            return QueueFactory(new(), tcs);
+            return QueueFactory(new(), sem);
         }
-#if NET5_0_OR_GREATER
-        private static ConcurrentQueue<TaskCompletionSource> QueueFactory(ConcurrentQueue<TaskCompletionSource> queue, TaskCompletionSource tcs)
-#else
-        private ConcurrentQueue<TaskCompletionSource<object?>> QueueFactory(ConcurrentQueue<TaskCompletionSource<object?>> queue, TaskCompletionSource<object?> tcs)
-#endif
+        private static ConcurrentQueue<SemaphoreSlim> QueueFactory(ConcurrentQueue<SemaphoreSlim> queue, SemaphoreSlim sem)
         {
-            queue.Enqueue(tcs);
+            queue.Enqueue(sem);
             return queue;
         }
 
@@ -75,15 +55,11 @@ namespace IOSLib
 
         private void TaskCallBack(string notification)
         {
-            if(_tasksDic.TryGetValue(notification, out var tcss))
+            if (_tasksDic.TryGetValue(notification, out var tcss))
             {
-                while (tcss.TryDequeue(out var tcs))
+                while (tcss.TryDequeue(out var sem))
                 {
-#if NET5_0_OR_GREATER
-                    tcs.TrySetResult();
-#else
-                    tcs.TrySetResult(null);
-#endif
+                    sem.Release();
                 }
             }
         }
