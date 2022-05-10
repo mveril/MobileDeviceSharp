@@ -6,7 +6,7 @@ namespace IOSLib.Native
     internal struct UsbmuxdEvent
     {
 
-        public int @event;
+        public UsbmuxdEventType @event;
 
         public UsbmuxdDeviceInfo device;
     }
