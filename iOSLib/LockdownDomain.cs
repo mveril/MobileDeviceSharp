@@ -69,7 +69,7 @@ namespace IOSLib
             {
                 lockdownd_get_value(Session.Handle, Name, key, out var plistHandle);
                 node = PlistNode.From(plistHandle);
-                return node != null;
+                return node is not null;
             }
 
             /// <summary>

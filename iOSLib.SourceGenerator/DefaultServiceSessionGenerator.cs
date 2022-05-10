@@ -15,7 +15,7 @@
             var type = (ClassDeclarationSyntax)context.Node;
             var serviceSessionBase = context.SemanticModel.Compilation.GetTypeByMetadataName("IOSLib.ServiceSessionBase`2");
             var typeSymbol = context.SemanticModel.GetDeclaredSymbol(type);
-            if (typeSymbol != null)
+            if (typeSymbol is not null)
             {
                 var bt = typeSymbol.BaseType;
                 var btbt = bt?.OriginalDefinition;

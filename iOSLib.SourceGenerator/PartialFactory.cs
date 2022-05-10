@@ -6,7 +6,7 @@ namespace iOSLib.SourceGenerator
     {
         private static IEnumerable<MemberDeclarationSyntax> ParentNodes(MemberDeclarationSyntax memberDeclaration)
         {
-            for (SyntaxNode? node = memberDeclaration; node != null && typeof(MemberDeclarationSyntax).IsAssignableFrom(node.GetType()); node = node.Parent)
+            for (SyntaxNode? node = memberDeclaration; node is not null && typeof(MemberDeclarationSyntax).IsAssignableFrom(node.GetType()); node = node.Parent)
             {
                 yield return (MemberDeclarationSyntax)node;
             }

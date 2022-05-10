@@ -9,7 +9,7 @@
 
         public void Initialize(IncrementalGeneratorInitializationContext context)
         {
-            var source = context.SyntaxProvider.CreateSyntaxProvider(Predicate, Transform).Where((@enum)=> @enum != null);
+            var source = context.SyntaxProvider.CreateSyntaxProvider(Predicate, Transform).Where((@enum)=> @enum is not null);
             context.RegisterSourceOutput(source, Producer);
         }
 

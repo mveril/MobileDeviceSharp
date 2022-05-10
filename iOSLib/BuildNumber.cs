@@ -74,7 +74,7 @@ namespace IOSLib
 
         private BuildNumber(BuildNumber buildNumber)
         {
-            Debug.Assert(buildNumber != null);
+            Debug.Assert(buildNumber is not null);
 
             _major = buildNumber._major;
             _minor = buildNumber._minor;
@@ -202,7 +202,7 @@ namespace IOSLib
                 return false;
             }
 
-            return (result = ParseBuildNumber(input, throwOnFailure: false)) != null;
+            return (result = ParseBuildNumber(input, throwOnFailure: false)) is not null;
         }
 
         private static Regex s_buildRegex = new Regex(@"^(\d+)([A-Z])(\d+)([a-z])?$", RegexOptions.Compiled | RegexOptions.CultureInvariant);

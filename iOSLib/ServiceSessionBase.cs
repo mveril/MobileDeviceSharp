@@ -21,7 +21,7 @@ namespace IOSLib
             var descriptor = ld.StartService(serviceID, withEscrowBag);
             var error = init(device.Handle, descriptor, out THandle handle);
             var ex = ExceptionUtils.GetException(error);
-            if (ex != null)
+            if (ex is not null)
             {
                 throw ex;
             }
@@ -34,7 +34,7 @@ namespace IOSLib
             Device = device;
             var error = init(device.Handle, out THandle handle, null);
             var ex = ExceptionUtils.GetException(error);
-            if (ex != null)
+            if (ex is not null)
             {
                 throw ex;
             }

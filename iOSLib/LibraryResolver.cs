@@ -245,7 +245,7 @@ namespace IOSLib.Native
 
             }
 
-            if (path != null)
+            if (path is not null)
             {
                 yield return path;
             }

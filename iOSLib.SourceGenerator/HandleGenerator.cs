@@ -13,7 +13,7 @@ namespace iOSLib.SourceGenerator
             var nonFreeableFullNames = context.AdditionalTextsProvider
                 .Where(file => Path.GetFileName(file.Path).Equals("GenrateHandle.txt", StringComparison.OrdinalIgnoreCase))
                 .Select((file, token) => file.GetText())
-                .Where((text) => text != null)
+                .Where((text) => text is not null)
                 .SelectMany((text, token) => text!.Lines)
                 .Where((line) => !line.Span.IsEmpty)
                 .Select((line, token) => line.Text!.ToString(line.Span));
@@ -42,7 +42,7 @@ namespace iOSLib.SourceGenerator
         {
 
         }");
-            System.Diagnostics.Debug.Assert(member != null);
+            System.Diagnostics.Debug.Assert(member is not null);
             return (MethodDeclarationSyntax)member!;
         }
 
@@ -116,7 +116,7 @@ namespace {0}
         /// <inheritdoc/>
         public override bool Equals(object obj)
         {{
-            if (obj != null && obj.GetType() == typeof({1}))
+            if (obj is not null && obj.GetType() == typeof({1}))
             {{
                 return (({1})obj).handle.Equals(this.handle);
             }}
@@ -213,7 +213,7 @@ namespace {0}
                 return null;
             }
             var freeMethodSymbol = (IMethodSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node, token)!;
-            var genattr=freeMethodSymbol.GetAttributes().FirstOrDefault(a => a.AttributeClass != null && a.AttributeClass.Equals(genAttrSymbol, SymbolEqualityComparer.Default));
+            var genattr=freeMethodSymbol.GetAttributes().FirstOrDefault(a => a.AttributeClass is not null && a.AttributeClass.Equals(genAttrSymbol, SymbolEqualityComparer.Default));
             if (genattr!=null)
             {
                 return (freeMethodSymbol.ContainingNamespace.ToDisplayString(), (string)genattr.ConstructorArguments[0].Value!, GetFreeCode(freeMethodSymbol, context.SemanticModel.Compilation));
@@ -253,7 +253,7 @@ namespace {0}
                     if (freeReturn.TypeKind == TypeKind.Enum)
                     {
                         var field = freeReturn.GetMembers().OfType<IFieldSymbol>().FirstOrDefault(f => f.HasConstantValue && f.ConstantValue.Equals(0));
-                        if (field != null)
+                        if (field is not null)
                         {
                             retval = ParseExpression(field.ToDisplayString(returnFormat));
                         }

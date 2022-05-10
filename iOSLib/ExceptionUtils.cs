@@ -12,7 +12,7 @@ namespace IOSLib
         {
             var attributes = typeof(T).GetCustomAttribute<ExceptionAttribute>(true);
 
-            if (attributes != null)
+            if (attributes is not null)
             {
                 if ((int)(object)value == 0)
                 {

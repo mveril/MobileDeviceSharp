@@ -114,7 +114,7 @@ namespace IOSLib.PropertyList
 #endif
         {
             value = From(plist_dict_get_item(Handle, key));
-            return value != null;
+            return value is not null;
         }
 
         /// <inheritdoc/>
