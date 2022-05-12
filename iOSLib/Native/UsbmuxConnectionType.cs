@@ -14,6 +14,10 @@ namespace IOSLib.Native
         Network = 2,
 
         All = Usb | Network,
-        
+
+        PreferNetwork,
+
+        All_PreferNetwork = All | PreferNetwork,
+
     }
 }
