@@ -94,7 +94,7 @@
                 var npEventBuilders = group;
 
                 var myclass = PartialFactory.CreatePartial(classSyntax,(syntax)=> Factory(syntax,npEventBuilders));
-                var source = CompilationUnit().AddUsings(UsingDirective(IdentifierName("System"))).AddMembers(myclass);
+                var source = CompilationUnit().AddUsings(UsingDirective(IdentifierName("System")),UsingDirective(IdentifierName("IOSLib.NotificationProxy"))).AddMembers(myclass);
                 context.AddSource($"{classInfo.Name}.np.g.cs",SourceText.From(source.NormalizeWhitespace().ToFullString(),Encoding.UTF8));
             }
         }

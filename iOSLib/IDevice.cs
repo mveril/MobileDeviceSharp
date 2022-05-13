@@ -5,6 +5,8 @@ using TimeZoneConverter;
 #endif
 using System.Net.NetworkInformation;
 using IOSLib.Native;
+using IOSLib.NotificationProxy.Native;
+using IOSLib.Usbmuxd.Native;
 using IOSLib.PropertyList;
 using static IOSLib.Native.IDevice;
 using System.Collections.Generic;

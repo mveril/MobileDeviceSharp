@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using IOSLib.CompilerServices;
 
-namespace IOSLib.Native
+namespace IOSLib.Usbmuxd.Native
 {
     internal class Usbmuxd
     {

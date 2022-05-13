@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 using IOSLib.CompilerServices;
+using IOSLib.Native;
 
-namespace IOSLib.Native
+namespace IOSLib.NotificationProxy.Native
 {
     internal partial class NotificationProxy
     {

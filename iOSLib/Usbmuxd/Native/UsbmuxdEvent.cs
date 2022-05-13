@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace IOSLib.Native
+namespace IOSLib.Usbmuxd.Native
 {
     [StructLayoutAttribute(LayoutKind.Sequential)]
     internal struct UsbmuxdEvent

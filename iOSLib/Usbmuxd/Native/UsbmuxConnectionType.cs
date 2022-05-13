@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace IOSLib.Native
+namespace IOSLib.Usbmuxd.Native
 {
     /// <summary>
     /// Type of connection a device is available on 

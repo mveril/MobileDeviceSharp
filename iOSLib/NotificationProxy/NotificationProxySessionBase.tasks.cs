@@ -1,5 +1,5 @@
 ﻿using IOSLib.Native;
-using static IOSLib.Native.NotificationProxy;
+using static IOSLib.NotificationProxy.Native.NotificationProxy;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Concurrent;
 using ConcurrentCollections;
+using IOSLib.NotificationProxy.Native;
 
-namespace IOSLib
+namespace IOSLib.NotificationProxy
 {
     public abstract partial class NotificationProxySessionBase
     {

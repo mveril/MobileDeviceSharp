@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace IOSLib
+namespace IOSLib.NotificationProxy
 {
     /// <summary>
     /// An insecure version of the <see cref="NotificationProxySession"/> to use when the device is not pared

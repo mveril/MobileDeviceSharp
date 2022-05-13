@@ -1,4 +1,4 @@
-﻿namespace IOSLib
+﻿namespace IOSLib.Usbmuxd.Native
 {
     /// <summary>
     /// event types for event callback function

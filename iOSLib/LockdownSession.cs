@@ -1,6 +1,8 @@
 ﻿using IOSLib.Native;
+using IOSLib.NotificationProxy;
 using IOSLib.PropertyList;
 using IOSLib.PropertyList.Native;
+using IOSLib.Usbmuxd;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;

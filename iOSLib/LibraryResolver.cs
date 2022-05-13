@@ -50,7 +50,7 @@ namespace IOSLib.Native
             //    return LoadPlistLibrary();
             //}
 
-            if (libraryName == Usbmuxd.LibraryName)
+            if (libraryName == Usbmuxd.Native.Usbmuxd.LibraryName)
             {
                 return LoadUsbmuxdLibrary();
             }

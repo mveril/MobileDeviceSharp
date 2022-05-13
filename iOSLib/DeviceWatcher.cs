@@ -1,4 +1,5 @@
 ﻿using IOSLib.Native;
+using IOSLib.Usbmuxd.Native;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -27,7 +28,7 @@ namespace IOSLib
             if (!IsRunning)
             {
                 _context = System.Threading.SynchronizationContext.Current ?? new System.Threading.SynchronizationContext();
-                Usbmuxd.usbmuxd_events_subscribe(out handle, _callBack, IntPtr.Zero);
+                Usbmuxd.Native.Usbmuxd.usbmuxd_events_subscribe(out handle, _callBack, IntPtr.Zero);
             }
         }
 

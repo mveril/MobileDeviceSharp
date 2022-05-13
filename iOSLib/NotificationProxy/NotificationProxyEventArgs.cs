@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace IOSLib
+namespace IOSLib.NotificationProxy
 {
     /// <summary>
     /// Class that contains event argument for <see cref="NotificationProxySession"/> events

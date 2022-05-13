@@ -1,5 +1,5 @@
 ﻿using IOSLib.Native;
-using static IOSLib.Native.NotificationProxy;
+using static IOSLib.NotificationProxy.Native.NotificationProxy;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,8 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Linq;
+using IOSLib.NotificationProxy.Native;
 
-namespace IOSLib
+namespace IOSLib.NotificationProxy
 {
     /// <summary>
     /// Represente a session of the <see href="https://docs.libimobiledevice.org/libimobiledevice/latest/notification__proxy_8h.html">NotificationProxy</see> service.

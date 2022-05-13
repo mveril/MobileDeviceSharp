@@ -1,5 +1,4 @@
-﻿using IOSLib;
-namespace IOSLib.Native
+﻿namespace IOSLib.NotificationProxy.Native
 {
     /// <summary>
     /// Error Codes 

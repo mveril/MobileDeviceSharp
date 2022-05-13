@@ -2,13 +2,13 @@
 using System.IO;
 using IOSLib.PropertyList;
 using System.Runtime.InteropServices;
-using static IOSLib.Native.Usbmuxd;
-using IOSLib.Native;
-#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER     
+using static IOSLib.Usbmuxd.Native.Usbmuxd;
+using IOSLib.Usbmuxd.Native;
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 using System.Diagnostics.CodeAnalysis;
 #endif
 
-namespace IOSLib
+namespace IOSLib.Usbmuxd
 {
     public static class UsbmuxdService
     {
@@ -51,9 +51,9 @@ namespace IOSLib
         }
 
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
-        public static bool TryGetDeviceInfo(string udid, UsbmuxConnectionType connectionOption, [MaybeNullWhen(false)] out Native.UsbmuxdDeviceInfo device)
+        public static bool TryGetDeviceInfo(string udid, UsbmuxConnectionType connectionOption, [MaybeNullWhen(false)] out UsbmuxdDeviceInfo device)
 #else
-        public static bool TryGetDeviceInfo(string udid, UsbmuxConnectionType connectionOption, out Native.UsbmuxdDeviceInfo device)
+        public static bool TryGetDeviceInfo(string udid, UsbmuxConnectionType connectionOption, out UsbmuxdDeviceInfo device)
 #endif
         {
             return usbmuxd_get_device(udid, out device, connectionOption) == 0;
@@ -68,7 +68,7 @@ namespace IOSLib
             return usbmuxd_get_device_by_udid(udid, out device) == 0;
         }
 
-        public static UsbmuxdSocketType  SocketType
+        public static UsbmuxdSocketType SocketType
         {
             get
             {

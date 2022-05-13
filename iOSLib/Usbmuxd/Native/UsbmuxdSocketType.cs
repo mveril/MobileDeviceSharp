@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace IOSLib.Native
+namespace IOSLib.Usbmuxd.Native
 {
     public enum UsbmuxdSocketType
     {

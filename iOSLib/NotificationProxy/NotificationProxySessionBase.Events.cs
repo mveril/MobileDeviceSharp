@@ -1,10 +1,11 @@
 ﻿using IOSLib.Native;
-using static IOSLib.Native.NotificationProxy;
+using IOSLib.NotificationProxy.Native;
+using static IOSLib.NotificationProxy.Native.NotificationProxy;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace IOSLib
+namespace IOSLib.NotificationProxy
 {
     public abstract partial class NotificationProxySessionBase
     {
