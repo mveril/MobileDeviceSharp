@@ -322,15 +322,15 @@ namespace IOSLib
         {
             get
             {
-                string strReg = string.Empty;
+                string strLocale = string.Empty;
                 using (var lockdown = new LockdownSession(this,IsPaired))
                 {
-                    using (PlistString deviceClassNode = (PlistString)lockdown.GetDomain("com.apple.international")["Locale"])
+                    using (PlistString deviceLocale = (PlistString)lockdown.GetDomain("com.apple.international")["Locale"])
                     {
-                        strReg = deviceClassNode.Value;
+                        strLocale = deviceLocale.Value;
                     }
                 }
-                return new RegionInfo(strReg);
+                return new RegionInfo(strLocale.Replace('_','-'));
             }
         }
 
