@@ -94,7 +94,7 @@ namespace IOSLib.Native
         /// The user has to free the list returned.
         /// </remarks>
         [DllImportAttribute(Usbmuxd.LibraryName, EntryPoint = "usbmuxd_get_device_list", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int usbmuxd_get_device_list(ref System.IntPtr deviceList);
+        public static extern int usbmuxd_get_device_list(out UsbmuxdDeviceInfo[] deviceList);
 
         /// <summary>
         /// Frees the device list returned by an usbmuxd_get_device_list call
@@ -128,7 +128,7 @@ namespace IOSLib.Native
         /// query devices available via network, use usbmuxd_get_device().
         /// </remarks>
         [DllImportAttribute(Usbmuxd.LibraryName, EntryPoint = "usbmuxd_get_device_by_udid", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int usbmuxd_get_device_by_udid([MarshalAsAttribute(UnmanagedType.LPStr)] string udid, ref UsbmuxdDeviceInfo device);
+        public static extern int usbmuxd_get_device_by_udid([MarshalAsAttribute(UnmanagedType.LPStr)] string udid, out UsbmuxdDeviceInfo device);
 
         /// <summary>
         /// Looks up the device specified by UDID with given options and returns
@@ -158,7 +158,7 @@ namespace IOSLib.Native
         /// or a negative value on error.
         /// </returns>
         [DllImportAttribute(Usbmuxd.LibraryName, EntryPoint = "usbmuxd_get_device", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int usbmuxd_get_device([MarshalAsAttribute(UnmanagedType.LPStr)] string udid, ref UsbmuxdDeviceInfo device, int options);
+        public static extern int usbmuxd_get_device([MarshalAsAttribute(UnmanagedType.LPStr)] string udid, out UsbmuxdDeviceInfo device, UsbmuxConnectionType options);
 
         /// <summary>
         /// Request proxy connection to the specified device and port.
@@ -290,6 +290,46 @@ namespace IOSLib.Native
         public static extern int usbmuxd_read_pair_record([MarshalAsAttribute(UnmanagedType.LPStr)] string recordId, out System.IntPtr recordData, out uint recordSize);
 
         /// <summary>
+        /// Read a pairing record
+        /// </summary>
+        /// <param name="record_id">
+        /// the record identifier of the pairing record to retrieve
+        /// </param>
+        /// <param name="record_data">
+        /// pointer to a variable that will be set to point to a
+        /// newly allocated buffer containing the pairing record data
+        /// </param>
+        /// <param name="record_size">
+        /// pointer to a variable that will be set to the size of
+        /// the buffer returned in record_data
+        /// </param>
+        /// <returns>
+        /// 0 on success, a negative error value otherwise.
+        /// </returns>
+        [DllImportAttribute(Usbmuxd.LibraryName, EntryPoint = "usbmuxd_read_pair_record", CallingConvention = CallingConvention.Cdecl)]
+        public static unsafe extern int usbmuxd_read_pair_record([MarshalAsAttribute(UnmanagedType.LPStr)] string recordId, out byte* recordData, out uint recordSize);
+
+        /// <summary>
+        /// Read a pairing record
+        /// </summary>
+        /// <param name="record_id">
+        /// the record identifier of the pairing record to retrieve
+        /// </param>
+        /// <param name="record_data">
+        /// pointer to a variable that will be set to point to a
+        /// newly allocated buffer containing the pairing record data
+        /// </param>
+        /// <param name="record_size">
+        /// pointer to a variable that will be set to the size of
+        /// the buffer returned in record_data
+        /// </param>
+        /// <returns>
+        /// 0 on success, a negative error value otherwise.
+        /// </returns>
+        [DllImportAttribute(Usbmuxd.LibraryName, EntryPoint = "usbmuxd_read_pair_record", CallingConvention = CallingConvention.Cdecl)]
+        public static unsafe extern int usbmuxd_read_pair_record([MarshalAsAttribute(UnmanagedType.LPStr)] string recordId, out byte[] recordData, out uint recordSize);
+
+        /// <summary>
         /// Save a pairing record
         /// </summary>
         /// <param name="record_id">
@@ -305,7 +345,43 @@ namespace IOSLib.Native
         /// 0 on success, a negative error value otherwise.
         /// </returns>
         [DllImportAttribute(Usbmuxd.LibraryName, EntryPoint = "usbmuxd_save_pair_record", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int usbmuxd_save_pair_record([MarshalAsAttribute(UnmanagedType.LPStr)] string recordId, [MarshalAsAttribute(UnmanagedType.LPStr)] string recordData, uint recordSize);
+        public static extern int usbmuxd_save_pair_record([MarshalAsAttribute(UnmanagedType.LPStr)] string recordId, [MarshalAsAttribute(UnmanagedType.LPStr)] System.IntPtr recordData, uint recordSize);
+
+        /// <summary>
+        /// Save a pairing record
+        /// </summary>
+        /// <param name="record_id">
+        /// the record identifier of the pairing record to save
+        /// </param>
+        /// <param name="record_data">
+        /// buffer containing the pairing record data
+        /// </param>
+        /// <param name="record_size">
+        /// size of the buffer passed in record_data
+        /// </param>
+        /// <returns>
+        /// 0 on success, a negative error value otherwise.
+        /// </returns>
+        [DllImportAttribute(Usbmuxd.LibraryName, EntryPoint = "usbmuxd_save_pair_record", CallingConvention = CallingConvention.Cdecl)]
+        public static unsafe extern int usbmuxd_save_pair_record([MarshalAsAttribute(UnmanagedType.LPStr)] string recordId, [MarshalAsAttribute(UnmanagedType.LPStr)] byte* recordData, uint recordSize);
+
+        /// <summary>
+        /// Save a pairing record
+        /// </summary>
+        /// <param name="record_id">
+        /// the record identifier of the pairing record to save
+        /// </param>
+        /// <param name="record_data">
+        /// buffer containing the pairing record data
+        /// </param>
+        /// <param name="record_size">
+        /// size of the buffer passed in record_data
+        /// </param>
+        /// <returns>
+        /// 0 on success, a negative error value otherwise.
+        /// </returns>
+        [DllImportAttribute(Usbmuxd.LibraryName, EntryPoint = "usbmuxd_save_pair_record", CallingConvention = CallingConvention.Cdecl)]
+        public static unsafe extern int usbmuxd_save_pair_record([MarshalAsAttribute(UnmanagedType.LPStr)] string recordId, byte[] recordData, uint recordSize);
 
         /// <summary>
         /// Save a pairing record with device identifier
@@ -326,7 +402,49 @@ namespace IOSLib.Native
         /// 0 on success, a negative error value otherwise.
         /// </returns>
         [DllImportAttribute(Usbmuxd.LibraryName, EntryPoint = "usbmuxd_save_pair_record_with_device_id", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int usbmuxd_save_pair_record_with_device_id([MarshalAsAttribute(UnmanagedType.LPStr)] string recordId, uint deviceId, [MarshalAsAttribute(UnmanagedType.LPStr)] string recordData, uint recordSize);
+        public static extern int usbmuxd_save_pair_record_with_device_id([MarshalAsAttribute(UnmanagedType.LPStr)] string recordId, uint deviceId, System.IntPtr recordData, uint recordSize);
+
+        /// <summary>
+        /// Save a pairing record with device identifier
+        /// </summary>
+        /// <param name="record_id">
+        /// the record identifier of the pairing record to save
+        /// </param>
+        /// <param name="device_id">
+        /// the device identifier of the connected device, or 0
+        /// </param>
+        /// <param name="record_data">
+        /// buffer containing the pairing record data
+        /// </param>
+        /// <param name="record_size">
+        /// size of the buffer passed in record_data
+        /// </param>
+        /// <returns>
+        /// 0 on success, a negative error value otherwise.
+        /// </returns>
+        [DllImportAttribute(Usbmuxd.LibraryName, EntryPoint = "usbmuxd_save_pair_record_with_device_id", CallingConvention = CallingConvention.Cdecl)]
+        public static unsafe extern int usbmuxd_save_pair_record_with_device_id([MarshalAsAttribute(UnmanagedType.LPStr)] string recordId, uint deviceId, byte* recordData, uint recordSize);
+
+        /// <summary>
+        /// Save a pairing record with device identifier
+        /// </summary>
+        /// <param name="record_id">
+        /// the record identifier of the pairing record to save
+        /// </param>
+        /// <param name="device_id">
+        /// the device identifier of the connected device, or 0
+        /// </param>
+        /// <param name="record_data">
+        /// buffer containing the pairing record data
+        /// </param>
+        /// <param name="record_size">
+        /// size of the buffer passed in record_data
+        /// </param>
+        /// <returns>
+        /// 0 on success, a negative error value otherwise.
+        /// </returns>
+        [DllImportAttribute(Usbmuxd.LibraryName, EntryPoint = "usbmuxd_save_pair_record_with_device_id", CallingConvention = CallingConvention.Cdecl)]
+        public static unsafe extern int usbmuxd_save_pair_record_with_device_id([MarshalAsAttribute(UnmanagedType.LPStr)] string recordId, uint deviceId, byte[] recordData, uint recordSize);
 
         /// <summary>
         /// Delete a pairing record
@@ -376,7 +494,7 @@ namespace IOSLib.Native
         /// 0 on success or negative on error
         /// </returns>
         [DllImportAttribute(Usbmuxd.LibraryName, EntryPoint = "usbmuxd_get_socket_type", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int usbmuxd_get_socket_type(ref int value);
+        public static extern int usbmuxd_get_socket_type(out UsbmuxdSocketType value);
 
         /// <summary>
         /// Sets the TCP endpoint to which usbmuxd will connect if the socket type is set to
@@ -409,6 +527,6 @@ namespace IOSLib.Native
         /// 0 on success or negative on error
         /// </returns>
         [DllImportAttribute(Usbmuxd.LibraryName, EntryPoint = "usbmuxd_get_tcp_endpoint", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int usbmuxd_get_tcp_endpoint(out System.IntPtr host, ref ushort port);
+        public static extern int usbmuxd_get_tcp_endpoint(out string host, out ushort port);
     }
 }
