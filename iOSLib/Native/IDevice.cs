@@ -82,7 +82,7 @@ namespace IOSLib.Native
         /// network devices in the list, use idevice_get_device_list_extended().
         /// </remarks>
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_get_device_list", CallingConvention = CallingConvention.Cdecl)]
-        public static extern iDeviceError idevice_get_device_list([MarshalAsAttribute(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(IDeviceListMarshaler))] out string[] devices, ref int count);
+        public static extern iDeviceError idevice_get_device_list([MarshalAsAttribute(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(IDeviceListMarshaler))] out string[] devices, out int count);
 
         /// <summary>
         /// Free a list of device UDIDs.
@@ -110,7 +110,7 @@ namespace IOSLib.Native
         /// IDEVICE_E_SUCCESS on success or an error value when an error occurred.
         /// </returns>
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_get_device_list_extended", CallingConvention = CallingConvention.Cdecl)]
-        public static extern iDeviceError idevice_get_device_list_extended([MarshalAsAttribute(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(IDeviceListExtendedMarshaler))] out string[] devices, ref int count);
+        public static extern iDeviceError idevice_get_device_list_extended([MarshalAsAttribute(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(IDeviceListExtendedMarshaler))] out string[] devices, out int count);
 
         /// <summary>
         /// Free an extended device list retrieved through idevice_get_device_list_extended().

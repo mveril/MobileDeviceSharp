@@ -54,8 +54,7 @@ namespace IOSLib
         /// <returns>Get the list of currently available devices</returns>
         public static IEnumerable<IDevice> List()
         {
-            int count = 0;
-            var hresult = idevice_get_device_list(out var udids, ref count);
+            var hresult = idevice_get_device_list(out var udids, out _);
             if (hresult.IsError())
                 throw hresult.GetException();
             return udids.Select(id => new IDevice(id));
@@ -67,8 +66,7 @@ namespace IOSLib
         /// <returns></returns>
         public static IEnumerable<IDevice> ListExtended()
         {
-            int count = 0;
-            var hresult = idevice_get_device_list_extended(out var udids, ref count);
+            var hresult = idevice_get_device_list_extended(out var udids, out _);
             if (hresult.IsError())
                 throw hresult.GetException();
             return udids.Select(id => new IDevice(id));
