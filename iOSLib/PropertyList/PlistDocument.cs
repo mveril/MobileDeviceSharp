@@ -119,7 +119,21 @@ namespace IOSLib.PropertyList
                 ptr = (byte*)Marshal.AllocHGlobal((nint)leight).ToPointer();
 #endif
                 var ums = new UnmanagedMemoryStream(ptr, stream.Length, stream.Length, FileAccess.Write);
-                stream.CopyTo(ums);
+                try
+                {
+                    stream.CopyTo(ums);
+                }
+                catch (Exception)
+                {
+                    ums.Close();
+#if NET6_0_OR_GREATER
+                    NativeMemory.Free(ptr);
+#else
+                    Marshal.FreeHGlobal((IntPtr)ptr);
+#endif   
+                    throw;
+                }
+                    
                 stream.Close();
                 plist_from_memory(ptr, leight, out var handle);
                 var node = PlistNode.From(handle);
@@ -248,7 +262,16 @@ public static async Task<PlistDocument?> LoadAsync(Stream stream)
             {
                 var ums = new UnmanagedMemoryStream((byte*)ptr.ToPointer(), length);
                 stream.Seek(0, SeekOrigin.Begin);
-                ums.CopyTo(stream);
+                try
+                {
+                    ums.CopyTo(stream);
+                }
+                catch (Exception)
+                {
+                    ums.Close();
+                    delegates.freeData(ptr);
+                    throw;
+                }
                 stream.SetLength(ums.Length);
                 stream.Flush();
                 stream.Seek(0, SeekOrigin.Begin);
