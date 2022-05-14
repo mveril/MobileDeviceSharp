@@ -40,12 +40,31 @@ namespace IOSLib
 
         }
 
+        private IDevice(IDeviceHandle handle) : base(handle)
+        {
+
+        }
+
         private static IDeviceHandle GetHandle(string udid, UsbmuxConnectionType connectionType = UsbmuxConnectionType.All)
         {
             var hresult = idevice_new_with_options(out var deviceHandle, udid, connectionType);
             if (hresult.IsError())
                 throw hresult.GetException();
             return deviceHandle;
+        }
+
+        internal static bool TryGetDevice(string udid, UsbmuxConnectionType connectionType, out IDevice device)
+        {
+            var result = idevice_new_with_options(out var deviceHandle, udid, connectionType) == 0;
+            device = result ? new IDevice(deviceHandle) : null;
+            return result;
+        }
+
+        internal static bool TryGetDevice(string udid, out IDevice device)
+        {
+            var result = idevice_new(out var deviceHandle, udid) == 0;
+            device = result ? new IDevice(deviceHandle) : null;
+            return result;
         }
 
         /// <summary>

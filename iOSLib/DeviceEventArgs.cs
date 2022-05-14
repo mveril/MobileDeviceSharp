@@ -15,8 +15,7 @@ namespace IOSLib
         }
         public bool TryGetDevice(out IOSLib.IDevice device)
         {
-            device= new IDevice(Udid, ConnectionType);
-            return device!=null;
+            return IDevice.TryGetDevice(Udid, ConnectionType, out device);
         }
 
         public string Udid { get; }
