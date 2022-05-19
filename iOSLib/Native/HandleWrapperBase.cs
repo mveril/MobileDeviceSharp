@@ -10,6 +10,7 @@ namespace IOSLib.Native
     /// <typeparam name="T">IOSHanlde type</typeparam>
     public abstract class IOSHandleWrapperBase<T> : IDisposable where T : IOSHandle, new()
     {
+
         /// <summary>
         /// Base constructor to wrap already existing Handle
         /// </summary>
@@ -49,12 +50,29 @@ namespace IOSLib.Native
         /// </summary>
         public bool IsClosed => Handle.IsClosed;
 
-        /// <summary>
-        /// Dispose the Handle
-        /// </summary>
+        private bool _disposedValue;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposedValue)
+            {
+                if (disposing)
+                {
+
+                }
+                Handle.Dispose();
+                _disposedValue = true;
+            }
+        }
+
+        ~IOSHandleWrapperBase()
+        {
+            Dispose(disposing: false);
+        }
+
         public void Dispose()
         {
-            ((IDisposable)Handle).Dispose();
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }
