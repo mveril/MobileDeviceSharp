@@ -9,7 +9,7 @@ using System.CommandLine;
 using System.Threading;
 using IOSLib.DiagnosticsRelay;
 
-namespace Test
+namespace SampleConsole
 {
     static class Program
     {
