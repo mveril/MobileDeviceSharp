@@ -1,6 +1,6 @@
 ﻿using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace iOSLib.SourceGenerator
+namespace IOSLib.SourceGenerator
 {
     internal static class PartialFactory
     {

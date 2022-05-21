@@ -20,6 +20,6 @@ namespace IOSLib
 
         public string Udid { get; }
         public uint ProductID { get; }
-        public iDeviceLookupOptions ConnectionType { get; }
+        public IDeviceLookupOptions ConnectionType { get; }
     }
 }

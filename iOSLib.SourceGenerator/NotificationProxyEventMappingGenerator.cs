@@ -1,4 +1,4 @@
-﻿namespace iOSLib.SourceGenerator
+﻿namespace IOSLib.SourceGenerator
 {
     using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
     [Generator]

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace iOSLib.SourceGenerator
+namespace IOSLib.SourceGenerator
 {
     internal class NpEventSyntaxPartsBuilder
     {

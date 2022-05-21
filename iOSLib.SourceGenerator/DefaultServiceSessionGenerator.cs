@@ -1,4 +1,4 @@
-﻿namespace iOSLib.SourceGenerator
+﻿namespace IOSLib.SourceGenerator
 {
     [Generator]
     class DefaultServiceSessionGenerator : IIncrementalGenerator

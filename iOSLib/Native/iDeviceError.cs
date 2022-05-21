@@ -5,8 +5,8 @@ namespace IOSLib.Native
     /// <summary>
     /// Error Codes 
     /// </summary>
-    [Exception(typeof(iDeviceException))]
-    public enum iDeviceError : int
+    [Exception(typeof(IDeviceException))]
+    public enum IDeviceError : int
     {
 
         Success = 0,

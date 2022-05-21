@@ -7,5 +7,5 @@ namespace IOSLib.Native
 {
 
     [UnmanagedFunctionPointerAttribute(CallingConvention.Cdecl)]
-    public delegate void iDeviceDebugCallBack(IntPtr message);
+    public delegate void IDeviceDebugCallBack(IntPtr message);
 }

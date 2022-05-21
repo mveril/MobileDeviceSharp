@@ -24,7 +24,7 @@ namespace IOSLib.Native
         /// The callback which will receive the debug messages. Set to NULL to redirect to stdout.
         /// </param>
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_set_debug_callback", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void idevice_set_debug_callback(iDeviceDebugCallBack callback);
+        public static extern void idevice_set_debug_callback(IDeviceDebugCallBack callback);
 
         /// <summary>
         /// Set the level of debugging.
@@ -52,7 +52,7 @@ namespace IOSLib.Native
         /// IDEVICE_E_SUCCESS on success or an error value when an error occurred.
         /// </returns>
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_event_subscribe", CallingConvention = CallingConvention.Cdecl)]
-        public static extern iDeviceError idevice_event_subscribe(iDeviceEventCallBack callback, System.IntPtr userData);
+        public static extern IDeviceError idevice_event_subscribe(IDeviceEventCallBack callback, System.IntPtr userData);
 
         /// <summary>
         /// Release the event callback function that has been registered with
@@ -62,7 +62,7 @@ namespace IOSLib.Native
         /// IDEVICE_E_SUCCESS on success or an error value when an error occurred.
         /// </returns>
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_event_unsubscribe", CallingConvention = CallingConvention.Cdecl)]
-        public static extern iDeviceError idevice_event_unsubscribe();
+        public static extern IDeviceError idevice_event_unsubscribe();
 
         /// <summary>
         /// Get a list of UDIDs of currently available devices (USBMUX devices only).
@@ -82,7 +82,7 @@ namespace IOSLib.Native
         /// network devices in the list, use idevice_get_device_list_extended().
         /// </remarks>
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_get_device_list", CallingConvention = CallingConvention.Cdecl)]
-        public static extern iDeviceError idevice_get_device_list([MarshalAsAttribute(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(IDeviceListMarshaler))] out string[] devices, out int count);
+        public static extern IDeviceError idevice_get_device_list([MarshalAsAttribute(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(IDeviceListMarshaler))] out string[] devices, out int count);
 
         /// <summary>
         /// Free a list of device UDIDs.
@@ -94,7 +94,7 @@ namespace IOSLib.Native
         /// Always returnes IDEVICE_E_SUCCESS.
         /// </returns>
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_device_list_free", CallingConvention = CallingConvention.Cdecl)]
-        public static extern iDeviceError idevice_device_list_free(System.IntPtr devices);
+        public static extern IDeviceError idevice_device_list_free(System.IntPtr devices);
 
         /// <summary>
         /// Get a list of currently available devices
@@ -110,7 +110,7 @@ namespace IOSLib.Native
         /// IDEVICE_E_SUCCESS on success or an error value when an error occurred.
         /// </returns>
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_get_device_list_extended", CallingConvention = CallingConvention.Cdecl)]
-        public static extern iDeviceError idevice_get_device_list_extended([MarshalAsAttribute(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(IDeviceListExtendedMarshaler))] out string[] devices, out int count);
+        public static extern IDeviceError idevice_get_device_list_extended([MarshalAsAttribute(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(IDeviceListExtendedMarshaler))] out string[] devices, out int count);
 
         /// <summary>
         /// Free an extended device list retrieved through idevice_get_device_list_extended().
@@ -123,7 +123,7 @@ namespace IOSLib.Native
         /// </returns>
         [GenerateHandleAttribute("IDeviceInfo")]
         [DllImport(IDevice.LibraryName, EntryPoint = "idevice_device_list_extended_free", CallingConvention = CallingConvention.Cdecl)]
-        public static extern iDeviceError idevice_device_list_extended_free(System.IntPtr devices);
+        public static extern IDeviceError idevice_device_list_extended_free(System.IntPtr devices);
 
         /// <summary>
         /// Creates an idevice_t structure for the device specified by UDID,
@@ -146,7 +146,7 @@ namespace IOSLib.Native
         /// idevice_new_with_options() and include IDEVICE_LOOKUP_NETWORK in options.
         /// </remarks>
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_new", CallingConvention = CallingConvention.Cdecl)]
-        public static extern iDeviceError idevice_new(out IDeviceHandle device, [MarshalAsAttribute(UnmanagedType.LPStr)] string udid);
+        public static extern IDeviceError idevice_new(out IDeviceHandle device, [MarshalAsAttribute(UnmanagedType.LPStr)] string udid);
 
         /// <summary>
         /// Creates an idevice_t structure for the device specified by UDID,
@@ -177,7 +177,7 @@ namespace IOSLib.Native
         /// idevice_free() if it is no longer used.
         /// </remarks>
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_new_with_options", CallingConvention = CallingConvention.Cdecl)]
-        public static extern iDeviceError idevice_new_with_options(out IDeviceHandle device, [MarshalAsAttribute(UnmanagedType.LPStr)] string udid, iDeviceLookupOptions options);
+        public static extern IDeviceError idevice_new_with_options(out IDeviceHandle device, [MarshalAsAttribute(UnmanagedType.LPStr)] string udid, IDeviceLookupOptions options);
 
         /// <summary>
         /// Cleans up an idevice structure, then frees the structure itself.
@@ -187,7 +187,7 @@ namespace IOSLib.Native
         /// </param>
         [GenerateHandle("IDevice")]
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_free", CallingConvention = CallingConvention.Cdecl)]
-        public static extern iDeviceError idevice_free(System.IntPtr device);
+        public static extern IDeviceError idevice_free(System.IntPtr device);
 
         /// <summary>
         /// Set up a connection to the given device.
@@ -206,7 +206,7 @@ namespace IOSLib.Native
         /// IDEVICE_E_SUCCESS if ok, otherwise an error code.
         /// </returns>
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_connect", CallingConvention = CallingConvention.Cdecl)]
-        public static extern iDeviceError idevice_connect(IDeviceHandle device, ushort port, out iDeviceConnectionHandle connection);
+        public static extern IDeviceError idevice_connect(IDeviceHandle device, ushort port, out IDeviceConnectionHandle connection);
 
         /// <summary>
         /// Disconnect from the device and clean up the connection structure.
@@ -217,9 +217,9 @@ namespace IOSLib.Native
         /// <returns>
         /// IDEVICE_E_SUCCESS if ok, otherwise an error code.
         /// </returns>
-        [GenerateHandle("iDeviceConnection")]
+        [GenerateHandle("IDeviceConnection")]
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_disconnect", CallingConvention = CallingConvention.Cdecl)]
-        public static extern iDeviceError idevice_disconnect(System.IntPtr connection);
+        public static extern IDeviceError idevice_disconnect(System.IntPtr connection);
 
         /// <summary>
         /// Send data to a device via the given connection.
@@ -241,7 +241,7 @@ namespace IOSLib.Native
         /// IDEVICE_E_SUCCESS if ok, otherwise an error code.
         /// </returns>
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_connection_send", CallingConvention = CallingConvention.Cdecl)]
-        public static extern iDeviceError idevice_connection_send(iDeviceConnectionHandle connection, byte[] data, uint len, ref uint sentBytes);
+        public static extern IDeviceError idevice_connection_send(IDeviceConnectionHandle connection, byte[] data, uint len, ref uint sentBytes);
 
         /// <summary>
         /// Receive data from a device via the given connection.
@@ -269,7 +269,7 @@ namespace IOSLib.Native
         /// IDEVICE_E_SUCCESS if ok, otherwise an error code.
         /// </returns>
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_connection_receive_timeout", CallingConvention = CallingConvention.Cdecl)]
-        public static extern iDeviceError idevice_connection_receive_timeout(iDeviceConnectionHandle connection, byte[] data, uint len, ref uint recvBytes, uint timeout);
+        public static extern IDeviceError idevice_connection_receive_timeout(IDeviceConnectionHandle connection, byte[] data, uint len, ref uint recvBytes, uint timeout);
 
         /// <summary>
         /// Receive data from a device via the given connection.
@@ -293,7 +293,7 @@ namespace IOSLib.Native
         /// IDEVICE_E_SUCCESS if ok, otherwise an error code.
         /// </returns>
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_connection_receive", CallingConvention = CallingConvention.Cdecl)]
-        public static extern iDeviceError idevice_connection_receive(iDeviceConnectionHandle connection, byte[] data, uint len, ref uint recvBytes);
+        public static extern IDeviceError idevice_connection_receive(IDeviceConnectionHandle connection, byte[] data, uint len, ref uint recvBytes);
 
         /// <summary>
         /// Enables SSL for the given connection.
@@ -307,7 +307,7 @@ namespace IOSLib.Native
         /// SSL initialization, setup, or handshake fails.
         /// </returns>
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_connection_enable_ssl", CallingConvention = CallingConvention.Cdecl)]
-        public static extern iDeviceError idevice_connection_enable_ssl(iDeviceConnectionHandle connection);
+        public static extern IDeviceError idevice_connection_enable_ssl(IDeviceConnectionHandle connection);
 
         /// <summary>
         /// Disable SSL for the given connection.
@@ -321,7 +321,7 @@ namespace IOSLib.Native
         /// enabled and does no further error checking on cleanup.
         /// </returns>
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_connection_disable_ssl", CallingConvention = CallingConvention.Cdecl)]
-        public static extern iDeviceError idevice_connection_disable_ssl(iDeviceConnectionHandle connection);
+        public static extern IDeviceError idevice_connection_disable_ssl(IDeviceConnectionHandle connection);
 
         /// <summary>
         /// Disable bypass SSL for the given connection without sending out terminate messages.
@@ -339,7 +339,7 @@ namespace IOSLib.Native
         /// enabled and does no further error checking on cleanup.
         /// </returns>
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_connection_disable_bypass_ssl", CallingConvention = CallingConvention.Cdecl)]
-        public static extern iDeviceError idevice_connection_disable_bypass_ssl(iDeviceConnectionHandle connection, char sslbypass);
+        public static extern IDeviceError idevice_connection_disable_bypass_ssl(IDeviceConnectionHandle connection, char sslbypass);
 
         /// <summary>
         /// Get the underlying file descriptor for a connection
@@ -354,19 +354,19 @@ namespace IOSLib.Native
         /// IDEVICE_E_SUCCESS if ok, otherwise an error code.
         /// </returns>
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_connection_get_fd", CallingConvention = CallingConvention.Cdecl)]
-        public static extern iDeviceError idevice_connection_get_fd(iDeviceConnectionHandle connection, ref int fd);
+        public static extern IDeviceError idevice_connection_get_fd(IDeviceConnectionHandle connection, ref int fd);
 
         /// <summary>
         /// Gets the handle or (usbmux device id) of the device.
         /// </summary>
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_get_handle", CallingConvention = CallingConvention.Cdecl)]
-        public static extern iDeviceError idevice_get_handle(IDeviceHandle device, ref uint handle);
+        public static extern IDeviceError idevice_get_handle(IDeviceHandle device, ref uint handle);
 
         /// <summary>
         /// Gets the unique id for the device.
         /// </summary>
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_get_udid", CallingConvention = CallingConvention.Cdecl)]
-        public static extern iDeviceError idevice_get_udid(IDeviceHandle device, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(UTF8Marshaler))] out string udid);
+        public static extern IDeviceError idevice_get_udid(IDeviceHandle device, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(UTF8Marshaler))] out string udid);
 
         /// <summary>
         /// Sets the socket type (Unix socket or TCP socket) libimobiledevice should use when connecting
@@ -379,7 +379,7 @@ namespace IOSLib.Native
         /// 0 on success or negative on error
         /// </returns>
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_set_socket_type", CallingConvention = CallingConvention.Cdecl)]
-        public static extern iDeviceError idevice_set_socket_type(int value);
+        public static extern IDeviceError idevice_set_socket_type(int value);
 
         /// <summary>
         /// Gets the socket type (Unix socket or TCP socket) libimobiledevice should use when connecting
@@ -392,7 +392,7 @@ namespace IOSLib.Native
         /// 0 on success or negative on error
         /// </returns>
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_get_socket_type", CallingConvention = CallingConvention.Cdecl)]
-        public static extern iDeviceError idevice_get_socket_type(ref int value);
+        public static extern IDeviceError idevice_get_socket_type(ref int value);
 
         /// <summary>
         /// Sets the TCP endpoint to which libimobiledevice will connect if the socket type is set to
@@ -408,7 +408,7 @@ namespace IOSLib.Native
         /// 0 on success or negative on error
         /// </returns>
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_set_tcp_endpoint", CallingConvention = CallingConvention.Cdecl)]
-        public static extern iDeviceError idevice_set_tcp_endpoint([MarshalAsAttribute(UnmanagedType.LPStr)] string host, ushort port);
+        public static extern IDeviceError idevice_set_tcp_endpoint([MarshalAsAttribute(UnmanagedType.LPStr)] string host, ushort port);
 
         /// <summary>
         /// Gets the TCP endpoint to which libimobiledevice will connect if the socket type is set to
@@ -425,6 +425,6 @@ namespace IOSLib.Native
         /// 0 on success or negative on error
         /// </returns>
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_get_tcp_endpoint", CallingConvention = CallingConvention.Cdecl)]
-        public static extern iDeviceError idevice_get_tcp_endpoint([MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(UTF8Marshaler))] out string host, ref ushort port);
+        public static extern IDeviceError idevice_get_tcp_endpoint([MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(UTF8Marshaler))] out string host, ref ushort port);
     }
 }

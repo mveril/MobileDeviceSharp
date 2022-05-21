@@ -6,7 +6,7 @@ namespace IOSLib.Usbmuxd.Native
     /// Type of connection a device is available on 
     /// </summary>
     [Flags]
-    public enum iDeviceLookupOptions : int
+    public enum IDeviceLookupOptions : int
     {
 
         Usb = 1,

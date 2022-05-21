@@ -35,7 +35,7 @@ namespace IOSLib
         /// </summary>
         /// <param name="udid"></param>
         /// <param name="connectionType"></param>
-        public IDevice(string udid, iDeviceLookupOptions connectionType) : base(GetHandle(udid,connectionType))
+        public IDevice(string udid, IDeviceLookupOptions connectionType) : base(GetHandle(udid,connectionType))
         {
 
         }
@@ -45,7 +45,7 @@ namespace IOSLib
 
         }
 
-        private static IDeviceHandle GetHandle(string udid, iDeviceLookupOptions connectionType = iDeviceLookupOptions.All)
+        private static IDeviceHandle GetHandle(string udid, IDeviceLookupOptions connectionType = IDeviceLookupOptions.All)
         {
             var hresult = idevice_new_with_options(out var deviceHandle, udid, connectionType);
             if (hresult.IsError())
@@ -53,7 +53,7 @@ namespace IOSLib
             return deviceHandle;
         }
 
-        internal static bool TryGetDevice(string udid, iDeviceLookupOptions connectionType, out IDevice device)
+        internal static bool TryGetDevice(string udid, IDeviceLookupOptions connectionType, out IDevice device)
         {
             var result = idevice_new_with_options(out var deviceHandle, udid, connectionType) == 0;
             device = result ? new IDevice(deviceHandle) : null;

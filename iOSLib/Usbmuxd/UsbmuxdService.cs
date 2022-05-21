@@ -51,9 +51,9 @@ namespace IOSLib.Usbmuxd
         }
 
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
-        public static bool TryGetDeviceInfo(string udid, iDeviceLookupOptions connectionOption, [MaybeNullWhen(false)] out UsbmuxdDeviceInfo device)
+        public static bool TryGetDeviceInfo(string udid, IDeviceLookupOptions connectionOption, [MaybeNullWhen(false)] out UsbmuxdDeviceInfo device)
 #else
-        public static bool TryGetDeviceInfo(string udid, iDeviceLookupOptions connectionOption, out UsbmuxdDeviceInfo device)
+        public static bool TryGetDeviceInfo(string udid, IDeviceLookupOptions connectionOption, out UsbmuxdDeviceInfo device)
 #endif
         {
             return usbmuxd_get_device(udid, out device, connectionOption) == 0;

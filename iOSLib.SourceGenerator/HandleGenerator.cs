@@ -1,5 +1,5 @@
 ﻿using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-namespace iOSLib.SourceGenerator
+namespace IOSLib.SourceGenerator
 {
     [Generator]
     internal class HandleGenerator : IIncrementalGenerator

@@ -3,7 +3,7 @@
     /// <summary>
     /// Type of connection a device is available on
     /// </summary>
-    public enum iDeviceConnectionType : int
+    public enum IDeviceConnectionType : int
     {
 
         Usbmuxd = 1,

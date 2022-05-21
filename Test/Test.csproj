@@ -21,6 +21,6 @@
   <ItemGroup>
     <ProjectReference Include="..\IOSLib.AFC\IOSLib.AFC.csproj" />
     <ProjectReference Include="..\IOSLib.DiagnosticsRelay\IOSLib.DiagnosticsRelay.csproj" />
-    <ProjectReference Include="..\iOSLib\IOSLib.csproj" />
+    <ProjectReference Include="..\IOSLib\IOSLib.csproj" />
   </ItemGroup>
 </Project>

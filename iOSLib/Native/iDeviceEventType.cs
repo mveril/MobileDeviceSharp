@@ -3,7 +3,7 @@
     /// <summary>
     /// The event type for device add or removal 
     /// </summary>
-    public enum iDeviceEventType : int
+    public enum IDeviceEventType : int
     {
 
         DeviceAdd = 1,

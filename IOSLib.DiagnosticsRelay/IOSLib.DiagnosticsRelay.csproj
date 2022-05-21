@@ -8,8 +8,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\IOSLib.CompilerServices\IOSLib.CompilerServices.csproj" />
-    <ProjectReference Include="..\iOSLib.SourceGenerator\iOSLib.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-    <ProjectReference Include="..\iOSLib\IOSLib.csproj" />
+    <ProjectReference Include="..\IOSLib.SourceGenerator\IOSLib.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\IOSLib\IOSLib.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

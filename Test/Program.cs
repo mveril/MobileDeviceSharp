@@ -130,7 +130,7 @@ namespace Test
                     device.Dispose();
                 }
             }
-            var watcher = new DeviceWatcher(IOSLib.Usbmuxd.Native.iDeviceLookupOptions.All);
+            var watcher = new DeviceWatcher(IOSLib.Usbmuxd.Native.IDeviceLookupOptions.All);
             watcher.DeviceAdded += device_added;
             watcher.Start();
             var semaphore = new SemaphoreSlim(0);
