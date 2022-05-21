@@ -177,7 +177,7 @@ namespace IOSLib.Native
         /// idevice_free() if it is no longer used.
         /// </remarks>
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_new_with_options", CallingConvention = CallingConvention.Cdecl)]
-        public static extern iDeviceError idevice_new_with_options(out IDeviceHandle device, [MarshalAsAttribute(UnmanagedType.LPStr)] string udid, UsbmuxConnectionType options);
+        public static extern iDeviceError idevice_new_with_options(out IDeviceHandle device, [MarshalAsAttribute(UnmanagedType.LPStr)] string udid, iDeviceLookupOptions options);
 
         /// <summary>
         /// Cleans up an idevice structure, then frees the structure itself.

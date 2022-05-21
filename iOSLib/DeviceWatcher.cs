@@ -12,12 +12,12 @@ namespace IOSLib
         private readonly UsbmuxdEventCallBack _callBack;
         public event EventHandler<DeviceEventArgs>? DeviceAdded, DeviceRemoved, DevicePaired;
         private System.Threading.SynchronizationContext? _context;
-        public DeviceWatcher() : this(UsbmuxConnectionType.All)
+        public DeviceWatcher() : this(iDeviceLookupOptions.All)
         {
 
         }
 
-        public DeviceWatcher(UsbmuxConnectionType connectionType)
+        public DeviceWatcher(iDeviceLookupOptions connectionType)
         {
             _callBack = new UsbmuxdEventCallBack(Callback);
             ConnectionType = connectionType;
@@ -34,7 +34,7 @@ namespace IOSLib
 
         public bool IsRunning => !handle.IsInvalid;
 
-        public UsbmuxConnectionType ConnectionType { get; }
+        public iDeviceLookupOptions ConnectionType { get; }
 
         private void Stop()
         {

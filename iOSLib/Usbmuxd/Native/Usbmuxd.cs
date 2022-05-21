@@ -158,7 +158,7 @@ namespace IOSLib.Usbmuxd.Native
         /// or a negative value on error.
         /// </returns>
         [DllImportAttribute(Usbmuxd.LibraryName, EntryPoint = "usbmuxd_get_device", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int usbmuxd_get_device([MarshalAsAttribute(UnmanagedType.LPStr)] string udid, out UsbmuxdDeviceInfo device, UsbmuxConnectionType options);
+        public static extern int usbmuxd_get_device([MarshalAsAttribute(UnmanagedType.LPStr)] string udid, out UsbmuxdDeviceInfo device, iDeviceLookupOptions options);
 
         /// <summary>
         /// Request proxy connection to the specified device and port.
