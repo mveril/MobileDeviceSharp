@@ -189,6 +189,25 @@ namespace IOSLib
             {
                 return ProductType switch
                 {
+                    #region AppleWatch
+                    "Watch6,6" or "Watch6,7" or "Watch6,8" or "Watch6,9" => "Apple Watch Series 7",
+                    "Watch6,1" or "Watch6,2" or "Watch6,3" or "Watch6,4" => "Apple Watch Series 6",
+                    "Watch5,9" or "Watch5,10" or "Watch5,11" or "Watch5,12" => "Apple Watch SE",
+                    "Watch5,1" or "Watch5,2" or "Watch5,3" or "Watch5,4" => "Apple Watch Series 5",
+                    "Watch4,1" or "Watch4,2" or "Watch4,3" or "Watch4,4" => "Apple Watch Series 4",
+                    "Watch3,1" or "Watch3,2" or "Watch3,3" or "Watch3,4" => "Apple Watch Series 3",
+                    "Watch2,3" or "Watch2,4" => "Apple Watch Series 2",
+                    "Watch2,6" or "Watch2,7" => "Apple Watch Series 1",
+                    "Watch1,1" or "Watch1,2" => "Apple Watch",
+                    #endregion
+                    #region AppleTV
+                    "AppleTV11,1" => "Apple TV 4K (2nd generation)",
+                    "AppleTV6,2" => "Apple TV 4K",
+                    "AppleTV5,3" => "Apple TV (4th generation)",
+                    "AppleTV3,1" or "AppleTV3,2" => "Apple TV (3rd generation)",
+                    "AppleTV2,1" => "Apple TV (2nd generation)",
+                    "AppleTV1,1" => "Apple TV",
+                    #endregion
                     #region iPhone
                     "iPhone14,2" => "iPhone 13 Pro",
                     "iPhone14,3" => "iPhone 13 Pro Max",
