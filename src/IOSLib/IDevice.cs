@@ -189,6 +189,7 @@ namespace IOSLib
             {
                 return ProductType switch
                 {
+                    #region iPhone
                     "iPhone14,2" => "iPhone 13 Pro",
                     "iPhone14,3" => "iPhone 13 Pro Max",
                     "iPhone14,4" => "iPhone 13 mini",
@@ -227,6 +228,8 @@ namespace IOSLib
                     "iPhone2,1" => "iPhone 3GS",
                     "iPhone1,2" => "iPhone 3G",
                     "iPhone1,1" => "iPhone",
+                    #endregion
+                    #region iPods
                     "iPod9,1" => "iPod touch 7G",
                     "iPod7,1" => "iPod touch 6G",
                     "iPod5,1" => "iPod touch 5G",
@@ -234,6 +237,8 @@ namespace IOSLib
                     "iPod3,1" => "iPod touch 3G",
                     "iPod2,1" => "iPod touch 2G",
                     "iPod1,1" => "iPod touch",
+                    #endregion
+                    #region iPad
                     "iPad14,1" or "iPad14,2" => "iPad mini (6th generation)",
                     "iPad13,8" or "iPad13,9" or "iPad13,10" or "iPad13,11" => "iPad Pro (12.9-inch) (5th generation)",
                     "iPad13,4" or "iPad13,5" or "iPad13,6" or "iPad13,7" => "iPad Pro (11-inch) (3rd generation)",
@@ -299,6 +304,7 @@ namespace IOSLib
                     "iPad2,2" => "iPad 2 GSM",
                     "iPad2,1" => "iPad 2 Wi-Fi",
                     "iPad1,1" => "iPad",
+                    #endregion
                     _ => ProductType,
                 };
             }
