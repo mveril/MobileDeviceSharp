@@ -110,44 +110,51 @@ namespace IOSLib.PropertyList
             PlistDocument? document = null;
 
             uint leight = (uint)stream.Length;
-            unsafe
+            UnmanagedMemoryStream? ums = null;
+            var ptr = IntPtr.Zero;
+            try
             {
-                byte* ptr;
 #if NET6_0_OR_GREATER
-                ptr = (byte*)NativeMemory.Alloc(leight);
+                unsafe
+                {
+                    ptr = (IntPtr)NativeMemory.Alloc(leight);
+                }
 #else
-                ptr = (byte*)Marshal.AllocHGlobal((nint)leight).ToPointer();
+                ptr = Marshal.AllocHGlobal((nint)leight);
 #endif
-                var ums = new UnmanagedMemoryStream(ptr, stream.Length, stream.Length, FileAccess.Write);
                 try
                 {
+                    unsafe
+                    {
+                        ums = new UnmanagedMemoryStream((byte*)ptr, stream.Length, stream.Length, FileAccess.Write);
+                    }
                     stream.CopyTo(ums);
                 }
-                catch (Exception)
+                finally
                 {
-                    ums.Close();
-#if NET6_0_OR_GREATER
-                    NativeMemory.Free(ptr);
-#else
-                    Marshal.FreeHGlobal((IntPtr)ptr);
-#endif   
-                    throw;
+                    ums?.Close();
                 }
-                    
-                stream.Close();
-                plist_from_memory(ptr, leight, out var handle);
-                var node = PlistNode.From(handle);
-                if (node is not null)
+                unsafe
                 {
-                   var format = plist_is_binary(ptr, leight) != 0 ? PlistDocumentFormats.Binary : PlistDocumentFormats.XML;
-                   document = new PlistDocument(node, format);
+                    plist_from_memory((byte*)ptr, leight, out var handle);
+                    var node = PlistNode.From(handle);
+                    if (node is not null)
+                    {
+                        var format = plist_is_binary((byte*)ptr, leight) != 0 ? PlistDocumentFormats.Binary : PlistDocumentFormats.XML;
+                        document = new PlistDocument(node, format);
+                    }
                 }
-
+            }
+            finally
+            {
 #if NET6_0_OR_GREATER
-                NativeMemory.Free(ptr);
+                unsafe
+                {
+                    NativeMemory.Free((byte*)ptr);
+                }
 #else
-                Marshal.FreeHGlobal((IntPtr)ptr);
-#endif             
+                Marshal.FreeHGlobal(ptr);
+#endif
             }
             return document;
         }
@@ -166,64 +173,66 @@ namespace IOSLib.PropertyList
         /// </summary>
         /// <param name="stream">The stream</param>
         /// <returns>The plist Document</returns>
-public static async Task<PlistDocument?> LoadAsync(Stream stream)
+        public static async Task<PlistDocument?> LoadAsync(Stream stream)
 #endif
         {
             PlistDocument? document = null;
 
             uint leight = (uint)stream.Length;
-            IntPtr safeptr;
-            UnmanagedMemoryStream ums;
-            unsafe
-            {
-                byte* ptr;
-#if NET6_0_OR_GREATER
-                ptr = (byte*)NativeMemory.Alloc(leight);
-#else
-                ptr = (byte*)Marshal.AllocHGlobal((nint)leight).ToPointer();
-#endif
-                ums = new UnmanagedMemoryStream(ptr, stream.Length, stream.Length, FileAccess.Write);
-                safeptr = (IntPtr)ptr;
-            }
+            var safeptr = IntPtr.Zero;
+            UnmanagedMemoryStream? ums = null;
             try
             {
-#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
-
-                await stream.CopyToAsync(ums, token);
-#else
-                await stream.CopyToAsync(ums);
-#endif
-            }
-            catch (Exception)
-            {
-                stream.Close();
-#if NET6_0_OR_GREATER
                 unsafe
                 {
-                    NativeMemory.Free((byte*)safeptr);
-                }
-#else
-                Marshal.FreeHGlobal((IntPtr)safeptr);
-#endif
-                throw;
-            }
-            stream.Close();
-            unsafe
-            {
-                var ptr = (byte*)safeptr;
-                plist_from_memory(ptr, leight, out var handle);
-                var node = PlistNode.From(handle);
-                if (node is not null)
-                {
-                    var format = plist_is_binary(ptr, leight) != 0 ? PlistDocumentFormats.Binary : PlistDocumentFormats.XML;
-                    document = new PlistDocument(node, format);
-                }
-
 #if NET6_0_OR_GREATER
-                NativeMemory.Free(ptr);
+                    safeptr = (IntPtr)NativeMemory.Alloc(leight);
 #else
-                Marshal.FreeHGlobal((IntPtr)ptr);
+                    safeptr = Marshal.AllocHGlobal((nint)leight);
 #endif
+                }
+                try
+                {
+                    unsafe
+                    {
+                        ums = new UnmanagedMemoryStream((byte*)safeptr, stream.Length, stream.Length, FileAccess.Write);
+                    }
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
+
+                    await stream.CopyToAsync(ums, token);
+#else
+                    await stream.CopyToAsync(ums);
+#endif
+                }
+                finally
+                {
+                    ums?.Close();
+                }
+                unsafe
+                {
+                    var ptr = (byte*)safeptr;
+                    plist_from_memory(ptr, leight, out var handle);
+                    var node = PlistNode.From(handle);
+                    if (node is not null)
+                    {
+                        var format = plist_is_binary(ptr, leight) != 0 ? PlistDocumentFormats.Binary : PlistDocumentFormats.XML;
+                        document = new PlistDocument(node, format);
+                    }
+                }
+            }
+            finally
+            {
+                if (safeptr != IntPtr.Zero)
+                {
+#if NET6_0_OR_GREATER
+                    unsafe
+	                {
+                        NativeMemory.Free((byte*)safeptr);
+	                }
+#else
+                    Marshal.FreeHGlobal(safeptr);
+#endif
+                }
             }
             return document;
         }
@@ -257,27 +266,33 @@ public static async Task<PlistDocument?> LoadAsync(Stream stream)
                 PlistDocumentFormats.Binary => (plist_to_bin, plist_to_bin_free),
                 _ => throw new FormatException()
             };
-            delegates.toData(RootNode.Handle, out var ptr, out var length);
-            unsafe
+            var ptr = IntPtr.Zero;
+            try
             {
-                var ums = new UnmanagedMemoryStream((byte*)ptr.ToPointer(), length);
-                stream.Seek(0, SeekOrigin.Begin);
-                try
+                delegates.toData(RootNode.Handle, out ptr, out var length);
+                unsafe
                 {
-                    ums.CopyTo(stream);
+                    var ums = new UnmanagedMemoryStream((byte*)ptr.ToPointer(), length);
+                    stream.Seek(0, SeekOrigin.Begin);
+                    try
+                    {
+                        ums.CopyTo(stream);
+                        stream.SetLength(ums.Length);
+                        stream.Flush();
+                        stream.Seek(0, SeekOrigin.Begin);
+                    }
+                    finally
+                    {
+                        ums.Close();
+                    }
                 }
-                catch (Exception)
-                {
-                    ums.Close();
-                    delegates.freeData(ptr);
-                    throw;
-                }
-                stream.SetLength(ums.Length);
-                stream.Flush();
-                stream.Seek(0, SeekOrigin.Begin);
-                ums.Close();
+                
             }
-            delegates.freeData(ptr);
+            finally
+            {
+                delegates.freeData(ptr);
+            }
+
         }
 
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
@@ -304,32 +319,39 @@ public static async Task<PlistDocument?> LoadAsync(Stream stream)
                 PlistDocumentFormats.Binary => (plist_to_bin, plist_to_bin_free),
                 _ => throw new FormatException()
             };
-            delegates.toData(RootNode.Handle, out var ptr, out var length);
-            UnmanagedMemoryStream ums;
-            unsafe
-            {
-                ums = new UnmanagedMemoryStream((byte*)ptr.ToPointer(), length);
-            }
-            stream.Seek(0, SeekOrigin.Begin);
+            var ptr = IntPtr.Zero;
             try
             {
+                delegates.toData(RootNode.Handle, out ptr, out var length);
+                UnmanagedMemoryStream? ums = null;
+                try
+                { 
+                    unsafe
+                    {
+                        ums = new UnmanagedMemoryStream((byte*)ptr.ToPointer(), length);
+                    }
+                    stream.Seek(0, SeekOrigin.Begin);
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
-                await ums.CopyToAsync(stream, token);
+                    await ums.CopyToAsync(stream, token);
 #else
-                await ums.CopyToAsync(stream);
+                    await ums.CopyToAsync(stream);
 #endif
+                    stream.SetLength(ums.Length);
+                    stream.Flush();
+                    stream.Seek(0, SeekOrigin.Begin);
+                }
+                finally
+                {
+                    ums?.Close();
+                }
             }
-            catch (Exception)
+            finally
             {
-                ums.Close();
-                delegates.freeData(ptr);
-                throw;
+                if (ptr != IntPtr.Zero)
+                {
+                    delegates.freeData(ptr);
+                }
             }
-            stream.SetLength(ums.Length);
-            stream.Flush();
-            stream.Seek(0, SeekOrigin.Begin);
-            ums.Close();
-            delegates.freeData(ptr);
         }
 
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
