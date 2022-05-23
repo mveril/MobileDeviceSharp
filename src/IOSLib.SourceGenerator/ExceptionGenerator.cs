@@ -1,4 +1,6 @@
-﻿namespace IOSLib.SourceGenerator
+﻿using System.Globalization;
+
+namespace IOSLib.SourceGenerator
 {
     [Generator]
     class ExceptionGenerator : IIncrementalGenerator
@@ -19,8 +21,37 @@
             return (ITypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!;
         }
 
+        private static readonly DiagnosticDescriptor s_diagnosticDescriptorNeedSuccess = new DiagnosticDescriptor("ErrorNeedSuccess",
+            "Error need a success field value with a value of 0",
+            "Error need a success field value with a value of 0",
+            typeof(ExceptionGenerator).FullName,
+            DiagnosticSeverity.Error,
+            true);
+
+        private static readonly DiagnosticDescriptor s_diagnosticDescriptorSuccessMustBe0 = new DiagnosticDescriptor("ErrorSuccessMustBe0",
+    "Error the sucess value need a value of 0",
+    "Error the sucess value need a value of 0",
+    typeof(ExceptionGenerator).FullName,
+    DiagnosticSeverity.Error,
+    true);
+
         private static void Producer(SourceProductionContext context, ITypeSymbol EnumSymbol)
         {
+            var successArray = EnumSymbol.GetMembers("Success");
+            if ((successArray.Length != 1 || successArray[0] is not IFieldSymbol field))
+            {
+                foreach (var location in EnumSymbol.Locations)
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(s_diagnosticDescriptorNeedSuccess, location));
+                }
+            }
+            else if (!field.HasConstantValue || field.ConstantValue is not IConvertible val || val.ToDouble(CultureInfo.InvariantCulture) != 0)
+            {
+                foreach (var location in field.Locations)
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(s_diagnosticDescriptorSuccessMustBe0, location));
+                }             
+            }
             var enumName = EnumSymbol.Name;
             var enumNamespaceName = EnumSymbol.ContainingNamespace.ToDisplayString();
             var parentNamespaceName = EnumSymbol.ContainingNamespace.ContainingNamespace.ToDisplayString();
