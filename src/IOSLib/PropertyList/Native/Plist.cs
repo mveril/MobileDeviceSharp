@@ -7,7 +7,7 @@ using System.Text;
 
 namespace IOSLib.PropertyList.Native
 {
-    static class Plist
+    internal static class Plist
     {
         public const string LibraryName = "plist";
 

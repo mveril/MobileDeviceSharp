@@ -7,7 +7,7 @@ using IOSLib.Usbmuxd.Native;
 
 namespace IOSLib.Native
 {
-    internal class IDevice
+    internal static class IDevice
     {
         public const string LibraryName = "imobiledevice";
 
