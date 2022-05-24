@@ -19,9 +19,9 @@ namespace IOSLib.PropertyList
                 _dict = plistDictionary;
             }
 
-            public int Count => throw new System.NotImplementedException();
+            public int Count => _dict.Count;
 
-            public bool IsReadOnly => throw new System.NotImplementedException();
+            public bool IsReadOnly => true;
 
             void ICollection<PlistNode>.Add(PlistNode item)
             {
