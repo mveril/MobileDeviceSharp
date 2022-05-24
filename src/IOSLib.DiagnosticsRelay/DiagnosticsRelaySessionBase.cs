@@ -6,6 +6,7 @@ using IOSLib.Native;
 using IOSLib.DiagnosticsRelay.Native;
 using IOSLib.PropertyList.Native;
 using IOSLib.PropertyList;
+using System.Linq;
 
 namespace IOSLib.DiagnosticsRelay
 {
@@ -54,15 +55,32 @@ namespace IOSLib.DiagnosticsRelay
 
         public PlistNode QueryMobilegestalt(string key)
         {
+            
+            PlistNode result;
+            using (var pArray = new PlistArray())
+            {
+                pArray.Add(new PlistKey(key));
+                using var dic = QueryMobilegestalt(pArray);
+                result = dic[key].Clone();
+            }
+            return result;
+        }
+
+        public PlistDictionary QueryMobilegestalt(params string[] keys)
+        {
+            using var pArray = new PlistArray(keys.Select((k) => new PlistKey(k)));
+            return QueryMobilegestalt(pArray);
+        }
+
+        public PlistDictionary QueryMobilegestalt(PlistArray keys)
+        {
             DiagnosticsRelayError hresult;
             PlistHandle result;
-            using (var keynode = new PlistKey(key))
-            {
-                hresult = diagnostics_relay_query_mobilegestalt(Handle, keynode.Handle, out result);
-            }
+            hresult = diagnostics_relay_query_mobilegestalt(Handle, keys.Handle, out result);
             if (hresult.IsError())
                 throw hresult.GetException();
-            return PlistNode.From(result);
+            using var dic = (PlistDictionary)PlistNode.From(result);
+            return (PlistDictionary)dic["MobileGestalt"].Clone();
         }
 
         public PlistNode QueryIoregistryEntry(string entryName,string entryClass)
