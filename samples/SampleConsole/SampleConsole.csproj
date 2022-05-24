@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -20,7 +20,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\IOSLib.AFC\IOSLib.AFC.csproj" />
-    <ProjectReference Include="..\..\src\IOSLib.DiagnosticsRelay\IOSLib.DiagnosticsRelay.csproj" />
     <ProjectReference Include="..\..\src\IOSLib\IOSLib.csproj" />
   </ItemGroup>
 </Project>
