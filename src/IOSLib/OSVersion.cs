@@ -12,24 +12,29 @@ namespace IOSLib
     {
         internal static OSVersion FromDevice(IDevice idevice)
         {
-            string buildNumber;
-            string sversion;
-            using (var lockdown = new LockdownSession(idevice))
+            PlistDictionary dic;
+            using (var relay = new DiagnosticsRelay.DiagnosticsRelaySession(idevice))
             {
-                var domain = lockdown.GetDomain();
-                using (var pValue = (PlistString)domain["BuildVersion"])
-                {
-                    buildNumber = pValue.Value;
-                }
-                using (var pValue = (PlistString)domain["ProductVersion"])
-                {
-                    sversion = pValue.Value;
-                }
+                dic = relay.QueryMobilegestalt("MarketingProductName", "ProductVersion", "BuildVersion");
             }
-            var version = Version.Parse(sversion);
-            var deviceClass = idevice.DeviceClass;
-            return new OSVersion(version, deviceClass, new BuildNumber(buildNumber));
+            OSVersion oSVersion;
+            using (dic)
+            {
+                var name = ((PlistString)dic["MarketingProductName"]).Value;
+                var version = Version.Parse(((PlistString)dic["ProductVersion"]).Value);
+                var build = BuildNumber.Parse(((PlistString)dic["BuildVersion"]).Value);
+                oSVersion = new OSVersion(version, name, build);
+            }
+            return oSVersion;
         }
+
+        private OSVersion(Version version, string oSDisplayName, BuildNumber buildNumber)
+        {
+            OSDisplayName = oSDisplayName;
+            Version = version;
+            BuildNumber = buildNumber;
+        }
+
         private OSVersion(Version version, IOSLib.DeviceClass deviceClass, BuildNumber buildNumber)
         {
             Version = version;

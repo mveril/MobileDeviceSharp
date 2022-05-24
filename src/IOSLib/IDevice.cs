@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using IOSLib.CompilerServices;
+using IOSLib.DiagnosticsRelay;
 
 namespace IOSLib
 {
@@ -187,145 +188,16 @@ namespace IOSLib
         {
             get
             {
-                return ProductType switch
+                try
                 {
-                    #region AppleWatch
-                    "Watch6,6" or "Watch6,7" or "Watch6,8" or "Watch6,9" => "Apple Watch Series 7",
-                    "Watch6,1" or "Watch6,2" or "Watch6,3" or "Watch6,4" => "Apple Watch Series 6",
-                    "Watch5,9" or "Watch5,10" or "Watch5,11" or "Watch5,12" => "Apple Watch SE",
-                    "Watch5,1" or "Watch5,2" or "Watch5,3" or "Watch5,4" => "Apple Watch Series 5",
-                    "Watch4,1" or "Watch4,2" or "Watch4,3" or "Watch4,4" => "Apple Watch Series 4",
-                    "Watch3,1" or "Watch3,2" or "Watch3,3" or "Watch3,4" => "Apple Watch Series 3",
-                    "Watch2,3" or "Watch2,4" => "Apple Watch Series 2",
-                    "Watch2,6" or "Watch2,7" => "Apple Watch Series 1",
-                    "Watch1,1" or "Watch1,2" => "Apple Watch",
-                    #endregion
-                    #region AppleTV
-                    "AppleTV11,1" => "Apple TV 4K (2nd generation)",
-                    "AppleTV6,2" => "Apple TV 4K",
-                    "AppleTV5,3" => "Apple TV (4th generation)",
-                    "AppleTV3,1" or "AppleTV3,2" => "Apple TV (3rd generation)",
-                    "AppleTV2,1" => "Apple TV (2nd generation)",
-                    "AppleTV1,1" => "Apple TV",
-                    #endregion
-                    #region iPhone
-                    "iPhone14,2" => "iPhone 13 Pro",
-                    "iPhone14,3" => "iPhone 13 Pro Max",
-                    "iPhone14,4" => "iPhone 13 mini",
-                    "iPhone14,5" => "iPhone 13",
-                    "iPhone14,6" => "iPhone SE (3rd generation)",
-                    "iPhone13,1" => "iPhone 12 mini",
-                    "iPhone13,2" => "iPhone 12",
-                    "iPhone13,3" => "iPhone 12 Pro",
-                    "iPhone13,4" => "iPhone 12 Pro Max",
-                    "iPhone12,8" => "iPhone SE (2nd generation)",
-                    "iPhone12,5" => "iPhone 11 Pro Max",
-                    "iPhone12,3" => "iPhone 11 Pro",
-                    "iPhone12,1" => "iPhone 11",
-                    "iPhone11,2" => "iPhone XS",
-                    "iPhone11,4" or "iPhone11,6" => "iPhone XS Max",
-                    "iPhone11,8" => "iPhone XR",
-                    "iPhone10,3" or "iPhone10,6" => "iPhone X",
-                    "iPhone10,2" or "iPhone10,5" => "iPhone 8 Plus",
-                    "iPhone10,1" or "iPhone10,4" => "iPhone 8",
-                    "iPhone9,2" or "iPhone9,4" => "iPhone 7 Plus",
-                    "iPhone9,1" or "iPhone9,3" => "iPhone 7",
-                    "iPhone8,4" => "iPhone SE",
-                    "iPhone8,2" => "iPhone 6S Plus",
-                    "iPhone8,1" => "iPhone 6S",
-                    "iPhone7,1" => "iPhone 6 Plus",
-                    "iPhone7,2" => "iPhone 6",
-                    "iPhone6,2" => "iPhone 5S Global",
-                    "iPhone6,1" => "iPhone 5S GSM",
-                    "iPhone5,4" => "iPhone 5C Global",
-                    "iPhone5,3" => "iPhone 5C GSM",
-                    "iPhone5,2" => "iPhone 5 Global",
-                    "iPhone5,1" => "iPhone 5 GSM",
-                    "iPhone4,1" => "iPhone 4S",
-                    "iPhone3,3" => "iPhone 4 CDMA",
-                    "iPhone3,1" or "iPhone3,2" => "iPhone 4 GSM",
-                    "iPhone2,1" => "iPhone 3GS",
-                    "iPhone1,2" => "iPhone 3G",
-                    "iPhone1,1" => "iPhone",
-                    #endregion
-                    #region iPods
-                    "iPod9,1" => "iPod touch 7G",
-                    "iPod7,1" => "iPod touch 6G",
-                    "iPod5,1" => "iPod touch 5G",
-                    "iPod4,1" => "iPod touch 4G",
-                    "iPod3,1" => "iPod touch 3G",
-                    "iPod2,1" => "iPod touch 2G",
-                    "iPod1,1" => "iPod touch",
-                    #endregion
-                    #region iPad
-                    "iPad14,1" or "iPad14,2" => "iPad mini (6th generation)",
-                    "iPad13,8" or "iPad13,9" or "iPad13,10" or "iPad13,11" => "iPad Pro (12.9-inch) (5th generation)",
-                    "iPad13,4" or "iPad13,5" or "iPad13,6" or "iPad13,7" => "iPad Pro (11-inch) (3rd generation)",
-                    "iPad13,2" => "iPad Air (4th generation) Wi-Fi + Cellular",
-                    "iPad13,1" => "iPad Air (4th generation) Wi-Fi",
-                    "iPad12,1" or "iPad12,2" => "iPad (9th generation)",
-                    "iPad11,7" => "iPad (8th Generation) Wi-Fi + Cellular",
-                    "iPad11,6" => "iPad (8th Generation) Wi-Fi",
-                    "iPad11,4" => "iPad Air (3rd generation) Wi-Fi + Cellular",
-                    "iPad11,3" => "iPad Air (3rd generation) Wi-Fi",
-                    "iPad11,2" => "iPad mini (5th generation) Wi-Fi + Cellular",
-                    "iPad11,1" => "iPad mini (5th generation) Wi-Fi",
-                    "iPad8,12" => "iPad Pro (12.9-inch) (4th generation) Wi-Fi + Cellular",
-                    "iPad8,11" => "iPad Pro (12.9-inch) (4th generation) Wi-Fi",
-                    "iPad8,10" => "iPad Pro (11-inch) (2nd generation) Wi-Fi + Cellular",
-                    "iPad8,9" => "iPad Pro (11-inch) (2nd generation) Wi-Fi",
-                    "iPad8,8" => "iPad Pro 12.9-inch (3rd Generation)",
-                    "iPad8,7" => "iPad Pro 12.9-inch (3rd generation) Wi-Fi + Cellular",
-                    "iPad8,6" => "iPad Pro 12.9-inch (3rd Generation)",
-                    "iPad8,5" => "iPad Pro 12.9-inch (3rd Generation)",
-                    "iPad8,4" => "iPad Pro 11-inch",
-                    "iPad8,3" => "iPad Pro 11-inch Wi-Fi + Cellular",
-                    "iPad8,2" => "iPad Pro 11-inch",
-                    "iPad8,1" => "iPad Pro 11-inch Wi-Fi",
-                    "iPad7,12" => "iPad (7th generation) Wi-Fi + Cellular",
-                    "iPad7,11" => "iPad (7th generation) Wi-Fi",
-                    "iPad7,6" => "iPad (6th generation) Wi-Fi + Cellular",
-                    "iPad7,5" => "iPad (6th generation) Wi-Fi",
-                    "iPad7,4" => "iPad Pro (10.5-inch) Wi-Fi + Cellular",
-                    "iPad7,3" => "iPad Pro (10.5-inch) Wi-Fi",
-                    "iPad7,2" => "iPad Pro 12.9-inch (2nd generation) Wi-Fi + Cellular",
-                    "iPad7,1" => "iPad Pro 12.9-inch (2nd generation) Wi-Fi",
-                    "iPad6,12" => "iPad (5th generation) Wi-Fi + Cellular",
-                    "iPad6,11" => "iPad (5th generation) Wi-Fi",
-                    "iPad6,8" => "iPad Pro 12.9-inch Wi-Fi + Cellular",
-                    "iPad6,7" => "iPad Pro 12.9-inch Wi-Fi",
-                    "iPad6,4" => "iPad Pro (9.7-inch) Wi-Fi + Cellular",
-                    "iPad6,3" => "iPad Pro (9.7-inch) Wi-Fi",
-                    "iPad5,4" => "iPad Air 2 Wi-Fi + Cellular",
-                    "iPad5,3" => "iPad Air 2 Wi-Fi",
-                    "iPad5,2" => "iPad mini 4 Wi-Fi + Cellular",
-                    "iPad5,1" => "iPad mini 4 Wi-Fi",
-                    "iPad4,9" => "iPad mini 3 Wi-Fi + Cellular (TD-LTE)",
-                    "iPad4,8" => "iPad mini 3 Wi-Fi + Cellular",
-                    "iPad4,7" => "iPad mini 3 Wi-Fi",
-                    "iPad4,6" => "iPad mini 2 Wi-Fi + Cellular (TD-LTE)",
-                    "iPad4,5" => "iPad mini 2 Wi-Fi + Cellular",
-                    "iPad4,4" => "iPad mini 2 Wi-Fi",
-                    "iPad4,3" => "iPad Air Wi-Fi + Cellular (TD-LTE)",
-                    "iPad4,2" => "iPad Air Wi-Fi + Cellular",
-                    "iPad4,1" => "iPad Air Wi-Fi",
-                    "iPad3,6" => "iPad (4th generation) Wi-Fi + Cellular (MM)",
-                    "iPad3,5" => "iPad (4th generation) Wi-Fi + Cellular",
-                    "iPad3,4" => "iPad (4th generation) Wi-Fi",
-                    "iPad3,3" => "iPad 3 Wi-Fi + Cellular (CDMA)",
-                    "iPad3,2" => "iPad 3 Wi-Fi + Cellular (GSM)",
-                    "iPad3,1" => "iPad 3 Wi-Fi",
-                    "iPad2,7" => "iPad mini Wi-Fi + Cellular (MM)",
-                    "iPad2,6" => "iPad mini Wi-Fi + Cellular",
-                    "iPad2,5" => "iPad mini Wi-Fi",
-                    "iPad2,4" => "iPad 2 Wi-Fi",
-                    "iPad2,3" => "iPad 2 CDMA",
-                    "iPad2,2" => "iPad 2 GSM",
-                    "iPad2,1" => "iPad 2 Wi-Fi",
-                    "iPad1,1" => "iPad",
-                    #endregion
-                    _ => ProductType,
-                };
+                    using var relay = new DiagnosticsRelaySession(this);
+                    using PlistString pValue = (PlistString)relay.QueryMobilegestalt("marketing-name");
+                    return pValue.Value;
+                }
+                catch (Exception)
+                {
+                    return ProductType;
+                }
             }
         }
 
