@@ -172,15 +172,8 @@ namespace IOSLib.AFC
 
         public override long Seek(long offset, SeekOrigin origin)
         {
-
-            var values = origin switch
-            {
-                SeekOrigin.Begin => (offset, 0),
-                SeekOrigin.Current => (offset += Position, 0),
-                SeekOrigin.End => (offset, 1)
-            };
             ValidateHandle();
-            var hresult = afc_file_seek(Session.Handle, _fHandle, values.Item1, values.Item2);
+            var hresult = afc_file_seek(Session.Handle, _fHandle, offset, (SeekWhence)(int)origin); // SeekOrigin values are the same as standard Unix seek values.
             if(hresult.IsError())
                 throw new IOException("Seek operation failed.", hresult.GetException());
             return Position;

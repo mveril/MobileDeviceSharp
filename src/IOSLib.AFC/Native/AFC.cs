@@ -340,7 +340,7 @@ namespace IOSLib.AFC.Native
         /// AFC_E_SUCCESS on success or an AFC_E_* error value.
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(AFC.LibraryName, EntryPoint = "afc_file_seek", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern AFCError afc_file_seek(AFCClientHandle client, ulong handle, long offset, int whence);
+        public static extern AFCError afc_file_seek(AFCClientHandle client, ulong handle, long offset, SeekWhence whence);
 
         /// <summary>
         /// Returns current position in a pre-opened file on the device.
