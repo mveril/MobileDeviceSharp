@@ -2,6 +2,8 @@
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 using static IOSLib.AFC.Native.AFC;
 
 namespace IOSLib.AFC
@@ -140,6 +142,11 @@ namespace IOSLib.AFC
 
         }
 
+        public override Task FlushAsync(CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
+        }
+
 #if !NET6_0_OR_GREATER
         private static void ValidateBufferArguments(byte[] buffer, int offset, int count)
         {
@@ -166,8 +173,50 @@ namespace IOSLib.AFC
             var offsetbuffer = new ArrayWithOffset(buffer, offset);
             var hresult = afc_file_read(Session.Handle, _fHandle, offsetbuffer, (uint)count, out var byteread);
             if (hresult.IsError())
-                throw new IOException("Read operation failed", hresult.GetException());
+                throw new IOException("Read operation failed.", hresult.GetException());
             return (int)byteread;
+        }
+
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+        public override int Read(Span<byte> buffer)
+        {
+            if (GetType() != typeof(AFCStream))
+            {
+                // NetworkStream is not sealed, and a derived type may have overridden Read(byte[], int, int) prior
+                // to this Read(Span<byte>) overload being introduced.  In that case, this Read(Span<byte>) overload
+                // should use the behavior of Read(byte[],int,int) overload.
+                return base.Read(buffer);
+            }
+            AFCError hresult;
+            uint byteread;
+            unsafe
+            {
+                fixed (byte* b = buffer)
+                {
+                    hresult = afc_file_read(Session.Handle, _fHandle, b, (uint)buffer.Length, out byteread);
+                    if (hresult.IsError())
+                        throw new IOException("Read operation failed.", hresult.GetException());
+                }
+            }
+            return (int)byteread;
+        }
+#endif
+        public override unsafe int ReadByte()
+        {
+            byte b;
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+            return Read(new Span<byte>(&b, 1)) == 0 ? -1 : b;
+#else
+            uint byteread;
+            ValidateHandle();
+            unsafe
+            {
+                var hresult = afc_file_read(Session.Handle, _fHandle, &b, 1, out byteread);
+                if (hresult.IsError())
+                    throw new IOException("Read operation failed.", hresult.GetException());
+            }
+            return byteread == 0 ? -1 : b;
+#endif
         }
 
         public override long Seek(long offset, SeekOrigin origin)
@@ -192,7 +241,7 @@ namespace IOSLib.AFC
 
                     var hresult = afc_file_truncate(Session.Handle, _fHandle, (ulong)value);
                     if (hresult.IsError())
-                        throw new IOException("Truncate operation failed", hresult.GetException());
+                        throw new IOException("Truncate operation failed.", hresult.GetException());
                 }
                 else
                 {
@@ -210,6 +259,44 @@ namespace IOSLib.AFC
             var hresult = afc_file_write(Session.Handle, _fHandle, offsetbuffer, (uint)count, out _);
             if (hresult.IsError())
                 throw new IOException("Write operation failed.", hresult.GetException());
+        }
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+        public override void Write(ReadOnlySpan<byte> buffer)
+        {
+            if (GetType() != typeof(AFCStream))
+            {
+                // NetworkStream is not sealed, and a derived type may have overridden Write(byte[], int, int) prior
+                // to this Write(ReadOnlySpan<byte>) overload being introduced.  In that case, this Write(ReadOnlySpan<byte>)
+                // overload should use the behavior of Write(byte[],int,int) overload.
+                base.Write(buffer);
+                return;
+            }
+            ValidateHandle();
+            unsafe
+            {
+                fixed (byte* b = buffer)
+                {
+                    var hresult = afc_file_write(Session.Handle, _fHandle, b, (uint)buffer.Length, out _);
+                    if (hresult.IsError())
+                        throw new IOException("Write operation failed.", hresult.GetException());
+                }
+            }
+        }
+
+#endif
+        public override unsafe void WriteByte(byte value)
+        {
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+            Write(new ReadOnlySpan<byte>(&value, 1));
+#else
+            ValidateHandle();
+            unsafe
+            {
+                var hresult = afc_file_write(Session.Handle, _fHandle, &value, 1, out _);
+                if (hresult.IsError())
+                    throw new IOException("Write operation failed.", hresult.GetException());
+            }
+#endif
         }
 
         private  void ValidateHandle()
