@@ -96,10 +96,10 @@ namespace IOSLib
         /// <returns></returns>
         public string ToString(bool showBuildNumber)
         {
-            string? str = ToString();
+            string str = ToString();
             if (showBuildNumber)
             {
-                return str + $" ({BuildNumber})";
+                return $"{str} ({BuildNumber})";
             }
             return str;
         }
