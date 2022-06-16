@@ -110,7 +110,6 @@ namespace IOSLib.PropertyList
             PlistDocument? document = null;
 
             uint leight = (uint)stream.Length;
-            UnmanagedMemoryStream? ums = null;
             var ptr = IntPtr.Zero;
             try
             {
@@ -122,20 +121,10 @@ namespace IOSLib.PropertyList
 #else
                 ptr = Marshal.AllocHGlobal((nint)leight);
 #endif
-                try
-                {
-                    unsafe
-                    {
-                        ums = new UnmanagedMemoryStream((byte*)ptr, stream.Length, stream.Length, FileAccess.Write);
-                    }
-                    stream.CopyTo(ums);
-                }
-                finally
-                {
-                    ums?.Close();
-                }
                 unsafe
                 {
+                    using var ums = new UnmanagedMemoryStream((byte*)ptr, stream.Length, stream.Length, FileAccess.Write);
+                    stream.CopyTo(ums);
                     plist_from_memory((byte*)ptr, leight, out var handle);
                     var node = PlistNode.From(handle);
                     if (node is not null)
@@ -183,30 +172,28 @@ namespace IOSLib.PropertyList
             UnmanagedMemoryStream? ums = null;
             try
             {
+
+#if NET6_0_OR_GREATER
                 unsafe
                 {
-#if NET6_0_OR_GREATER
                     safeptr = (IntPtr)NativeMemory.Alloc(leight);
+
+                }
 #else
                     safeptr = Marshal.AllocHGlobal((nint)leight);
 #endif
-                }
-                try
+                unsafe
                 {
-                    unsafe
-                    {
-                        ums = new UnmanagedMemoryStream((byte*)safeptr, stream.Length, stream.Length, FileAccess.Write);
-                    }
+                    ums = new UnmanagedMemoryStream((byte*)safeptr, stream.Length, stream.Length, FileAccess.Write);
+                }
+                using(ums)
+                {
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
 
                     await stream.CopyToAsync(ums, token);
 #else
                     await stream.CopyToAsync(ums);
 #endif
-                }
-                finally
-                {
-                    ums?.Close();
                 }
                 unsafe
                 {
@@ -272,19 +259,12 @@ namespace IOSLib.PropertyList
                 delegates.toData(RootNode.Handle, out ptr, out var length);
                 unsafe
                 {
-                    var ums = new UnmanagedMemoryStream((byte*)ptr.ToPointer(), length);
+                    using var ums = new UnmanagedMemoryStream((byte*)ptr.ToPointer(), length);
                     stream.Seek(0, SeekOrigin.Begin);
-                    try
-                    {
-                        ums.CopyTo(stream);
-                        stream.SetLength(ums.Length);
-                        stream.Flush();
-                        stream.Seek(0, SeekOrigin.Begin);
-                    }
-                    finally
-                    {
-                        ums.Close();
-                    }
+                    ums.CopyTo(stream);
+                    stream.SetLength(ums.Length);
+                    stream.Flush();
+                    stream.Seek(0, SeekOrigin.Begin);
                 }
                 
             }
@@ -324,12 +304,12 @@ namespace IOSLib.PropertyList
             {
                 delegates.toData(RootNode.Handle, out ptr, out var length);
                 UnmanagedMemoryStream? ums = null;
-                try
-                { 
-                    unsafe
-                    {
-                        ums = new UnmanagedMemoryStream((byte*)ptr.ToPointer(), length);
-                    }
+                unsafe
+                {
+                    ums = new UnmanagedMemoryStream((byte*)ptr.ToPointer(), length);
+                }
+                using (ums)
+                {
                     stream.Seek(0, SeekOrigin.Begin);
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
                     await ums.CopyToAsync(stream, token);
@@ -339,10 +319,6 @@ namespace IOSLib.PropertyList
                     stream.SetLength(ums.Length);
                     stream.Flush();
                     stream.Seek(0, SeekOrigin.Begin);
-                }
-                finally
-                {
-                    ums?.Close();
                 }
             }
             finally
