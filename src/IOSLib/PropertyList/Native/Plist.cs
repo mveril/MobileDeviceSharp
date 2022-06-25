@@ -837,6 +837,23 @@ namespace IOSLib.PropertyList.Native
         /// a pointer to the imported plist.
         /// </param>
         [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_from_memory", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
+        public static extern void plist_from_memory([Out, In] ArrayWithOffset plistData, uint length, out PlistHandle plist);
+
+        /// <summary>
+        /// Import the #PlistHandle structure from memory data.
+        /// This method will look at the first bytes of plist_data
+        /// to determine if plist_data contains a binary or XML plist.
+        /// </summary>
+        /// <param name="plist_data">
+        /// a pointer to the memory buffer containing plist data.
+        /// </param>
+        /// <param name="length">
+        /// length of the buffer to read.
+        /// </param>
+        /// <param name="plist">
+        /// a pointer to the imported plist.
+        /// </param>
+        [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_from_memory", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
         public static extern unsafe void plist_from_memory(byte* plistData, uint length, out PlistHandle plist);
 
         /// <summary>
@@ -858,6 +875,26 @@ namespace IOSLib.PropertyList.Native
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_is_binary", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
         public static extern int plist_is_binary(byte[] plistData, uint length);
+
+        /// <summary>
+        /// Test if in-memory plist data is binary or XML
+        /// This method will look at the first bytes of plist_data
+        /// to determine if plist_data contains a binary or XML plist.
+        /// This method is not validating the whole memory buffer to check if the
+        /// content is truly a plist, it's only using some heuristic on the first few
+        /// bytes of plist_data.
+        /// </summary>
+        /// <param name="plist_data">
+        /// a pointer to the memory buffer containing plist data.
+        /// </param>
+        /// <param name="length">
+        /// length of the buffer to read.
+        /// </param>
+        /// <returns>
+        /// 1 if the buffer is a binary plist, 0 otherwise.
+        /// </returns>
+        [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_is_binary", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
+        public static extern int plist_is_binary([In,Out] ArrayWithOffset plistData, uint length);
 
         /// <summary>
         /// Test if in-memory plist data is binary or XML

@@ -105,7 +105,17 @@ namespace IOSLib.PropertyList
         /// </summary>
         /// <param name="stream">The stream</param>
         /// <returns>The plist Document</returns>
+
         public static PlistDocument? Load(Stream stream)
+        {
+            return stream switch {
+                UnmanagedMemoryStream ums => LoadInternal(ums),
+                MemoryStream ms => LoadInternal(ms),
+                _ => LoadInternal(stream)
+            };
+        }
+
+        private static PlistDocument? LoadInternal(Stream stream)
         {
             PlistDocument? document = null;
 
@@ -148,6 +158,44 @@ namespace IOSLib.PropertyList
             return document;
         }
 
+        private static PlistDocument? LoadInternal(MemoryStream stream)
+        {
+            if (stream.TryGetBuffer(out var buffer))
+            {
+
+                var length = (uint)buffer.Count;
+                var ArrayOffset = new ArrayWithOffset(buffer.Array, buffer.Offset);
+                plist_from_memory(ArrayOffset, length, out var handle);
+                var node = PlistNode.From(handle);
+                if (node is not null)
+                {
+                    var format = plist_is_binary(ArrayOffset, length) != 0 ? PlistDocumentFormats.Binary : PlistDocumentFormats.XML;
+                    return new PlistDocument(node, format);
+                }
+                stream.Seek(length, SeekOrigin.Current);
+            }
+            else
+            {
+                return LoadInternal((Stream)stream);
+            }
+            return null;
+        }
+
+        private static unsafe PlistDocument? LoadInternal(UnmanagedMemoryStream stream)
+        {
+            var ptr = stream.PositionPointer;
+            var length = (uint)(stream.Length - stream.Position);
+            plist_from_memory(ptr, length, out var handle);
+            var node = PlistNode.From(handle);
+            if (node is not null)
+            {
+                var format = plist_is_binary(ptr, length) != 0 ? PlistDocumentFormats.Binary : PlistDocumentFormats.XML;
+                stream.Seek(length,SeekOrigin.Current);
+                return new PlistDocument(node, format);
+            }
+            return null;
+        }
+
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
         /// <summary>
         /// Get plist data from stream.
@@ -156,6 +204,14 @@ namespace IOSLib.PropertyList
         /// <param name="token">The <see cref="CancellationToken"/>for the task</param>
         /// <returns>The plist Document</returns>
         public static async Task<PlistDocument?> LoadAsync(Stream stream, CancellationToken token)
+        {
+            return stream switch
+            {
+                UnmanagedMemoryStream ums => await LoadInternalAsync(ums, token),
+                MemoryStream ms => await LoadInternalAsync(ms, token),
+                _ => await LoadInternalAsync(stream, token),
+            };
+        }
 #else
         /// <summary>
         /// Get plist data from stream.
@@ -163,6 +219,32 @@ namespace IOSLib.PropertyList
         /// <param name="stream">The stream</param>
         /// <returns>The plist Document</returns>
         public static async Task<PlistDocument?> LoadAsync(Stream stream)
+        {
+            return stream switch
+            {
+                UnmanagedMemoryStream ums => await LoadInternalAsync(ums),
+                MemoryStream ms => await LoadInternalAsync(ms),
+                _ => await LoadInternalAsync(stream),
+            };
+        }
+#endif
+
+
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
+        /// <summary>
+        /// Get plist data from stream.
+        /// </summary>
+        /// <param name="stream">The stream</param>
+        /// <param name="token">The <see cref="CancellationToken"/>for the task</param>
+        /// <returns>The plist Document</returns>
+        private static async Task<PlistDocument?> LoadInternalAsync(Stream stream, CancellationToken token)
+#else
+        /// <summary>
+        /// Get plist data from stream.
+        /// </summary>
+        /// <param name="stream">The stream</param>
+        /// <returns>The plist Document</returns>
+        private static async Task<PlistDocument?> LoadInternalAsync(Stream stream)
 #endif
         {
             PlistDocument? document = null;
@@ -223,6 +305,36 @@ namespace IOSLib.PropertyList
             }
             return document;
         }
+
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
+        private static Task<PlistDocument?> LoadInternalAsync(UnmanagedMemoryStream stream, CancellationToken token)
+        {
+            if (token.IsCancellationRequested)
+            {
+                return Task.FromCanceled<PlistDocument?>(token);
+            }
+#else
+        private static Task<PlistDocument?> LoadInternalAsync(UnmanagedMemoryStream stream)
+        {
+#endif
+
+            return Task.FromResult(LoadInternal(stream));
+        }
+
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
+        private static Task<PlistDocument?> LoadInternalAsync(MemoryStream stream, CancellationToken token)
+        {
+            if (token.IsCancellationRequested)
+            {
+                return Task.FromCanceled<PlistDocument?>(token);
+            }
+#else
+        private static Task<PlistDocument?> LoadInternalAsync(MemoryStream stream)
+        {
+#endif
+            return Task.FromResult(LoadInternal(stream));
+        }
+
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
         /// <summary>
         /// Get plist data from stream.
