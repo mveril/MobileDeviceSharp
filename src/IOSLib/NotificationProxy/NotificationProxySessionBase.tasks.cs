@@ -16,7 +16,7 @@ namespace IOSLib.NotificationProxy
         ConcurrentDictionary<string, ConcurrentQueue<SemaphoreSlim>> _tasksDic = new();
 
         /// <summary>
-        /// Run these method to define the notification we want to observe a lot of constants are available on <see cref="NotificationProxyEvents.Recevable"/>
+        /// Define the notification we want to observe asyncroniously. A lot of constants are available on <see cref="NotificationProxyEvents.Recevable"/>
         /// </summary>
         /// <param name="notification"></param>
         /// <param name="token"></param>
@@ -31,7 +31,7 @@ namespace IOSLib.NotificationProxy
             else
             {
                 var sem = new SemaphoreSlim(0);
-                _tasksDic.AddOrUpdate(notification, (_) => QueueFactory(sem), (_, value) => QueueFactory(sem));
+                _tasksDic.AddOrUpdate(notification, (_) => QueueFactory(sem), (_, value) => QueueFactory(value, sem));
                 await sem.WaitAsync(token);
             }
         }
@@ -46,7 +46,7 @@ namespace IOSLib.NotificationProxy
         }
 
         /// <summary>
-        /// Run these method to define the notification we want to observe a lot of constants are available on <see cref="NotificationProxyEvents.Recevable"/>
+        /// Define the notification we want to observe asyncroniously. A lot of constants are available on <see cref="NotificationProxyEvents.Recevable"/>
         /// </summary>
         /// <param name="notification"></param>
         public async Task ObserveNotificationAsync(string notification)
@@ -56,9 +56,9 @@ namespace IOSLib.NotificationProxy
 
         private void TaskCallBack(string notification)
         {
-            if (_tasksDic.TryGetValue(notification, out var tcss))
+            if (_tasksDic.TryGetValue(notification, out var sems))
             {
-                while (tcss.TryDequeue(out var sem))
+                while (sems.TryDequeue(out var sem))
                 {
                     sem.Release();
                 }

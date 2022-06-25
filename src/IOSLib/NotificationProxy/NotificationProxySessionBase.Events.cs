@@ -12,7 +12,7 @@ namespace IOSLib.NotificationProxy
         private ConcurrentCollections.ConcurrentHashSet<string> _eventIDS = new();
 
         /// <summary>
-        /// Run these method to define the notification we want to observe a lot of constants are available on <see cref="NotificationProxyEvents.Recevable"/>
+        /// Define the notification we want to observe. A lot of constants are available on <see cref="NotificationProxyEvents.Recevable"/>
         /// </summary>
         /// <param name="notifications"></param>
         public void ObserveNotification(params string[] notifications)
@@ -32,7 +32,7 @@ namespace IOSLib.NotificationProxy
         }
 
         /// <summary>
-        /// Run these method to define the notification we want to observe a lot of constants are available on <see cref="NotificationProxyEvents.Recevable"/>
+        /// Define the notification we want to observe. A lot of constants are available on <see cref="NotificationProxyEvents.Recevable"/>
         /// </summary>
         /// <param name="notification"></param>
         public void ObserveNotification(string notification)
