@@ -38,19 +38,26 @@ namespace IOSLib.PropertyList
         /// <returns>XML <see cref="string"/></returns>
         public string ToXMLString()
         {
-            plist_to_xml(RootNode.Handle, out var xmlptr, out var leight);
-            string str;
+            IntPtr xmlptr = IntPtr.Zero;
+            try
+            {
+                plist_to_xml(RootNode.Handle, out xmlptr, out var leight);
+                string str;
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP1_1_OR_GREATER
             str = Marshal.PtrToStringUTF8(xmlptr, (int)leight);
 #else
 
-            unsafe
-            {
-                str = Encoding.UTF8.GetString((byte*)xmlptr, (int)leight);
-            }
+                unsafe
+                {
+                    str = Encoding.UTF8.GetString((byte*)xmlptr, (int)leight);
+                }
 #endif
-            plist_to_xml_free(xmlptr);
-            return str;
+                return str;
+            }
+            finally
+            {
+                plist_to_xml_free(xmlptr);
+            }
         }
 
         /// <summary>
@@ -59,11 +66,18 @@ namespace IOSLib.PropertyList
         /// <returns>Binary plist as byte array</returns>
         public byte[] ToBin()
         {
-            plist_to_bin(RootNode.Handle, out IntPtr ptr, out var length);
-            byte[] buffer = new byte[length];
-            Marshal.Copy(ptr, buffer, 0, (int)length);
-            plist_to_bin_free(ptr);
-            return buffer;
+            IntPtr ptr = IntPtr.Zero;
+            try
+            {
+                plist_to_bin(RootNode.Handle, out ptr, out var length);
+                byte[] buffer = new byte[length];
+                Marshal.Copy(ptr, buffer, 0, (int)length);
+                return buffer;
+            }
+            finally
+            {
+                plist_to_bin_free(ptr);
+            }
         }
 
         /// <summary>

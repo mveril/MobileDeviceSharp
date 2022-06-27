@@ -39,9 +39,20 @@ namespace IOSLib.Usbmuxd
         public static bool TrySavePairRecord(string udid, PlistDocument pairRecordPlist)
         {
             // I use directly native methods because the length is uint
-            PropertyList.Native.Plist.plist_to_bin(pairRecordPlist.RootNode.Handle, out var plistbin, out var length);
-            var success = usbmuxd_save_pair_record(udid, plistbin, length) == 0;
-            PropertyList.Native.Plist.plist_to_bin_free(plistbin);
+            IntPtr plistbin = IntPtr.Zero;
+            bool success;
+            try
+            {
+                PropertyList.Native.Plist.plist_to_bin(pairRecordPlist.RootNode.Handle, out plistbin, out var length);
+                success = usbmuxd_save_pair_record(udid, plistbin, length) == 0;
+            }
+            finally
+            {
+                if (plistbin != IntPtr.Zero)
+                {
+                    PropertyList.Native.Plist.plist_to_bin_free(plistbin);
+                }
+            }
             return success;
         }
 
