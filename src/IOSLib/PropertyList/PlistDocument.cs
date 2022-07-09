@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -98,6 +99,39 @@ namespace IOSLib.PropertyList
         }
 
         /// <summary>
+        /// Get a Plist document from XML string.
+        /// </summary>
+        /// <param name="xml">XML string</param>
+        /// <returns>The plist document</returns>
+        public static PlistDocument? FromXmlString(ReadOnlySpan<char> xml)
+        {
+            Native.PlistHandle handle = Native.PlistHandle.Zero;
+            unsafe
+            {
+                byte[]? arr = null;
+                int length = 0;
+                fixed (char* cptr = xml)
+                {
+                    length = Encoding.UTF8.GetByteCount(cptr, xml.Length);
+                    arr = ArrayPool<byte>.Shared.Rent(length);
+                    fixed (byte* bptr = arr)
+                    {
+                        Encoding.UTF8.GetBytes(cptr, xml.Length,bptr,arr.Length);
+                    }
+                    plist_from_xml(arr, (uint)length, out handle);
+                    ArrayPool<byte>.Shared.Return(arr, true);
+                }
+            }
+
+            var node = PlistNode.From(handle);
+            if (node is not null)
+            {
+                return new PlistDocument(node, PlistDocumentFormats.XML);
+            }
+            return null;
+        }
+
+        /// <summary>
         /// Get a plist document from <see cref="byte"/> array
         /// </summary>
         /// <param name="bin"></param>
@@ -106,6 +140,30 @@ namespace IOSLib.PropertyList
         {
             uint length = (uint)bin.Length;
             plist_from_bin(bin, length, out var handle);
+            using var node = PlistNode.From(handle);
+            if (node is not null)
+            {
+                return new PlistDocument(node, PlistDocumentFormats.Binary);
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Get a plist document from <see cref="byte"/> array
+        /// </summary>
+        /// <param name="bin"></param>
+        /// <returns></returns>
+        public static PlistDocument? FromBin(ReadOnlySpan<byte> bin)
+        {
+            uint length = (uint)bin.Length;
+            Native.PlistHandle handle;
+            unsafe
+            {
+                fixed (byte* ptr = bin)
+                {
+                    plist_from_bin(ptr, length, out handle);
+                }
+            }
             using var node = PlistNode.From(handle);
             if (node is not null)
             {

@@ -791,6 +791,21 @@ namespace IOSLib.PropertyList.Native
         public static extern void plist_from_xml([System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string plistXml, uint length, out PlistHandle plist);
 
         /// <summary>
+        /// Import the #PlistHandle structure from XML format.
+        /// </summary>
+        /// <param name="plist_xml">
+        /// a pointer to the xml buffer.
+        /// </param>
+        /// <param name="length">
+        /// length of the buffer to read.
+        /// </param>
+        /// <param name="plist">
+        /// a pointer to the imported plist.
+        /// </param>
+        [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_from_xml", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
+        public static unsafe extern void plist_from_xml(byte[] plistXml, uint length, out PlistHandle plist);
+
+        /// <summary>
         /// Import the #PlistHandle structure from binary format.
         /// </summary>
         /// <param name="plist_bin">
@@ -804,6 +819,21 @@ namespace IOSLib.PropertyList.Native
         /// </param>
         [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_from_bin", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
         public static extern void plist_from_bin(byte[] plistBin, uint length, out PlistHandle plist);
+
+        /// <summary>
+        /// Import the #PlistHandle structure from binary format.
+        /// </summary>
+        /// <param name="plist_bin">
+        /// a pointer to the xml buffer.
+        /// </param>
+        /// <param name="length">
+        /// length of the buffer to read.
+        /// </param>
+        /// <param name="plist">
+        /// a pointer to the imported plist.
+        /// </param>
+        [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_from_bin", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
+        public static unsafe extern void plist_from_bin(byte* plistBin, uint length, out PlistHandle plist);
 
         /// <summary>
         /// Import the #PlistHandle structure from memory data.
