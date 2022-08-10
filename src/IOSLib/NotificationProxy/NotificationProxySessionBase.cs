@@ -24,6 +24,7 @@ namespace IOSLib.NotificationProxy
         private static readonly StartServiceCallback<NotificationProxyClientHandle, NotificationProxyError> s_startCallback = np_client_start_service;
 
         private static readonly ClientNewCallback<NotificationProxyClientHandle, NotificationProxyError> s_clientNewCallback = np_client_new;
+        private readonly NotificationProxyNotifyCallBack? _callback;
         private SynchronizationContext _context = SynchronizationContext.Current ?? new SynchronizationContext();
 
         /// <summary>
@@ -34,7 +35,8 @@ namespace IOSLib.NotificationProxy
         /// <param name="withEscrowBag">If <see langword="true"/> use escrowbag</param>
         public NotificationProxySessionBase(IDevice device, string ServiceID, bool withEscrowBag) : base(device, ServiceID, withEscrowBag, s_clientNewCallback)
         {
-            var result = np_set_notify_callback(Handle, Callback, IntPtr.Zero);
+            _callback = Callback;
+            var result = np_set_notify_callback(Handle, _callback, IntPtr.Zero);
             if (result.IsError())
             {
                 throw result.GetException();
@@ -47,7 +49,8 @@ namespace IOSLib.NotificationProxy
         /// <param name="device"></param>
         public NotificationProxySessionBase(IDevice device) : base(device, s_startCallback)
         {
-            var result = np_set_notify_callback(Handle, Callback, IntPtr.Zero);
+            _callback = Callback;
+            var result = np_set_notify_callback(Handle, _callback, IntPtr.Zero);
             if (result.IsError())
             {
                 throw result.GetException();
