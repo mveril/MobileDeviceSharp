@@ -367,15 +367,21 @@ namespace IOSLib
                     throw hresult.GetException();
             }
             if(UsbmuxdService.TryReadPairRecord(DeviceUdid, out var doc))
-            { 
-                using var hostId = (PlistString)((PlistDictionary)doc.RootNode)["HostID"];
-                hresult = lockdownd_start_session(Handle, hostId.Value, out _, out _);
-                if (hresult.IsError())
+            {
+                try
                 {
-                    throw hresult.GetException();
+                    using var hostId = (PlistString)((PlistDictionary)doc.RootNode)["HostID"];
+                    hresult = lockdownd_start_session(Handle, hostId.Value, out _, out _);
+                    if (hresult.IsError())
+                    {
+                        throw hresult.GetException();
+                    }
+                }
+                finally
+                {
+                    doc.Dispose();
                 }
             }
-            doc.Dispose();
         }
 
         internal Version GetOSVersion()
