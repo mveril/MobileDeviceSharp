@@ -13,35 +13,55 @@ namespace IOSLib.NotificationProxy
 {
     public abstract partial class NotificationProxySessionBase
     {
-        ConcurrentDictionary<string, ConcurrentQueue<SemaphoreSlim>> _tasksDic = new();
+#if NET5_0_OR_GREATER
+        ConcurrentDictionary<string, ConcurrentQueue<TaskCompletionSource>> _tasksDic = new();
+#else
+        ConcurrentDictionary<string, ConcurrentQueue<TaskCompletionSource<object?>>> _tasksDic = new();
+#endif
 
         /// <summary>
         /// Define the notification we want to observe asyncroniously. A lot of constants are available on <see cref="NotificationProxyEvents.Recevable"/>
         /// </summary>
         /// <param name="notification"></param>
         /// <param name="token"></param>
-        public async Task ObserveNotificationAsync(string notification, CancellationToken token)
+        public Task ObserveNotificationAsync(string notification, CancellationToken token)
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+            {
+                return Task.FromCanceled(token);
+            }
             var result = np_observe_notification(Handle, notification);
             if (result.IsError())
             {
-                throw result.GetException();
+                return Task.FromException(result.GetException());
             }
             else
             {
-                var sem = new SemaphoreSlim(0);
-                _tasksDic.AddOrUpdate(notification, (_) => QueueFactory(sem), (_, value) => QueueFactory(value, sem));
-                await sem.WaitAsync(token);
+#if NET5_0_OR_GREATER
+                var tsk = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+#else
+                var tsk = new TaskCompletionSource<object?>(TaskCreationOptions.RunContinuationsAsynchronously);
+#endif
+                token.Register(() => tsk.TrySetCanceled(token));
+                _tasksDic.AddOrUpdate(notification, (_) => QueueFactory(tsk), (_, value) => QueueFactory(value, tsk));
+                return tsk.Task;
             }
         }
-        private static ConcurrentQueue<SemaphoreSlim> QueueFactory(SemaphoreSlim sem)
+#if NET5_0_OR_GREATER
+        private static ConcurrentQueue<TaskCompletionSource> QueueFactory(TaskCompletionSource tsk)
+#else
+        private static ConcurrentQueue<TaskCompletionSource<object?>> QueueFactory(TaskCompletionSource<object?> tsk)
+#endif
         {
-            return QueueFactory(new(), sem);
+            return QueueFactory(new(), tsk);
         }
-        private static ConcurrentQueue<SemaphoreSlim> QueueFactory(ConcurrentQueue<SemaphoreSlim> queue, SemaphoreSlim sem)
+#if NET5_0_OR_GREATER
+        private static ConcurrentQueue<TaskCompletionSource> QueueFactory(ConcurrentQueue<TaskCompletionSource> queue, TaskCompletionSource tsk)
+#else
+        private static ConcurrentQueue<TaskCompletionSource<object?>> QueueFactory(ConcurrentQueue<TaskCompletionSource<object?>> queue, TaskCompletionSource<object?> tsk)
+#endif
         {
-            queue.Enqueue(sem);
+            queue.Enqueue(tsk);
             return queue;
         }
 
@@ -56,11 +76,15 @@ namespace IOSLib.NotificationProxy
 
         private void TaskCallBack(string notification)
         {
-            if (_tasksDic.TryGetValue(notification, out var sems))
+            if (_tasksDic.TryGetValue(notification, out var tsks))
             {
-                while (sems.TryDequeue(out var sem))
+                while (tsks.TryDequeue(out var tsk))
                 {
-                    sem.Release();
+#if NET5_0_OR_GREATER
+                    tsk.TrySetResult();
+#else
+                    tsk.TrySetResult(null);
+#endif
                 }
             }
         }
