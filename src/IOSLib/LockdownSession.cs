@@ -302,26 +302,31 @@ namespace IOSLib
             }
             return result;
         }
+
         private async Task<bool> PairCoreAsync(LockdownPairRecordHandle pairRecordHandle, IProgress<PairingState> progress, CancellationToken cancellationToken)
         {
-            var err = LockdownError.UnknownError;
-            do
+            LockdownError? err = null;
+            while (true)
             {
-                err = lockdownd_pair(Handle, pairRecordHandle);
+                if (!err.HasValue)
+                {
+                    err = lockdownd_pair(Handle, pairRecordHandle);
+                }
                 switch (err)
                 {
                     case LockdownError.Success:
                         progress.Report(PairingState.Success);
-                        break;
+                        _device.IsPaired = true;
+                        return _device.IsPaired;
                     case LockdownError.UserDeniedPairing:
                         progress.Report(PairingState.UserDeniedPairing);
-                        break;
+                        _device.IsPaired = false;
+                        return _device.IsPaired;
                     case LockdownError.PasswordProtected:
                         progress.Report(PairingState.PasswordProtected);
                         do
                         {
-                            await Task.Delay(200, cancellationToken);
-                            cancellationToken.ThrowIfCancellationRequested();
+                            await Task.Delay(200, cancellationToken).ConfigureAwait(false);
                             err = lockdownd_pair(Handle, pairRecordHandle);
                         } while (err is LockdownError.PasswordProtected);
                         break;
@@ -331,29 +336,12 @@ namespace IOSLib
                         {
                             await np.ObserveNotificationAsync("com.apple.mobile.lockdown.request_pair", cancellationToken).ConfigureAwait(false);
                         }
-                        cancellationToken.ThrowIfCancellationRequested();
+                        err = null;
                         break;
                     default:
-                        throw err.GetException();
-                        break;
+                        _device.IsPaired = false;
+                        throw ((LockdownError)err).GetException();
                 }
-            } while (err is not (LockdownError.Success or LockdownError.UserDeniedPairing));
-            if (err.IsError())
-            {
-                _device.IsPaired = false;
-                if (err is LockdownError.UserDeniedPairing)
-                {
-                    return false;
-                }
-                else
-                {
-                    throw err.GetException();
-                }
-            }
-            else
-            {
-                _device.IsPaired = true;
-                return true;
             }
         }
 
