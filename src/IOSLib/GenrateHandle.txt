@@ -1,3 +1,0 @@
-﻿IOSLib.Native.LockdownPairRecord
-IOSLib.PropertyList.PlistArrayIter
-IOSLib.PropertyList.PlistDictIter

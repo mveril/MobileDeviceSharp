@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\IOSLib.AFC\IOSLib.AFC.csproj" />
-    <ProjectReference Include="..\..\src\IOSLib\IOSLib.csproj" />
+    <ProjectReference Include="..\..\src\MobileDeviceSharp\MobileDeviceSharp.csproj" />
+    <ProjectReference Include="..\..\src\MobileDeviceSharp.AFC\MobileDeviceSharp.AFC.csproj" />
   </ItemGroup>
 </Project>

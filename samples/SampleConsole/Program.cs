@@ -3,11 +3,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Linq;
-using IOSLib;
-using IOSLib.AFC;
+using MobileDeviceSharp;
+using MobileDeviceSharp.AFC;
 using System.CommandLine;
 using System.Threading;
-using IOSLib.DiagnosticsRelay;
+using MobileDeviceSharp.DiagnosticsRelay;
 
 namespace SampleConsole
 {
@@ -130,7 +130,7 @@ namespace SampleConsole
                     device.Dispose();
                 }
             }
-            var watcher = new DeviceWatcher(IOSLib.Usbmuxd.Native.IDeviceLookupOptions.All);
+            var watcher = new DeviceWatcher(MobileDeviceSharp.Usbmuxd.Native.IDeviceLookupOptions.All);
             watcher.DeviceAdded += device_added;
             watcher.Start();
             var semaphore = new SemaphoreSlim(0);

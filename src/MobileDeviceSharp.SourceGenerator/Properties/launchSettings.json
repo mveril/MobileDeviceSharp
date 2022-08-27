@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Generator MobileDeviceSharp": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\MobileDeviceSharp\\MobileDeviceSharp.csproj"
+    }
+  }
+}

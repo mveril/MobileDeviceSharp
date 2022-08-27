@@ -1,0 +1,3 @@
+﻿MobileDeviceSharp.Native.LockdownPairRecord
+MobileDeviceSharp.PropertyList.PlistArrayIter
+MobileDeviceSharp.PropertyList.PlistDictIter

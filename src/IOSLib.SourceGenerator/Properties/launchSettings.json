@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "Generator IOSLib": {
-      "commandName": "DebugRoslynComponent",
-      "targetProject": "..\\IOSLib\\IOSLib.csproj"
-    }
-  }
-}
