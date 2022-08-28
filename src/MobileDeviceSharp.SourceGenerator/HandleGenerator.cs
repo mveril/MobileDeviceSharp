@@ -84,7 +84,7 @@ namespace {0}
     [SecurityPermission(SecurityAction.InheritanceDemand, UnmanagedCode=true)]
     [SecurityPermission(SecurityAction.Demand, UnmanagedCode=true)]
 #endif
-    public partial class {1} : MobileDeviceSharp.Native.IOSHandle
+    public sealed partial class {1} : MobileDeviceSharp.Native.IOSHandle
     {{
         /// <summary>
         /// Initializes a new instance of the <see cref=""{1}""/> class.

@@ -13,7 +13,7 @@ namespace MobileDeviceSharp.PropertyList
     /// <summary>
     /// Represent a Property list document
     /// </summary>
-    public class PlistDocument : IDisposable
+    public sealed class PlistDocument : IDisposable
     {
         /// <summary>
         /// Create a new Plist Document with the specified root node and the specified format

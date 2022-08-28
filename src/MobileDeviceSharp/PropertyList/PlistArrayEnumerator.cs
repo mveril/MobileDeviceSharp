@@ -10,7 +10,7 @@ namespace MobileDeviceSharp.PropertyList
     public partial class PlistArray
     {
         /// <inheritdoc/>
-        private class Enumerator : IEnumerator<PlistNode>
+        private sealed class Enumerator : IEnumerator<PlistNode>
         {
             private readonly PlistArray _root;
             private PlistArrayIterHandle _iter_handle;

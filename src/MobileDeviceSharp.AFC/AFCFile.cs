@@ -7,7 +7,7 @@ using System.Text;
 
 namespace MobileDeviceSharp.AFC
 {
-    public class AFCFile : AFCItem
+    public sealed class AFCFile : AFCItem
     {
        internal AFCFile(AFCSessionBase session, string path) : base(session, path) { }
 

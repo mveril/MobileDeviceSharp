@@ -9,7 +9,7 @@ namespace MobileDeviceSharp
     /// <summary>
     /// A class used to get the battery info of the device.
     /// </summary>
-    public class Battery
+    public sealed class Battery
     {
         private readonly IDevice _device;
 

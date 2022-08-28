@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MobileDeviceSharp
 {
-    public class DeviceEventArgs : EventArgs
+    public sealed class DeviceEventArgs : EventArgs
     {
         public DeviceEventArgs(UsbmuxdDeviceInfo deviceInfo)
         {
@@ -13,7 +13,7 @@ namespace MobileDeviceSharp
             ProductID = deviceInfo.product_id;
             ConnectionType = deviceInfo.conn_type;
         }
-        public bool TryGetDevice(out MobileDeviceSharp.IDevice device)
+        public bool TryGetDevice(out IDevice device)
         {
             return IDevice.TryGetDevice(Udid, ConnectionType, out device);
         }

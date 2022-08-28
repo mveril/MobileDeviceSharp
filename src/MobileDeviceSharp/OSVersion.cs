@@ -8,7 +8,7 @@ namespace MobileDeviceSharp
     /// <summary>
     /// Represent the OS version information for an Apple device.
     /// </summary>
-    public class OSVersion
+    public sealed class OSVersion
     {
         internal static OSVersion FromDevice(IDevice idevice)
         {

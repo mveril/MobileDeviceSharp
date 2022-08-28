@@ -7,7 +7,7 @@ namespace MobileDeviceSharp.NotificationProxy
     /// <summary>
     /// Class that contains event argument for <see cref="NotificationProxySession"/> events
     /// </summary>
-    public class NotificationProxyEventArgs : EventArgs
+    public sealed class NotificationProxyEventArgs : EventArgs
     {
         /// <summary>
         /// The name of the notificationproxy event. Lot of constants are available <see cref="MobileDeviceSharp.Native.NotificationProxyEvents"/>.

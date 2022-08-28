@@ -15,7 +15,7 @@ namespace MobileDeviceSharp
     /// <summary>
     /// Represente a session of the <see href="https://docs.libimobiledevice.org/libimobiledevice/latest/lockdown_8h.html">Lockdown</see> service.
     /// </summary>
-    public partial class LockdownSession : IOSHandleWrapperBase<LockdownClientHandle>
+    public sealed partial class LockdownSession : IOSHandleWrapperBase<LockdownClientHandle>
     {
         private readonly IDevice _device;
 

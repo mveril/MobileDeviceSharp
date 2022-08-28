@@ -51,7 +51,7 @@
             var source = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName(nameSpaceName))
                 .AddMembers(
                     SyntaxFactory.ClassDeclaration(className)
-                    .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword), SyntaxFactory.Token(SyntaxKind.PartialKeyword))
+                    .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword),SyntaxFactory.Token(SyntaxKind.SealedKeyword), SyntaxFactory.Token(SyntaxKind.PartialKeyword))
                     .AddBaseListTypes(SyntaxFactory.SimpleBaseType(SyntaxFactory.ParseTypeName(typeSymbol.Name)))
                     .AddMembers(
                         SyntaxFactory.ConstructorDeclaration(className)

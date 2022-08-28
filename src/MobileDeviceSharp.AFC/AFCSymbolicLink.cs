@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MobileDeviceSharp.AFC
 {
-    public class AFCSymbolicLink : AFCItem
+    public sealed class AFCSymbolicLink : AFCItem
     {
 
         internal AFCSymbolicLink(AFCSessionBase session, string path) : base(session,path)

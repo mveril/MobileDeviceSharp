@@ -3,7 +3,7 @@
 namespace MobileDeviceSharp.CompilerServices
 {
     [AttributeUsage(AttributeTargets.Method)]
-    public class GenerateHandleAttribute : Attribute
+    public sealed class GenerateHandleAttribute : Attribute
     {
         public string HandleName { get; }
 

@@ -8,7 +8,7 @@ using static MobileDeviceSharp.AFC.Native.AFC;
 
 namespace MobileDeviceSharp.AFC
 {
-    public class AFCDirectory : AFCItem
+    public sealed class AFCDirectory : AFCItem
     {
         internal AFCDirectory(AFCSessionBase session, string path) : base(session, path)
         {

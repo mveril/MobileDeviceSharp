@@ -8,7 +8,7 @@ using static MobileDeviceSharp.AFC.Native.AFC;
 
 namespace MobileDeviceSharp.AFC
 {
-    public class AFCStream : Stream
+    public sealed class AFCStream : Stream
     {
 
         public AFCSessionBase Session { get;  }

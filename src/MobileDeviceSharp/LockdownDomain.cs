@@ -9,7 +9,7 @@ using static MobileDeviceSharp.Native.Lockdown;
 
 namespace MobileDeviceSharp
 {
-    public partial class LockdownSession
+    public sealed partial class LockdownSession
     {
         public class LockdownDomain
         {

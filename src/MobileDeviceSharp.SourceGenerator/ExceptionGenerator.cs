@@ -91,7 +91,7 @@ using {0};
 
 namespace {1}
 {{
-    public class {2} : {5}
+    public sealed class {2} : {5}
     {{
         public {2}() : base()
         {{

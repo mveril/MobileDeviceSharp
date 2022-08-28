@@ -20,7 +20,7 @@ namespace MobileDeviceSharp
     /// <summary>
     /// Represent an Apple Device
     /// </summary>
-    public partial class IDevice : IOSHandleWrapperBase<IDeviceHandle>
+    public sealed partial class IDevice : IOSHandleWrapperBase<IDeviceHandle>
     {
         /// <summary>
         /// Initialize an apple device with his udid

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MobileDeviceSharp.AFC
 {
-    public class AFC2Session : AFCSessionBase
+    public sealed class AFC2Session : AFCSessionBase
     {
         private const string AFC2_SERVICE_ID = "com.apple.afc2";
 
