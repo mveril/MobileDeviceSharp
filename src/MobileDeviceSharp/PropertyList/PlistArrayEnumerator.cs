@@ -13,13 +13,13 @@ namespace MobileDeviceSharp.PropertyList
         private sealed class Enumerator : IEnumerator<PlistNode>
         {
             private readonly PlistArray _root;
-            private PlistArrayIterHandle _iter_handle;
+            private PlistArrayIterHandle _iterHandle;
 
             /// <inheritdoc/>
             public Enumerator(PlistArray root)
             {
                 _root = root;
-                plist_array_new_iter(_root.Handle, out _iter_handle);
+                plist_array_new_iter(_root.Handle, out _iterHandle);
             }
 
 #pragma warning disable IDE0032 // Use auto-property (auto readonly property not working because we set the _current in MoveNext)
@@ -34,13 +34,13 @@ namespace MobileDeviceSharp.PropertyList
             /// <inheritdoc/>
             public void Dispose()
             {
-                _iter_handle.Dispose();
+                _iterHandle.Dispose();
             }
 
             /// <inheritdoc/>
             public bool MoveNext()
             {
-                plist_array_next_item(_root.Handle, _iter_handle, out var currentHandle);
+                plist_array_next_item(_root.Handle, _iterHandle, out var currentHandle);
                 var success = !currentHandle.IsInvalid;
                 if (success)
                 {
@@ -52,7 +52,8 @@ namespace MobileDeviceSharp.PropertyList
             /// <inheritdoc/>
             public void Reset()
             {
-                plist_array_new_iter(_root.Handle, out _iter_handle);
+                _iterHandle.Dispose();
+                plist_array_new_iter(_root.Handle, out _iterHandle);
             }
         }
     }

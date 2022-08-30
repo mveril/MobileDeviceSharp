@@ -15,12 +15,12 @@ namespace MobileDeviceSharp.PropertyList
         private class Enumerator : IEnumerator<KeyValuePair<string, PlistNode>>
         {
             private readonly PlistDictionary _root;
-            private PlistDictIterHandle _iter_handle;
+            private PlistDictIterHandle _iterHandle;
 
             public Enumerator(PlistDictionary root)
             {
                 _root = root;
-                plist_dict_new_iter(_root.Handle, out _iter_handle);
+                plist_dict_new_iter(_root.Handle, out _iterHandle);
             }
 
             private KeyValuePair<string, PlistNode> _current;
@@ -30,12 +30,12 @@ namespace MobileDeviceSharp.PropertyList
 
             public void Dispose()
             {
-                _iter_handle.Dispose();
+                _iterHandle.Dispose();
             }
 
             public bool MoveNext()
             {
-                plist_dict_next_item(_root.Handle, _iter_handle, out var key, out var currentHandle);
+                plist_dict_next_item(_root.Handle, _iterHandle, out var key, out var currentHandle);
                 if (key == IntPtr.Zero)
                 {
                     return false;
@@ -52,7 +52,8 @@ namespace MobileDeviceSharp.PropertyList
 
             public void Reset()
             {
-                plist_dict_new_iter(_root.Handle, out _iter_handle);
+                _iterHandle.Dispose();
+                plist_dict_new_iter(_root.Handle, out _iterHandle);
             }
         }
     }
