@@ -1,4 +1,4 @@
-# LibmobiledeviceSharp
+# MobileDeviceSharp
 ## A C# object oriented wrapper around Libmobiledevice
 [Libmobiledevice](https://libimobiledevice.org/) is a cool project. it is useful to interact programmatically with Apple devices exactly like [iTunes](https://www.apple.com/itunes) do. It's a C Opensource library. An Opensource .NET bindings library exits on nuget and it's called [imobiledevice-net](https://www.nuget.org/packages/imobiledevice-net) but this library is just a binding and remains a 100 % functional programming API. So it does not respect C# language standards.
 The objective of this project is to provide a fully object oriented API for C# and .NET developers to interact with Apple device. It use [Libmobiledevice](https://libimobiledevice.org) under the hood but try to use all the C# languages features to provide a easy to use API.
