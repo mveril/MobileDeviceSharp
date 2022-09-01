@@ -17,11 +17,15 @@ namespace MobileDeviceSharp.PropertyList
         ICollection<KeyValuePair<string,PlistNode>>,
         IEnumerable<KeyValuePair<string, PlistNode>>
     {
-        /// <inheritdoc/>
-        public ICollection<string> Keys => new KeysCollection(this);
+        private KeysCollection _keys;
 
         /// <inheritdoc/>
-        public ICollection<PlistNode> Values => new ValuesCollection(this);
+        public ICollection<string> Keys => _keys ??= new KeysCollection(this);
+
+        private ValuesCollection _values;
+
+        /// <inheritdoc/>
+        public ICollection<PlistNode> Values => _values ??= new ValuesCollection(this);
 
         /// <inheritdoc/>
         public override int Count => (int)plist_dict_get_size(Handle);
