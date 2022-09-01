@@ -12,8 +12,10 @@ namespace MobileDeviceSharp.PropertyList
     /// Represent a PropertyList array
     /// </summary>
     public sealed partial class PlistArray : PlistContainer,
+        IReadOnlyCollection<PlistNode>,
         ICollection<PlistNode>,
         IEnumerable<PlistNode>,
+        IReadOnlyList<PlistNode>,
         IList<PlistNode>
     {
         /// <summary>

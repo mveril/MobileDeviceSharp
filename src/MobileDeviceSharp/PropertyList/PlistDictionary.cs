@@ -14,7 +14,9 @@ namespace MobileDeviceSharp.PropertyList
     /// </summary>
     public sealed partial class PlistDictionary : PlistContainer,
         IDictionary<string,PlistNode>,
+        IReadOnlyDictionary<string,PlistNode>,
         ICollection<KeyValuePair<string,PlistNode>>,
+        IReadOnlyCollection<KeyValuePair<string,PlistNode>>,
         IEnumerable<KeyValuePair<string, PlistNode>>
     {
         private KeysCollection _keys;
@@ -22,16 +24,20 @@ namespace MobileDeviceSharp.PropertyList
         /// <inheritdoc/>
         public ICollection<string> Keys => _keys ??= new KeysCollection(this);
 
+        IEnumerable<string> IReadOnlyDictionary<string, PlistNode>.Keys => Keys;
+
         private ValuesCollection _values;
 
         /// <inheritdoc/>
         public ICollection<PlistNode> Values => _values ??= new ValuesCollection(this);
 
+        IEnumerable<PlistNode> IReadOnlyDictionary<string, PlistNode>.Values => Values;
+
         /// <inheritdoc/>
         public override int Count => (int)plist_dict_get_size(Handle);
 
         bool ICollection<KeyValuePair<string, PlistNode>>.IsReadOnly => true;
-
+        
         /// <inheritdoc/>
         public PlistNode this[string key]
         {
