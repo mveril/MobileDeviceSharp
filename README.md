@@ -6,7 +6,7 @@ Somme examples:
 
 - The `LockdownSession.ParAsync` API can be used to pair a device asynchronously.
 - The `PlistDictionary` implement [IDictionary<String,PlistNode>](https://docs.microsoft.com/dotnet/api/system.collections.generic.idictionary-2) interface.
-- The `AFCStream` class allow interacting with Apple device files using the |`Apple file conduit` protocol with the standard C# [Stream](https://docs.microsoft.com/dotnet/api/system.io.stream) API.
+- The `AFCStream` class allow interacting with Apple device files using the `Apple file conduit` protocol with the standard C# [Stream](https://docs.microsoft.com/dotnet/api/system.io.stream) API.
 …
 
 ## Main API and associated libraries
