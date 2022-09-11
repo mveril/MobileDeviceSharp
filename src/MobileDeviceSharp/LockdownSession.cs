@@ -153,7 +153,7 @@ namespace MobileDeviceSharp
         /// Start the Lockdown service with the specified <paramref name="serviceID"/>
         /// </summary>
         /// <param name="serviceID">The service identifier</param>
-        /// <returns></returns>
+        /// <returns>The service descriptor handle</returns>
         public LockdownServiceDescriptorHandle StartService(string serviceID)
         {
             var hresult = lockdownd_start_service(Handle, serviceID, out var serviceDescriptorHandle);
@@ -167,7 +167,7 @@ namespace MobileDeviceSharp
         /// </summary>
         /// <param name="serviceID"></param>
         /// <param name="withEscrowBag"></param>
-        /// <returns>THe service descriptor handle</returns>
+        /// <returns>The service descriptor handle</returns>
         public LockdownServiceDescriptorHandle StartService(string serviceID, bool withEscrowBag)
         {
             if (withEscrowBag)
