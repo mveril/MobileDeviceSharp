@@ -1,12 +1,12 @@
 # MobileDeviceSharp
-## A C# object-oriented wrapper around Libmobiledevice
+## A C# object-oriented wrapper around Libimobiledevice
 [Libmobiledevice](https://libimobiledevice.org/) is a cool project. It is useful to interact programmatically with Apple devices exactly like [iTunes](https://www.apple.com/itunes) do. It's a C Open source library. An Open source .NET bindings library exits on NuGet, and it's called [imobiledevice-net](https://www.nuget.org/packages/imobiledevice-net), but this library is just a binding and remains a 100 % functional programming API. So it does not respect C# language standards.
-The objective of this project is to provide a fully object-oriented API for C# and .NET developers to interact with Apple device. It uses [Libmobiledevice](https://libimobiledevice.org) under the hood but try to use all the C# languages features to provide an easy-to-use API.
+The objective of this project is to provide a fully object-oriented API for C# and .NET developers to interact with Apple device. It uses [Libimobiledevice](https://libimobiledevice.org) under the hood but try to use all the C# languages features to provide an easy-to-use API.
 Somme examples:
 
 - The `LockdownSession.ParAsync` API can be used to pair a device asynchronously.
 - The `PlistDictionary` implement [IDictionary<String,PlistNode>](https://docs.microsoft.com/dotnet/api/system.collections.generic.idictionary-2) interface.
-- The `AFCStream` class allow interacting with Apple device files using the |`Apple file conduit` protocol with the standard C# [Stream](https://docs.microsoft.com/dotnet/api/system.io.stream) API.
+- The `AFCStream` class allow interacting with Apple device files using the `Apple file conduit` protocol with the standard .NET [Stream](https://docs.microsoft.com/dotnet/api/system.io.stream) API.
 …
 
 ## Main API and associated libraries
