@@ -467,23 +467,30 @@ namespace MobileDeviceSharp
         {
             get
             {
-                double offset;
-                using (
-                    var lockdown = new LockdownSession(this,IsPaired))
+                DateTimeOffset? utcTime;
+                using var lockdown = new LockdownSession(this, IsPaired);
+                using var intervalNode = lockdown.GetDomain()["TimeIntervalSince1970"];
+                if (intervalNode is PlistInteger timestampInteger)
                 {
-                    using (var intervalNode = (PlistReal)lockdown.GetDomain()["TimeIntervalSince1970"])
-                    {
-                        offset = intervalNode.Value;
-                    }
+                    var timestamp = (long)timestampInteger.Value;
+                    utcTime = DateTimeOffset.FromUnixTimeSeconds(timestamp);
                 }
-#if NETSTANDARD2_1_OR_GREATER  || NETCOREAPP2_1_OR_GREATER
-                DateTimeOffset unix = DateTimeOffset.UnixEpoch;
+                else if(intervalNode is PlistReal timestampReal)
+                {
+                    var timestamp = timestampReal.Value;
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
+                    DateTimeOffset unix = DateTimeOffset.UnixEpoch;
 
 #else
-                DateTimeOffset unix = DateTimeOffset.FromUnixTimeSeconds(0);
+                    DateTimeOffset unix = DateTimeOffset.FromUnixTimeSeconds(0);
 #endif
-                var utctime = unix.AddSeconds(offset);
-                return TimeZoneInfo.ConvertTime(utctime, TimeZone);
+                    utcTime = unix.AddSeconds(timestamp);
+                }
+                else
+                {
+                    throw new NotSupportedException();
+                }
+                return TimeZoneInfo.ConvertTime(utcTime.Value, TimeZone);
             }
         }
 
