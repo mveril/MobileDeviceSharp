@@ -492,6 +492,30 @@ namespace MobileDeviceSharp
                 }
                 return TimeZoneInfo.ConvertTime(utcTime.Value, TimeZone);
             }
+            set
+            {
+                using var lockdown = new LockdownSession(this, IsPaired);
+                using var intervalNode = lockdown.GetDomain()["TimeIntervalSince1970"];
+                if (intervalNode is PlistInteger)
+                {
+                    lockdown.GetDomain()["TimeIntervalSince1970"] = new PlistInteger((ulong)value.ToUnixTimeSeconds());
+                }
+                else if (intervalNode is PlistReal)
+                {
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
+                    DateTimeOffset unix = DateTimeOffset.UnixEpoch;
+
+#else
+                    DateTimeOffset unix = DateTimeOffset.FromUnixTimeSeconds(0);
+#endif
+                    var timespan = value - unix;
+                    lockdown.GetDomain()["TimeIntervalSince1970"] = new PlistReal(timespan.TotalSeconds);
+                }
+                else
+                {
+                    throw new NotSupportedException();
+                }
+            }
         }
 
         /// <summary>
