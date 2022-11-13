@@ -59,7 +59,7 @@ namespace MobileDeviceSharp.DiagnosticsRelay
             PlistNode result;
             using (var pArray = new PlistArray())
             {
-                pArray.Add(new PlistKey(key));
+                pArray.Add(new PlistString(key));
                 using var dic = QueryMobilegestalt(pArray);
                 result = dic[key].Clone();
             }
@@ -68,7 +68,7 @@ namespace MobileDeviceSharp.DiagnosticsRelay
 
         public PlistDictionary QueryMobilegestalt(params string[] keys)
         {
-            using var pArray = new PlistArray(keys.Select((k) => new PlistKey(k)));
+            using var pArray = new PlistArray(keys.Select((k) => new PlistString(k)));
             return QueryMobilegestalt(pArray);
         }
 
