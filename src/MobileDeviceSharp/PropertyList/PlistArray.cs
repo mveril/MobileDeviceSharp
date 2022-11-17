@@ -97,7 +97,7 @@ namespace MobileDeviceSharp.PropertyList
             var i = arrayIndex;
             foreach (var item in this)
             {
-                array[i]=item;
+                array[i] = item;
                 i++;
             }
         }
@@ -111,7 +111,7 @@ namespace MobileDeviceSharp.PropertyList
         public int IndexOf(PlistNode item)
         {
             var index = plist_array_get_item_index(item.Handle);
-            if (index== uint.MaxValue)
+            if (index == uint.MaxValue)
             {
                 return -1;
             }
@@ -129,23 +129,12 @@ namespace MobileDeviceSharp.PropertyList
         /// <inheritdoc/>
         public bool Remove(PlistNode item)
         {
-            try
+            var result = item.Parent?.Handle == Handle;
+            if (result)
             {
-                var index = IndexOf(item);
-                if (index== -1)
-                {
-                    return false;
-                }
-                else
-                {
-                    RemoveAt(index);
-                }
+                plist_array_item_remove(item.Handle);
             }
-            catch (Exception)
-            {
-                return false;
-            }
-            return true;
+            return result;
         }
 
         /// <inheritdoc/>
