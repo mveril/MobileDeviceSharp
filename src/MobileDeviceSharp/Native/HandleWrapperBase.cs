@@ -57,9 +57,8 @@ namespace MobileDeviceSharp.Native
             {
                 if (disposing)
                 {
-
+                    Handle.Dispose();
                 }
-                Handle.Dispose();
                 _disposedValue = true;
             }
         }
