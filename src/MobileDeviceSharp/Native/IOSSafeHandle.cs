@@ -13,12 +13,12 @@ namespace MobileDeviceSharp.Native
         }
 
 
-        protected IOSHandle(IntPtr Handle) : this(Handle,true)
+        protected IOSHandle(IntPtr handle) : this(handle, true)
         {
 
         }
 
-        protected IOSHandle(IntPtr Handle, bool ownsHandle) : base(ownsHandle)
+        protected IOSHandle(IntPtr handle, bool ownsHandle) : base(ownsHandle)
         {
             SetHandle(handle);
         }
