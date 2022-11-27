@@ -22,7 +22,7 @@ namespace MobileDeviceSharp.DiagnosticsRelay
 
         }
 
-        public DiagnosticsRelaySessionBase(IDevice device, string serviceID, bool withEscrowBag) : base(device,serviceID,withEscrowBag,s_clientNewCallback)
+        public DiagnosticsRelaySessionBase(IDevice device, string serviceID, bool withEscrowBag) : base(device, serviceID, withEscrowBag, s_clientNewCallback)
         {
 
         }
@@ -79,7 +79,7 @@ namespace MobileDeviceSharp.DiagnosticsRelay
             hresult = diagnostics_relay_query_mobilegestalt(Handle, keys.Handle, out result);
             if (hresult.IsError())
                 throw hresult.GetException();
-            using var dic = (PlistDictionary)PlistNode.From(result);
+            using var dic = (PlistDictionary)PlistNode.From(result)!;
             return (PlistDictionary)dic["MobileGestalt"].Clone();
         }
 

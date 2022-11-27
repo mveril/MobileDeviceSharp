@@ -56,7 +56,7 @@ namespace MobileDeviceSharp.DiagnosticsRelay.Native
         /// code otherwise.
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(DiagnosticsRelay.LibraryName, EntryPoint = "diagnostics_relay_client_start_service", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern DiagnosticsRelayError diagnostics_relay_client_start_service(IDeviceHandle device, out DiagnosticsRelayClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string label);
+        public static extern DiagnosticsRelayError diagnostics_relay_client_start_service(IDeviceHandle device, out DiagnosticsRelayClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string? label);
 
         /// <summary>
         /// Disconnects a diagnostics_relay client from the device and frees up the
