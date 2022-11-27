@@ -317,7 +317,7 @@ namespace MobileDeviceSharp
             get
             {
                 using var lockdown = new LockdownSession(this,IsPaired);
-                using var pValue = (PlistBoolean)lockdown.GetDomain()[nameof(HasTelephonyCapability)];
+                using var pValue = (PlistBoolean)lockdown.GetDomain()["TelephonyCapability"];
                 return pValue.Value;
             }
         }
