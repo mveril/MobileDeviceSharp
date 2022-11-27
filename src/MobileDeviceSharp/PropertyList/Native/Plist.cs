@@ -451,6 +451,15 @@ namespace MobileDeviceSharp.PropertyList.Native
         public static extern PlistHandle plist_get_parent(PlistHandle node);
 
         /// <summary>
+        /// Get the parent of a node
+        /// </summary>
+        /// <param name="node">
+        /// the parent (NULL if node is root)
+        /// </param>
+        [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_get_parent", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
+        public static extern PlistHandle plist_get_parent(IntPtr node);
+
+        /// <summary>
         /// Get the #PlistHandleype of a node.
         /// </summary>
         /// <param name="node">

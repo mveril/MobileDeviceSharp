@@ -9,7 +9,7 @@ namespace MobileDeviceSharp.PropertyList.Native
     {
         protected override bool CanBeReleased()
         {
-            return plist_get_parent(this) == Zero;
+            return plist_get_parent(this.handle) == Zero;
         }
     }
 }
