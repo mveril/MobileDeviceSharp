@@ -22,14 +22,23 @@ namespace MobileDeviceSharp.SourceGenerator
             context.RegisterSourceOutput(freeableMethods, FreableProducer);
         }
 
-        MethodDeclarationSyntax GetFreeMethod()
+        MethodDeclarationSyntax GetFreeMethod() => GetFreeMethod(Array.Empty<StatementSyntax>());
+
+        MethodDeclarationSyntax GetFreeMethod(IReadOnlyCollection<StatementSyntax> statements)
         {
-            return GetFreeMethod(SingletonList<StatementSyntax>(GetFreeCode()));
+            var codeList = new List<StatementSyntax>();
+            if (statements.Count != 0)
+            {
+                var condition = IfStatement(InvocationExpression(IdentifierName("CanBeReleased")), Block(statements));
+                codeList.Add(condition);
+            }
+            codeList.Add(ReturnStatement(LiteralExpression(SyntaxKind.TrueLiteralExpression)));
+            return GetFreeMethod(Block(codeList));
         }
 
-        MethodDeclarationSyntax GetFreeMethod(SyntaxList<StatementSyntax> statements)
+        MethodDeclarationSyntax GetFreeMethod(BlockSyntax block)
         {
-            return GetFreeMethodCore().WithBody(Block(statements));
+            return GetFreeMethodCore().WithBody(block);
         }
 
         MethodDeclarationSyntax GetFreeMethodCore()
@@ -46,7 +55,7 @@ namespace MobileDeviceSharp.SourceGenerator
             return (MethodDeclarationSyntax)member!;
         }
 
-        private void FreableProducer(SourceProductionContext context, (string namespaceName, string className, SyntaxList<StatementSyntax> freeCode)? methodData)
+        private void FreableProducer(SourceProductionContext context, (string namespaceName, string className, IReadOnlyCollection<StatementSyntax> freeCode)? methodData)
         {
 
             if (methodData.HasValue)
@@ -205,7 +214,7 @@ namespace {0}
             return false;
         }
 
-        private (string namespaceName, string className, SyntaxList<StatementSyntax> freeCode)? MethodTransformer(GeneratorSyntaxContext context, CancellationToken token)
+        private (string namespaceName, string className, IReadOnlyCollection<StatementSyntax> freeCode)? MethodTransformer(GeneratorSyntaxContext context, CancellationToken token)
         {
             var genAttrSymbol = context.SemanticModel.Compilation.GetTypeByMetadataName($"{AttrNamespace}.{AttrName}");
             if (genAttrSymbol == null)
@@ -221,13 +230,14 @@ namespace {0}
             return null;
         }
 
-        public ReturnStatementSyntax GetFreeCode()
+        public IReadOnlyCollection<StatementSyntax> GetFreeCode()
         {
-            return ReturnStatement(LiteralExpression(SyntaxKind.TrueLiteralExpression));
+            return Array.Empty<StatementSyntax>();
         }
 
-        public SyntaxList<StatementSyntax> GetFreeCode(IMethodSymbol freeMethod, Compilation compilation)
+        public IReadOnlyCollection<StatementSyntax> GetFreeCode(IMethodSymbol freeMethod, Compilation compilation)
         {
+            var list = new List<StatementSyntax>();
             var methodFormat = new SymbolDisplayFormat(memberOptions: SymbolDisplayMemberOptions.IncludeContainingType);
             var returnFormat = new SymbolDisplayFormat(memberOptions: SymbolDisplayMemberOptions.IncludeContainingType);
             var argFormat = new SymbolDisplayFormat(typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces);
@@ -242,7 +252,8 @@ namespace {0}
             var methodcall = InvocationExpression(ParseExpression(freeMethod.ToDisplayString(methodFormat))).AddArgumentListArguments(freeArg); ;
             if (freeReturn.Equals(compilation.GetSpecialType(SpecialType.System_Void), SymbolEqualityComparer.Default))
             {
-                return List(new StatementSyntax[] { ExpressionStatement(methodcall), GetFreeCode() });
+                
+                list.Add(ExpressionStatement(methodcall));
             }
             else
             {
@@ -263,10 +274,11 @@ namespace {0}
                 {
                     throw new NotSupportedException();
                 }
-                return SingletonList<StatementSyntax>(ReturnStatement(BinaryExpression(SyntaxKind.EqualsExpression,
+                list.Add(ReturnStatement(BinaryExpression(SyntaxKind.EqualsExpression,
                     methodcall,
                     retval)));
             }
+            return list;
         }
     }
 }

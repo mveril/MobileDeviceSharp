@@ -28,5 +28,6 @@ namespace MobileDeviceSharp.Native
 
         }
 
+        protected virtual bool CanBeReleased() => true;
     }
 }
