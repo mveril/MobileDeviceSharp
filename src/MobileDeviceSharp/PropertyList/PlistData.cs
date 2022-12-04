@@ -59,6 +59,20 @@ namespace MobileDeviceSharp.PropertyList
             }
             set => plist_set_data_val(Handle,value, (ulong)value.Length);
         }
+
+        public ReadOnlySpan<byte> AsReadOnlySpan()
+        {
+            unsafe
+            {
+                var ptr = (byte*)plist_get_data_ptr(Handle, out var length);
+                return new ReadOnlySpan<byte>(ptr, (int)length);
+            }
+        }
+
+        public static implicit operator ReadOnlySpan<byte>(PlistData plist)
+        {
+            return plist.AsReadOnlySpan();
+        }
     }
 }
 
