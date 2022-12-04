@@ -60,7 +60,7 @@ namespace MobileDeviceSharp.PropertyList
             }
             set
             {
-                plist_array_set_item(Handle, value.Clone().Handle, (uint)index);
+                plist_array_set_item(Handle, plist_copy_not_owned(value.Handle), (uint)index);
             }
         }
 
@@ -73,7 +73,7 @@ namespace MobileDeviceSharp.PropertyList
         /// <inheritdoc/>
         public void Add(PlistNode item)
         {
-            plist_array_append_item(Handle, item.Clone().Handle);
+            plist_array_append_item(Handle, plist_copy_not_owned(item.Handle));
         }
 
         /// <inheritdoc/>

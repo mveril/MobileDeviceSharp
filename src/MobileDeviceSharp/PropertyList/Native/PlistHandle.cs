@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using static MobileDeviceSharp.PropertyList.Native.Plist;
 
 namespace MobileDeviceSharp.PropertyList.Native
 {
-    public sealed partial class PlistHandle 
+    public partial class PlistHandle
     {
-        protected override bool CanBeReleased()
+        internal PlistHandle(IntPtr handle, bool ownsHandle) : base(handle, ownsHandle)
         {
-            return plist_get_parent(this.handle) == Zero;
+
         }
     }
 }

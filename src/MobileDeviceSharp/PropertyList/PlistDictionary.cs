@@ -56,7 +56,7 @@ namespace MobileDeviceSharp.PropertyList
                     throw new ArgumentNullException(nameof(value));
                 if (value.Handle.IsClosed)
                     throw new ObjectDisposedException(nameof(value));
-                plist_dict_set_item(Handle, key, value.Handle);
+                plist_dict_set_item(Handle, key, plist_copy_not_owned(value.Handle));
             }
         }
         /// <summary>
@@ -92,7 +92,7 @@ namespace MobileDeviceSharp.PropertyList
         {
             if (value.Handle.IsClosed)
                 throw new ObjectDisposedException(nameof(value));
-            plist_dict_insert_item(Handle, key, value.Clone().Handle);
+            plist_dict_insert_item(Handle, key, plist_copy_not_owned(value.Handle));
         }
 
         /// <inheritdoc/>
