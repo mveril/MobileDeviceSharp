@@ -60,6 +60,10 @@ namespace MobileDeviceSharp.PropertyList
             set => plist_set_data_val(Handle,value, (ulong)value.Length);
         }
 
+        /// <summary>
+        /// Get a <see cref="ReadOnlySpan{byte}"/> to have a readonly access to the data without copying them.
+        /// </summary>
+        /// <returns>A <see cref="ReadOnlySpan{Byte}"/> pointing to the underlying data.</returns>
         public ReadOnlySpan<byte> AsReadOnlySpan()
         {
             unsafe
