@@ -524,7 +524,7 @@ namespace MobileDeviceSharp.PropertyList.Native
         /// until the plist node gets freed. Make a copy if needed.
         /// </remarks>
         [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_get_string_ptr", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern System.IntPtr plist_get_string_ptr(PlistHandle node, ref ulong length);
+        public static extern System.IntPtr plist_get_string_ptr(PlistHandle node, out ulong length);
 
         /// <summary>
         /// Get the value of a #PLIST_BOOLEAN node.

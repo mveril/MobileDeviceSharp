@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using MobileDeviceSharp.PropertyList.Native;
 using static MobileDeviceSharp.PropertyList.Native.Plist;
@@ -43,6 +44,20 @@ namespace MobileDeviceSharp.PropertyList
                 return val;
             }
             set => plist_set_string_val(Handle, value);
+        }
+
+        /// <summary>
+        /// Get a <see cref="TextReader"/> in order to have access to the underlying string without copying it.
+        /// </summary>
+        /// <returns>A <see cref="TextReader"/> that wrap the string containing in this <see cref="PlistString"/></returns>
+        public TextReader GetReader()
+        {
+            unsafe
+            {
+                var ptr = (byte*)plist_get_string_ptr(Handle, out var length);
+                var stream = new UnmanagedMemoryStream(ptr, (long)length,(long)length,FileAccess.Read);
+                return new StreamReader(stream, Encoding.UTF8);
+            }
         }
     }
 }
