@@ -184,59 +184,59 @@ namespace MobileDeviceSharp.AFC
         }
 #endif
 
+        private unsafe int ReadCore(Span<byte> buffer)
+        {
+            ValidateHandle();
+            if (!CanRead)
+            {
+                throw new NotSupportedException("This stream is readonly");
+            }
+            AFCError hresult;
+            uint byteread;
+            fixed (byte* b = buffer)
+            {
+                hresult = afc_file_read(Session.Handle, _fHandle, b, (uint)buffer.Length, out byteread);
+                if (hresult.IsError())
+                    throw new IOException("Read operation failed.", hresult.GetException());
+            }
+            return (int)byteread;
+        }
+
         /// <inheritdoc/>
         public override int Read(byte[] buffer, int offset, int count)
         {
             ValidateBufferArguments(buffer, offset, count);
-            var offsetbuffer = new ArrayWithOffset(buffer, offset);
-            var hresult = afc_file_read(Session.Handle, _fHandle, offsetbuffer, (uint)count, out var byteread);
-            if (hresult.IsError())
-                throw new IOException("Read operation failed.", hresult.GetException());
-            return (int)byteread;
+            return ReadCore(new Span<byte>(buffer, offset, count));
         }
 
 #if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         /// <inheritdoc/>
-        public override int Read(Span<byte> buffer)
+        public override int Read(Span<byte> buffer) => ReadCore(buffer);
+
+        /// <inheritdoc/>
+        public async override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
         {
-            if (GetType() != typeof(AFCStream))
+            cancellationToken.ThrowIfCancellationRequested();
+            if (buffer.IsEmpty)
             {
-                // NetworkStream is not sealed, and a derived type may have overridden Read(byte[], int, int) prior
-                // to this Read(Span<byte>) overload being introduced.  In that case, this Read(Span<byte>) overload
-                // should use the behavior of Read(byte[],int,int) overload.
-                return base.Read(buffer);
+                return 0;
             }
-            AFCError hresult;
-            uint byteread;
-            unsafe
+            return await Task.Factory.StartNew(static (state) =>
             {
-                fixed (byte* b = buffer)
-                {
-                    hresult = afc_file_read(Session.Handle, _fHandle, b, (uint)buffer.Length, out byteread);
-                    if (hresult.IsError())
-                        throw new IOException("Read operation failed.", hresult.GetException());
-                }
-            }
-            return (int)byteread;
+#pragma warning disable CS8605 // Unboxing a possibly null value.
+                var (stream, buffer) = ((AFCStream state, Memory<byte> buffer))state;
+#pragma warning restore CS8605 // Unboxing a possibly null value.
+                return stream.ReadCore(buffer.Span);
+            }, (this, buffer), cancellationToken, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
         }
 #endif
+
         /// <inheritdoc/>
         public override unsafe int ReadByte()
         {
+
             byte b;
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-            return Read(new Span<byte>(&b, 1)) == 0 ? -1 : b;
-#else
-            uint byteread;
-            ValidateHandle();
-            unsafe
-            {
-                var hresult = afc_file_read(Session.Handle, _fHandle, &b, 1, out byteread);
-                if (hresult.IsError())
-                    throw new IOException("Read operation failed.", hresult.GetException());
-            }
-            return byteread == 0 ? -1 : b;
-#endif
+            return ReadCore(new Span<byte>(&b, 1)) == 0 ? -1 : b;
         }
 
         /// <inheritdoc/>
@@ -256,46 +256,22 @@ namespace MobileDeviceSharp.AFC
             {
                 throw new ArgumentOutOfRangeException(nameof(value));
             }
-            else
+            if (!CanWrite)
             {
-                if (CanWrite)
-                {
-
-                    var hresult = afc_file_truncate(Session.Handle, _fHandle, (ulong)value);
-                    if (hresult.IsError())
-                        throw new IOException("Truncate operation failed.", hresult.GetException());
-                }
-                else
-                {
-                    throw new NotSupportedException();
-                }
+                throw new NotSupportedException();
             }
-        }
-
-        /// <inheritdoc/>
-        public override void Write(byte[] buffer, int offset, int count)
-        {
-            ValidateBufferArguments(buffer, offset, count);
-            ValidateHandle();
-
-            var offsetbuffer = new ArrayWithOffset(buffer, offset);
-            var hresult = afc_file_write(Session.Handle, _fHandle, offsetbuffer, (uint)count, out _);
+            var hresult = afc_file_truncate(Session.Handle, _fHandle, (ulong)value);
             if (hresult.IsError())
-                throw new IOException("Write operation failed.", hresult.GetException());
+                throw new IOException("Truncate operation failed.", hresult.GetException());
         }
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-        /// <inheritdoc/>
-        public override void Write(ReadOnlySpan<byte> buffer)
+
+        private unsafe void WriteCore(ReadOnlySpan<byte> buffer)
         {
-            if (GetType() != typeof(AFCStream))
-            {
-                // NetworkStream is not sealed, and a derived type may have overridden Write(byte[], int, int) prior
-                // to this Write(ReadOnlySpan<byte>) overload being introduced.  In that case, this Write(ReadOnlySpan<byte>)
-                // overload should use the behavior of Write(byte[],int,int) overload.
-                base.Write(buffer);
-                return;
-            }
             ValidateHandle();
+            if (!CanWrite)
+            {
+                throw new NotSupportedException();
+            }
             unsafe
             {
                 fixed (byte* b = buffer)
@@ -307,24 +283,42 @@ namespace MobileDeviceSharp.AFC
             }
         }
 
+        /// <inheritdoc/>
+        public override void Write(byte[] buffer, int offset, int count)
+        {
+            ValidateBufferArguments(buffer, offset, count);
+            WriteCore(new ReadOnlySpan<byte>(buffer , offset, count));
+        }
+
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+        /// <inheritdoc/>
+        public override void Write(ReadOnlySpan<byte> buffer) => WriteCore(buffer);
+
+        /// <inheritdoc/>
+        public override async ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (buffer.IsEmpty)
+            {
+                return;
+            }
+            await Task.Factory.StartNew(static (state) =>
+            {
+#pragma warning disable CS8605 // Unboxing a possibly null value.
+                var (stream, buffer) = ((AFCStream state, ReadOnlyMemory<byte> buffer))state;
+#pragma warning restore CS8605 // Unboxing a possibly null value.
+                stream.WriteCore(buffer.Span);
+            }, (this, buffer), cancellationToken, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
+        }
 #endif
+
         /// <inheritdoc/>
         public override unsafe void WriteByte(byte value)
         {
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-            Write(new ReadOnlySpan<byte>(&value, 1));
-#else
-            ValidateHandle();
-            unsafe
-            {
-                var hresult = afc_file_write(Session.Handle, _fHandle, &value, 1, out _);
-                if (hresult.IsError())
-                    throw new IOException("Write operation failed.", hresult.GetException());
-            }
-#endif
+            WriteCore(new ReadOnlySpan<byte>(&value, 1));
         }
 
-        private  void ValidateHandle()
+        private void ValidateHandle()
         {
             if (_isDisposed)
             {
