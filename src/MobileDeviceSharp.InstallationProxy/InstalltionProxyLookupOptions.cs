@@ -21,11 +21,6 @@ namespace MobileDeviceSharp.InstallationProxy
         public ApplicationType ApplicationType { get; set; }
 
         /// <summary>
-        /// Looking only for one Bundle identifier.
-        /// </summary>
-        public string? CfBundleIdentifier { get; set; }
-
-        /// <summary>
         /// Search by Application Sinf
         /// </summary>
         public byte[]? ApplicationSinf { get; set; }
@@ -36,9 +31,9 @@ namespace MobileDeviceSharp.InstallationProxy
         public PlistNode? TunesMetadata { get; set; }
 
         /// <summary>
-        /// Get or set a list of bundle ID to browse
+        /// Get or set a list of bundle ID to browse.
         /// </summary>
-        public string[]? BundleIDs { get; set; }
+        public ISet<string> BundleIDs { get; } = new HashSet<string>();
 
         /// <inheritdoc/>
         public override PlistDictionary? ToDictionary()
@@ -55,10 +50,10 @@ namespace MobileDeviceSharp.InstallationProxy
                 dict.Add("ApplicationSinf", new PlistData(ApplicationSinf));
             }
 
-            if (CfBundleIdentifier is not null)
+            if (BundleIDs.Count == 1)
             {
                 dict ??= new PlistDictionary();
-                dict.Add("CFBundleIdentifier", new PlistString(CfBundleIdentifier));
+                dict.Add("CFBundleIdentifier", new PlistString(BundleIDs.First()));
             }
 
             if (TunesMetadata is not null)
@@ -73,7 +68,7 @@ namespace MobileDeviceSharp.InstallationProxy
                 dict.Add("ApplicationSinf", new PlistData(ApplicationSinf));
             }
 
-            if (BundleIDs is not null)
+            if (BundleIDs.Count > 1)
             {
                 dict ??= new PlistDictionary();
                 dict.Add("BundleIDs", new PlistArray(BundleIDs.Select(s => new PlistString(s))));
