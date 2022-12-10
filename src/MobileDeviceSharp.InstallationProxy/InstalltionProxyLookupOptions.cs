@@ -2,23 +2,45 @@
 
 namespace MobileDeviceSharp.InstallationProxy
 {
+    /// <summary>
+    /// Represent options for the process of looking applications installed on the device.
+    /// </summary>
     public class InstalltionProxyLookupOptions : InstallationProxyOperationOptions
     {
+        /// <summary>
+        /// Create a new instance of <see cref="InstalltionProxyLookupOptions"/>.
+        /// </summary>
         public InstalltionProxyLookupOptions()
         {
             ApplicationType = ApplicationType.Any;
         }
 
+        /// <summary>
+        /// Get application type to look up.
+        /// </summary>
         public ApplicationType ApplicationType { get; set; }
 
+        /// <summary>
+        /// Looking only for one Bundle identifier.
+        /// </summary>
         public string? CfBundleIdentifier { get; set; }
 
+        /// <summary>
+        /// Search by Application Sinf
+        /// </summary>
         public byte[]? ApplicationSinf { get; set; }
 
+        /// <summary>
+        /// Search by iTunes Metadata.
+        /// </summary>
         public PlistNode? TunesMetadata { get; set; }
 
+        /// <summary>
+        /// Get or set a list of bundle ID to browse
+        /// </summary>
         public string[]? BundleIDs { get; set; }
 
+        /// <inheritdoc/>
         public override PlistDictionary? ToDictionary()
         {
             PlistDictionary? dict = null;
