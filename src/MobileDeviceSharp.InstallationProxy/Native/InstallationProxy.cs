@@ -504,7 +504,7 @@ namespace MobileDeviceSharp.InstallationProxy.Native
         /// progress was found in the status.
         /// </param>
         [System.Runtime.InteropServices.DllImportAttribute(InstallationProxy.LibraryName, EntryPoint = "instproxy_status_get_percent_complete", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern void instproxy_status_get_percent_complete(PlistHandle status, ref int percent);
+        public static extern void instproxy_status_get_percent_complete(PlistHandle status, out int percent);
 
         /// <summary>
         /// Creates a new client_options plist.
