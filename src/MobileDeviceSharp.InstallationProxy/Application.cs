@@ -96,16 +96,6 @@ namespace MobileDeviceSharp.InstallationProxy
 
         public string ContainerPath => ((PlistString)Properties["Container"]).Value;
 
-        public ApplicationType AppType
-        {
-            get
-            {
-                using var typePlist = (PlistString)Properties["ApplicationType"];
-                return (ApplicationType)Enum.Parse(typeof(ApplicationType), typePlist.Value);
-            }
-        }
-            
-
         public async Task UninstallAsync(IProgress<int> progress)
         {
             using var session = new InstallationProxySession(Device);
