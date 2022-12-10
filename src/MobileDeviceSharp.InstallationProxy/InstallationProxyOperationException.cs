@@ -6,6 +6,9 @@ using MobileDeviceSharp.PropertyList.Native;
 
 namespace MobileDeviceSharp.InstallationProxy
 {
+    /// <summary>
+    /// Represent an exception occuring during an installation proxy operation.
+    /// </summary>
     public class InstallationProxyOperationException : Exception
     {
         public InstallationProxyOperationException(string errorName, string errorDesc, ulong errorCode) : base(errorDesc)
@@ -22,7 +25,14 @@ namespace MobileDeviceSharp.InstallationProxy
             return result;
         }
 
+        /// <summary>
+        /// Get the error name.
+        /// </summary>
         public string Name { get; }
+
+        /// <summary>
+        /// Get the error code.
+        /// </summary>
         public ulong Code { get; }
     }
 }
