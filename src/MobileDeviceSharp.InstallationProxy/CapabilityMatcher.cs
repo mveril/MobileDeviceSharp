@@ -13,15 +13,17 @@ namespace MobileDeviceSharp.InstallationProxy
             _MatchedCapabilities.ExceptWith(mismatchCapabilities);
         }
 #else
-        internal CapabilityMatcher(bool match, IEnumerable<string> capabilities, IEnumerable<string> mismatchCapabilities)
+        internal CapabilityMatcher(bool match, IEnumerable<string> requestedCapabilities, IEnumerable<string> mismatchCapabilities)
         {
             Match = match;
 #if NETSTANDARD2_1_OR_GREATER
             _MismatchCapabilities = mismatchCapabilities.ToHashSet();
-            _MatchedCapabilities = capabilities.ToHashSet();
+            _MatchedCapabilities = requestedCapabilities.ToHashSet();
+            RequestedCapabilities = requestedCapabilities.ToHashSet();
 #else
             _MismatchCapabilities = new HashSet<string>(mismatchCapabilities);
-            _MatchedCapabilities = new HashSet<string>(capabilities);
+            _MatchedCapabilities =  new HashSet<string>(requestedCapabilities);
+            RequestedCapabilities = new HashSet<string>(requestedCapabilities);
 #endif
             _MatchedCapabilities.ExceptWith(mismatchCapabilities);
         }
@@ -30,6 +32,12 @@ namespace MobileDeviceSharp.InstallationProxy
         public bool Match { get; }
 
         public HashSet<string> _MatchedCapabilities;
+#if NET5_0_OR_GREATER
+        public IReadOnlySet<string> RequestedCapabilities { get; }
+#else
+        public IReadOnlyCollection<string> RequestedCapabilities { get; }
+#endif
+
 #if NET5_0_OR_GREATER
         public IReadOnlySet<string> MatchedCapabilities => _MatchedCapabilities;
 #else
