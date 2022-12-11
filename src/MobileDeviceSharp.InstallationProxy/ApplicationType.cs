@@ -13,15 +13,18 @@ namespace MobileDeviceSharp.InstallationProxy
         /// <summary>
         /// Hidden app.
         /// </summary>
-        Hidden =1,
+        Hidden = 1,
+
         /// <summary>
         /// System app.
         /// </summary>
-        System,
+        System = 2,
+
         /// <summary>
         /// Represent a user app (an app downloaded from the App Store).
         /// </summary>
-        User,
+        User = 4,
+
         /// <summary>
         /// Any kind of app.
         /// </summary>
