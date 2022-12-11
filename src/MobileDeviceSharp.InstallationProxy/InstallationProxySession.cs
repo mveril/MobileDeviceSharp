@@ -36,7 +36,7 @@ namespace MobileDeviceSharp.InstallationProxy
         public IEnumerable<Application> GetApplications(InstalltionProxyLookupOptions? options, bool showHidden)
         {
             using var optDic = options?.ToDictionary();
-            var hresult = instproxy_browse(Handle, optDic.Handle ?? PlistHandle.Zero, out var plistHandle);
+            var hresult = instproxy_browse(Handle, optDic?.Handle ?? PlistHandle.Zero, out var plistHandle);
             if (hresult.IsError())
                 throw hresult.GetException();
             using var appsPlist = (PlistArray)PlistNode.From(plistHandle)!;
@@ -45,7 +45,15 @@ namespace MobileDeviceSharp.InstallationProxy
             {
                 return apps;
             }
-            return apps.Where((app) => app.IsVisible);
+            var list =new List<Application>();
+            foreach (var app in apps)
+            {
+                if (app.IsVisible)
+                {
+                    list.Add(app);
+                }
+            }
+            return list;
         }
 
         /// <summary>
