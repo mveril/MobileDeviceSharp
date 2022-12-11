@@ -42,13 +42,12 @@ namespace MobileDeviceSharp.PropertyList
         public PlistNode this[string key]
         {
             get
-            {
-                var item = From(plist_dict_get_item(Handle, key));
-                if (item == null)
+            {  
+                if (TryGetValue(key, out var item))
                 {
-                    throw new KeyNotFoundException($"The key {key} is not found in this dictionary");
+                    return item;
                 }
-                return item;
+                throw new KeyNotFoundException($"The key {key} is not found in this dictionary");
             }
             set
             {
@@ -123,8 +122,10 @@ namespace MobileDeviceSharp.PropertyList
         public bool TryGetValue(string key, out PlistNode value)
 #endif
         {
-            value = From(plist_dict_get_item(Handle, key));
-            return value is not null;
+            var valueHandle = plist_dict_get_item(Handle, key);
+            var result = !(valueHandle is null || valueHandle.IsInvalid);
+            value = result ? From(valueHandle!) : null;
+            return result;
         }
 
         /// <inheritdoc/>

@@ -383,7 +383,7 @@ namespace MobileDeviceSharp.PropertyList.Native
         /// </returns>
         [return: MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(PlistHandleNotOwnedMarshaler))]
         [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_dict_get_item", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern PlistHandle plist_dict_get_item(PlistHandle node, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string key);
+        public static extern PlistHandle? plist_dict_get_item(PlistHandle node, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string key);
 
         /// <summary>
         /// Get key node associated to an item. Item must be member of a dictionary.
