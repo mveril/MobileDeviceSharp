@@ -41,6 +41,11 @@ namespace MobileDeviceSharp
             Handle = handle;
         }
 
+        protected ServiceSessionBase(IDevice device, THandle handle) : base(handle)
+        {
+            Device = device;
+        }
+
         /// <summary>
         /// Get the undeling device.
         /// </summary>

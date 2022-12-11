@@ -23,6 +23,12 @@ namespace MobileDeviceSharp.AFC
 
         }
 
+        protected AFCSessionBase(IDevice device, AFCClientHandle handle) : base(device, handle)
+        {
+
+        }
+
+
         public abstract string RootPath { get; }
 
         protected AFCDirectory GetAFCDirectory(string path) => new AFCDirectory(this, path);
