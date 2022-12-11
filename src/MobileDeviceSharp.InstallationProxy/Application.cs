@@ -46,11 +46,30 @@ namespace MobileDeviceSharp.InstallationProxy
         /// Get the SpringBoard application tags that determine if the application can be visible on the home screen.
         /// </summary>
 #if NET5_0_OR_GREATER
-        public IReadOnlySet<string> SBAppTags => ((PlistArray)Properties["SBAppTags"]).Select(node => ((PlistString)node).Value).ToHashSet();
+        public IReadOnlySet<string> SBAppTags
 #else
-        public IReadOnlyCollection<string> SBAppTags => new HashSet<string>(((PlistArray)Properties["SBAppTags"]).Select(node => ((PlistString)node).Value));
+        public IReadOnlyCollection<string> SBAppTags
 #endif
-
+        {
+            get
+            {
+                if (Properties.TryGetValue("SBAppTags", out var plistValue) && plistValue is PlistArray appTagsArray)
+                {
+                    try
+                    {
+                        return new HashSet<string>(appTagsArray.Select(plist => ((PlistString)plist).Value));
+                    }
+                    finally
+                    {
+                        appTagsArray.Dispose();
+                    }
+                }
+                else
+                {
+                    return new HashSet<string>();
+                }
+            }
+        }
         /// <summary>
         /// Get a value which indicate if this application is visible on the home screen.
         /// </summary>
@@ -108,13 +127,21 @@ namespace MobileDeviceSharp.InstallationProxy
                 }
                 return Name;
             }
-        }
+        } 
 
 
         /// <summary>
         /// Get the type of this application.
-        /// </summary>
-        public ApplicationType Type => (ApplicationType)Enum.Parse(typeof(ApplicationType), ((PlistString)Properties["ApplicationType"]).Value);
+        /// </summary>"ApplicationType"
+        public ApplicationType Type
+        {
+            get
+            {
+                using PlistString plistType = (PlistString)Properties["ApplicationType"];
+                var strType = plistType.Value;
+                return (ApplicationType)Enum.Parse(typeof(ApplicationType), strType);
+            }
+        }
 
         /// <summary>
         /// Get the displayed version of the application.
@@ -162,7 +189,7 @@ namespace MobileDeviceSharp.InstallationProxy
         public string Path => ((PlistString)Properties["Path"]).Value;
 
         /// <summary>
-        /// Get the path of the application container.
+        /// Get the path of the application container. 
         /// </summary>
         public string ContainerPath => ((PlistString)Properties["Container"]).Value;
 
