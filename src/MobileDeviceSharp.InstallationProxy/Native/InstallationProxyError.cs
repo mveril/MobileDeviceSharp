@@ -3,6 +3,7 @@ namespace MobileDeviceSharp.InstallationProxy
     /// <summary>
     /// Error Codes
     /// </summary>
+    [Exception(typeof(InstallationProxyException))]
     public enum InstallationProxyError : int
     {
 
