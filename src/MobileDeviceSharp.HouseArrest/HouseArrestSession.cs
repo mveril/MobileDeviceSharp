@@ -30,8 +30,11 @@ namespace MobileDeviceSharp.HouseArrest
             hresult = house_arrest_get_result(Handle, out var plistHandle);
             if (hresult.IsError())
                 throw hresult.GetException();
-            var resultDic = (PlistDictionary)PlistNode.From(plistHandle)!;
-            //var error = resultDic["Error"];
+            using var resultDic = (PlistDictionary)PlistNode.From(plistHandle)!;
+            if (resultDic.TryGetValue("Error", out var errorPlist))
+            {
+                throw new NotSupportedException(((PlistString)errorPlist).Value);
+            }
             var afcHresult = afc_client_new_from_house_arrest_client(Handle, out var afcClientHandle);
             if (afcHresult.IsError())
                 throw afcHresult.GetException();
