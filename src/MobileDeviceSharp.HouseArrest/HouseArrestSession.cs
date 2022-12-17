@@ -19,7 +19,7 @@ namespace MobileDeviceSharp.HouseArrest
         {
             Applicaton = application;
             Location = location;
-            _aFCHouseArrestSession = new(new Func<AFCHouseArrestSession>(InitializeAFCSession), true);
+            _aFCHouseArrestSession = new(InitializeAFCSession, true);
         }
 
         private AFCHouseArrestSession InitializeAFCSession()
