@@ -465,7 +465,7 @@ namespace MobileDeviceSharp.PropertyList.Native
         /// </param>
         [return: MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(PlistHandleNotOwnedMarshaler))]
         [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_get_parent", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern PlistHandle plist_get_parent(PlistHandle node);
+        public static extern PlistHandle? plist_get_parent(PlistHandle node);
 
         /// <summary>
         /// Get the #PlistHandleype of a node.

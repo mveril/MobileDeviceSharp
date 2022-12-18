@@ -63,8 +63,9 @@ namespace MobileDeviceSharp.PropertyList
         /// </summary>
         /// <param name="plistHandle">The handle to wrap.</param>
         /// <returns>The plistNode</returns>
-        public static PlistNode? From(PlistHandle plistHandle)
+        public static PlistNode? From(PlistHandle? plistHandle)
         {
+            plistHandle ??= PlistHandle.Zero;
             return plist_get_node_type(plistHandle) switch
             {
                 PlistType.Dict => new PlistDictionary(plistHandle),
@@ -77,8 +78,9 @@ namespace MobileDeviceSharp.PropertyList
                 PlistType.Uid => new PlistUid(plistHandle),
                 PlistType.Date => new PlistDate(plistHandle),
                 PlistType.Data => new PlistData(plistHandle),
-                PlistType.None => null
-            };
+                PlistType.None => null,
+                _ => throw new NotSupportedException()
+            }; ;
         }
 
         /// <inheritdoc/>
