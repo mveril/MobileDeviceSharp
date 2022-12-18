@@ -35,9 +35,6 @@ namespace MobileDeviceSharp.HouseArrest
             {
                 throw new NotSupportedException(((PlistString)errorPlist).Value);
             }
-            var afcHresult = afc_client_new_from_house_arrest_client(Handle, out var afcClientHandle);
-            if (afcHresult.IsError())
-                throw afcHresult.GetException();
             return new AFCHouseArrestSession(this);
         }
 
