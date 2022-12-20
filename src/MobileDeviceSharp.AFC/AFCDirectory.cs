@@ -86,7 +86,9 @@ namespace MobileDeviceSharp.AFC
 
         public IEnumerable<AFCItem> GetItems()
         {
-            afc_read_directory(Session.Handle, Path, out var items);
+            var hresult = afc_read_directory(Session.Handle, Path, out var items);
+            if (hresult.IsError())
+                throw hresult.GetException().ToStandardException(this);
             return items.Except(new string[] { ".", ".." }).Select(item=> GetItem(item));
         }
 
@@ -96,7 +98,7 @@ namespace MobileDeviceSharp.AFC
             {
                 var hresult = afc_remove_path_and_contents(Session.Handle, Path);
                 if (hresult.IsError())
-                    throw hresult.GetException();
+                    throw hresult.GetException().ToStandardException(this);
             }
             else
             {

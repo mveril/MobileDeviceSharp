@@ -33,7 +33,9 @@ namespace MobileDeviceSharp.AFC
                     var err=afc_file_open(session.Handle, path, AFCFileMode.FopenWronly, out ulong tmpfhandle);
                     Console.WriteLine(err.ToString());
                     isNew = true;
-                    afc_file_close(session.Handle, tmpfhandle);
+                    var hresult = afc_file_close(session.Handle, tmpfhandle);
+                    if (hresult.IsError())
+                        throw hresult.GetException().ToStandardException(AFCItemType.File, _path);
                 }
             }
             switch (mode)
@@ -73,35 +75,22 @@ namespace MobileDeviceSharp.AFC
                 _ => throw new InvalidOperationException(),
             };
             var hresult = afc_file_open(Session.Handle, path, AFCMode, out _fHandle);
-            switch (hresult)
-            {
-                case AFCError.Success:
-                    break;
-                case AFCError.ObjectNotFound:
-                    throw new UnauthorizedAccessException($"File not found : {path}", hresult.GetException());
-                case AFCError.ObjectIsDir:
-                    throw new UnauthorizedAccessException($"Object is directory : {path}", hresult.GetException());
-                case AFCError.PermDenied:
-                    throw new UnauthorizedAccessException($"Permission denied : {path}", hresult.GetException());
-                case AFCError.ObjectExists:
-                    throw new IOException($"File already exist : {path}", hresult.GetException());
-                case AFCError.IoError:
-                    throw new IOException("IO error", hresult.GetException());
-                default:
-                    throw hresult.GetException();
-            }
-            Lock(fileLock);
-            if (!isNew && needTruncate)
-            {
-                afc_file_truncate(session.Handle, _fHandle, 0);
-            }
+            if (hresult.IsError())
+                throw hresult.GetException().ToStandardException(AFCItemType.File, _path);
+                Lock(fileLock);
+                if (!isNew && needTruncate)
+                {
+                    hresult = afc_file_truncate(session.Handle, _fHandle, 0);
+                    if (hresult.IsError())
+                        hresult.GetException().ToStandardException(AFCItemType.File, _path);
+                }
         }
 
         public void Lock(AFCLockOp operation)
         {
             var hresult = afc_file_lock(Session.Handle, _fHandle, operation);
             if (hresult.IsError())
-                throw hresult.GetException();
+                throw hresult.GetException().ToStandardException(AFCItemType.File, _path);
         }
 
         public FileAccess FileAccess { get; }
@@ -317,7 +306,9 @@ namespace MobileDeviceSharp.AFC
         protected override void Dispose(bool disposing)
         {
             ValidateHandle();
-            afc_file_close(Session.Handle, _fHandle);
+            var hresut = afc_file_close(Session.Handle, _fHandle);
+            if (hresut.IsError())
+                throw hresut.GetException();
             _isDisposed = true;
             _fHandle = 0;
             base.Dispose(disposing);

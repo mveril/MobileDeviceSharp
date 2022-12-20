@@ -60,14 +60,14 @@ namespace MobileDeviceSharp.AFC
         {
             var hresult = afc_remove_path(Session.Handle, Path);
             if (hresult.IsError())
-                throw hresult.GetException();
+                throw hresult.GetException().ToStandardException(this);
         }
 
         public AFCItem MakeLink(string path, AFCLinkType linkType)
         {
             var hresult = afc_make_link(Session.Handle, linkType, Path, path);
             if (hresult.IsError())
-                throw hresult.GetException();
+                throw hresult.GetException().ToStandardException(this);
             return Session.Root.GetItem(path);
         }
 
@@ -102,7 +102,7 @@ namespace MobileDeviceSharp.AFC
         {
             var hresult = afc_make_link(Session.Handle, linkType, Path, linkPath);
             if (hresult.IsError())
-                throw hresult.GetException();
+                throw hresult.GetException().ToStandardException(this);
             return Session.Root.GetItem(linkPath);
         }
 
