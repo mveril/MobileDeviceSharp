@@ -144,12 +144,21 @@ namespace MobileDeviceSharp.InstallationProxy
         }
 
         /// <summary>
-        /// Get the displayed version of the application.
-        /// <para>
-        /// <seealso href="https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundleshortversionstring">CFBundleShortVersionString</seealso>
-        /// </para>
+        /// Get the version of the app as a <see cref="System.Version"/> object.
         /// </summary>
-        public Version Version => Version.Parse(((PlistString)Properties["CFBundleShortVersionString"]).Value);
+        public Version? Version
+        {
+            get
+            {
+                Version? result = null;
+                if (BundleVersion is null || !Version.TryParse(BundleVersion, out result))
+                {
+                    if (BundleShortVersion is not null)
+                        _ = Version.TryParse(BundleShortVersion, out result);
+                }
+                return result;
+            }
+        }
 
         /// <summary>
         /// Get the full version of the application.
@@ -157,7 +166,15 @@ namespace MobileDeviceSharp.InstallationProxy
         /// <seealso href="https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundleshortversionstring">CFBundleShortVersionString</seealso>
         /// </para>
         /// </summary>
-        public string BundleVersion => ((PlistString)Properties["CFBundleVersion"]).Value;
+        public string? BundleShortVersion => Properties.TryGetValue("CFBundleShortVersionString", out var plistValue) ? ((PlistString)plistValue).Value : null;
+
+        /// <summary>
+        /// Get the full version of the application.
+        /// <para>
+        /// <seealso href="https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundleversion">CFBundleShortVersionString</seealso>
+        /// </para>
+        /// </summary>
+        public string? BundleVersion => Properties.TryGetValue("CFBundleVersion", out var plistValue) ? ((PlistString)plistValue).Value : null;
 
         /// <summary>
         /// Get a value which indicate if the application support file shairing is enable.
