@@ -40,20 +40,18 @@ namespace MobileDeviceSharp.InstallationProxy
             if (hresult.IsError())
                 throw hresult.GetException();
             using var appsPlist = (PlistArray)PlistNode.From(plistHandle)!;
-            var apps = appsPlist.Select((item) => new Application(Device, (PlistDictionary)item.Clone()));
-            if (showHidden)
+            foreach (var item in appsPlist)
             {
-                return apps;
-            }
-            var list =new List<Application>();
-            foreach (var app in apps)
-            {
-                if (app.IsVisible)
+                var app = new Application(Device, (PlistDictionary)item.Clone());
+                if (showHidden || app.IsVisible)
                 {
-                    list.Add(app);
+                    yield return app;
+                }
+                else
+                {
+                    app.Dispose();
                 }
             }
-            return list;
         }
 
         /// <summary>
