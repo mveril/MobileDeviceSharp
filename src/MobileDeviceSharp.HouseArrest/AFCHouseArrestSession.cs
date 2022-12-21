@@ -30,13 +30,7 @@ namespace MobileDeviceSharp.HouseArrest
         {
             get
             {
-
-                return Parent.Location switch
-                {
-                    HouseArrestLocation.Container => Parent.Applicaton.ContainerPath,
-                    HouseArrestLocation.Documents => UnixPath.Combine(Parent.Applicaton.ContainerPath, "Documents"),
-                    _ => throw new NotSupportedException(),
-                };
+                return Parent.Applicaton.ContainerPath;
             }
         }
     }
