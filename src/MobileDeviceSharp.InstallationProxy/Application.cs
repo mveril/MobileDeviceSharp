@@ -79,7 +79,7 @@ namespace MobileDeviceSharp.InstallationProxy
             {
                 if (Type == ApplicationType.Hidden)
                 {
-                    return true;
+                    return false;
                 }
 #if NET5_0_OR_GREATER
                 var tags = SBAppTags;
