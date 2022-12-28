@@ -7,6 +7,11 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard20' Or '$(TargetFramework)' == 'netstandard21' Or '$(TargetFramework)' == 'netcoreapp2.0' Or '$(TargetFramework)' == 'netcoreapp2.1'">
+    <None Include="EnumerateOperationStatusContext.cs" />
+    <Compile Remove="EnumerateOperationStatusContext.cs" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\MobileDeviceSharp.SourceGenerator\MobileDeviceSharp.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\MobileDeviceSharp.CompilerServices\MobileDeviceSharp.CompilerServices.csproj" />
