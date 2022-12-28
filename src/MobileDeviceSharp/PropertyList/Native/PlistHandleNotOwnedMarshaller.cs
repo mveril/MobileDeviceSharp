@@ -6,7 +6,7 @@ using MobileDeviceSharp.Native;
 
 namespace MobileDeviceSharp.PropertyList.Native
 {
-    internal class PlistHandleNotOwnedMarshaler : CustomMashaler<PlistHandle>
+    public class PlistHandleNotOwnedMarshaler : CustomMashaler<PlistHandle>
     {
         private static readonly Lazy<PlistHandleNotOwnedMarshaler> s_static_instance = new();
 
