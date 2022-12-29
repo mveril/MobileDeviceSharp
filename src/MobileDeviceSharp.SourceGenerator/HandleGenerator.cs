@@ -24,7 +24,7 @@ namespace MobileDeviceSharp.SourceGenerator
 
         MethodDeclarationSyntax GetFreeMethod()
         {
-            return GetFreeMethod(SingletonList<StatementSyntax>(GetFreeCode()));
+            return GetFreeMethod(GetFreeCode());
         }
 
         MethodDeclarationSyntax GetFreeMethod(SyntaxList<StatementSyntax> statements)
@@ -221,9 +221,11 @@ namespace {0}
             return null;
         }
 
-        public ReturnStatementSyntax GetFreeCode()
+        public static readonly ReturnStatementSyntax s_defaultReturnStatement = ReturnStatement(LiteralExpression(SyntaxKind.TrueLiteralExpression));
+
+        public SyntaxList<StatementSyntax> GetFreeCode()
         {
-            return ReturnStatement(LiteralExpression(SyntaxKind.TrueLiteralExpression));
+            return SingletonList<StatementSyntax>(s_defaultReturnStatement);
         }
 
         public SyntaxList<StatementSyntax> GetFreeCode(IMethodSymbol freeMethod, Compilation compilation)
@@ -242,7 +244,7 @@ namespace {0}
             var methodcall = InvocationExpression(ParseExpression(freeMethod.ToDisplayString(methodFormat))).AddArgumentListArguments(freeArg); ;
             if (freeReturn.Equals(compilation.GetSpecialType(SpecialType.System_Void), SymbolEqualityComparer.Default))
             {
-                return List(new StatementSyntax[] { ExpressionStatement(methodcall), GetFreeCode() });
+                return List(new StatementSyntax[] { ExpressionStatement(methodcall), s_defaultReturnStatement });
             }
             else
             {
