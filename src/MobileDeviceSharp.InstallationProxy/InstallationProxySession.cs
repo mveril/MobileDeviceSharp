@@ -184,7 +184,7 @@ namespace MobileDeviceSharp.InstallationProxy
             return new CapabilityMatcher(match, capabilities, new HashSet<string>());
         }
 
-        private static InstallationProxyStatusCallBack s_operationStatusCallback = OperationStatusCallback;
+        private static readonly InstallationProxyStatusCallBack s_operationStatusCallback = OperationStatusCallback;
 
         private static void OperationStatusCallback(PlistHandle command, PlistHandle status, IntPtr userData)
         {
