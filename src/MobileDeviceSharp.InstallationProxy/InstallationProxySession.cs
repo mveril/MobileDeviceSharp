@@ -28,6 +28,25 @@ namespace MobileDeviceSharp.InstallationProxy
 
         }
 
+        private static bool AppVisibleOrDispose(Application app)
+        {
+            bool isVisible;
+            try
+            {
+                isVisible = app.IsVisible;
+            }
+            catch (Exception)
+            {
+                app?.Dispose();
+                throw;
+            }
+            if (!isVisible)
+            {
+                app?.Dispose();
+            }
+            return isVisible;
+        }
+
         /// <summary>
         /// Get the list of application for the device.
         /// </summary>
@@ -44,13 +63,9 @@ namespace MobileDeviceSharp.InstallationProxy
             foreach (var item in appsPlist)
             {
                 var app = new Application(Device, (PlistDictionary)item.Clone());
-                if (showHidden || app.IsVisible)
+                if (showHidden || AppVisibleOrDispose(app))
                 {
                     yield return app;
-                }
-                else
-                {
-                    app.Dispose();
                 }
             }
         }
@@ -98,13 +113,8 @@ namespace MobileDeviceSharp.InstallationProxy
             await foreach (var item in channel.Reader.ReadAllAsync())
             {
                 var app = new Application(Device, (PlistDictionary)item);
-                if (showHidden || app.IsVisible)
-                {
+                if(showHidden || AppVisibleOrDispose(app)){
                     yield return app;
-                }
-                else
-                {
-                    app.Dispose();
                 }
             }
         }
