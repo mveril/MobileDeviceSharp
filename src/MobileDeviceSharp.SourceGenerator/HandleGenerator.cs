@@ -11,7 +11,7 @@ namespace MobileDeviceSharp.SourceGenerator
         public void Initialize(IncrementalGeneratorInitializationContext context)
         {
             var nonFreeableFullNames = context.AdditionalTextsProvider
-                .Where(file => Path.GetFileName(file.Path).Equals("GenrateHandle.txt", StringComparison.OrdinalIgnoreCase))
+                .Where(file => Path.GetFileName(file.Path).Equals("GenerateHandle.txt", StringComparison.OrdinalIgnoreCase))
                 .Select((file, token) => file.GetText())
                 .Where((text) => text is not null)
                 .SelectMany((text, token) => text!.Lines)

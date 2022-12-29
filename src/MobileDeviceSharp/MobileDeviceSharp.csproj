@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netstandard20;netstandard21;netcoreapp2.0;netcoreapp2.1;netcoreapp3.0;netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
@@ -21,11 +21,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="GenrateHandle.txt" />
+    <None Remove="GenerateHandle.txt" />
   </ItemGroup>
 
   <ItemGroup>
-    <AdditionalFiles Include="GenrateHandle.txt" />
+    <AdditionalFiles Include="GenerateHandle.txt" />
   </ItemGroup>
 
   <ItemGroup>
