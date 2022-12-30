@@ -1,4 +1,5 @@
-﻿using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+﻿using Microsoft.CodeAnalysis;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 namespace MobileDeviceSharp.SourceGenerator
 {
     [Generator]
@@ -17,14 +18,15 @@ namespace MobileDeviceSharp.SourceGenerator
                 .SelectMany((text, token) => text!.Lines)
                 .Where((line) => !line.Span.IsEmpty)
                 .Select((line, token) => line.Text!.ToString(line.Span));
-            context.RegisterSourceOutput(nonFreeableFullNames, NonFreeableProducer);
+            var nonfreeableProvider = nonFreeableFullNames.Combine(context.CompilationProvider);
+            context.RegisterSourceOutput(nonfreeableProvider, NonFreeableProducer);
             var freeableMethods = context.SyntaxProvider.CreateSyntaxProvider(MethodPredicate, MethodTransformer);
             context.RegisterSourceOutput(freeableMethods, FreeableProducer);
         }
 
-        MethodDeclarationSyntax GetFreeMethod()
+        MethodDeclarationSyntax GetFreeMethod(Compilation compilation)
         {
-            return GetFreeMethod(GetFreeCode());
+            return GetFreeMethod(GetFreeCode(compilation));
         }
 
         MethodDeclarationSyntax GetFreeMethod(SyntaxList<StatementSyntax> statements)
@@ -57,12 +59,12 @@ namespace MobileDeviceSharp.SourceGenerator
             }
         }
 
-        private void NonFreeableProducer(SourceProductionContext context, string fullClassName)
+        private void NonFreeableProducer(SourceProductionContext context, (string fullClassName, Compilation compilation) data)
         {
-            var index = fullClassName.LastIndexOf(".");
-            var namespaceName = fullClassName.Substring(0, index);
-            var handleBaseName = fullClassName.Substring(index + 1);
-            var (fileName, source) = GetSource(namespaceName, handleBaseName, GetFreeMethod());
+            var index = data.fullClassName.LastIndexOf(".");
+            var namespaceName = data.fullClassName.Substring(0, index);
+            var handleBaseName = data.fullClassName.Substring(index + 1);
+            var (fileName, source) = GetSource(namespaceName, handleBaseName, GetFreeMethod(data.compilation));
             context.AddSource(fileName, source);
         }
 
@@ -223,9 +225,20 @@ namespace {0}
 
         public static readonly ReturnStatementSyntax s_defaultReturnStatement = ReturnStatement(LiteralExpression(SyntaxKind.TrueLiteralExpression));
 
-        public SyntaxList<StatementSyntax> GetFreeCode()
+        public SyntaxList<StatementSyntax> GetFreeCode(Compilation compilation)
         {
-            return SingletonList<StatementSyntax>(s_defaultReturnStatement);
+            var nativeMemoryType = compilation.GetTypeByMetadataName("System.Runtime.InteropServices.NativeMemory");
+            IMethodSymbol? freeMethod = null;
+            if (nativeMemoryType is not null)
+            {
+                freeMethod = nativeMemoryType.GetMembers().OfType<IMethodSymbol>().FirstOrDefault((m) => m.IsStatic && m.Name == "Free");
+            }
+            if (freeMethod is null)
+            {
+                var marshallType = compilation.GetTypeByMetadataName("System.Runtime.InteropServices.Marshal")!;
+                freeMethod = marshallType.GetMembers().OfType<IMethodSymbol>().FirstOrDefault((m) => m.IsStatic && m.Name == "FreeHGlobal");
+            }
+            return GetFreeCode(freeMethod, compilation);
         }
 
         public SyntaxList<StatementSyntax> GetFreeCode(IMethodSymbol freeMethod, Compilation compilation)
@@ -233,18 +246,33 @@ namespace {0}
             var methodFormat = new SymbolDisplayFormat(memberOptions: SymbolDisplayMemberOptions.IncludeContainingType);
             var returnFormat = new SymbolDisplayFormat(memberOptions: SymbolDisplayMemberOptions.IncludeContainingType);
             var argFormat = new SymbolDisplayFormat(typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces);
+            INamedTypeSymbol voidType = compilation.GetSpecialType(SpecialType.System_Void);
+            INamedTypeSymbol intPtrType = compilation.GetSpecialType(SpecialType.System_IntPtr);
+            IPointerTypeSymbol voidPointerType = compilation.CreatePointerTypeSymbol(voidType);
             var freeReturn = freeMethod.ReturnType;
             var argType = freeMethod.Parameters.First().Type;
+            var needUnsafe = false;
+            var statements =new List<StatementSyntax>();
             var freeArg = Argument(ThisExpression());
-            if (argType.Equals(compilation.GetSpecialType(SpecialType.System_IntPtr), SymbolEqualityComparer.Default))
+            var handleAccess = MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
+    ThisExpression(), IdentifierName("handle"));
+            if (argType.Equals(intPtrType, SymbolEqualityComparer.Default))
             {
-                freeArg = Argument(MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-                    ThisExpression(), IdentifierName("handle")));
+                freeArg = Argument(handleAccess);
             }
-            var methodcall = InvocationExpression(ParseExpression(freeMethod.ToDisplayString(methodFormat))).AddArgumentListArguments(freeArg); ;
+            else if(argType.Equals(voidPointerType, SymbolEqualityComparer.Default))
+            {
+                var toPointerAcess = MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
+                    handleAccess, IdentifierName("ToPointer"));
+                var invocation = InvocationExpression(toPointerAcess);
+                freeArg = Argument(invocation);
+                needUnsafe = true;
+            }
+            var methodcall = InvocationExpression(ParseExpression(freeMethod.ToDisplayString(methodFormat))).AddArgumentListArguments(freeArg);
+            StatementSyntax callStatement;
             if (freeReturn.Equals(compilation.GetSpecialType(SpecialType.System_Void), SymbolEqualityComparer.Default))
             {
-                return List(new StatementSyntax[] { ExpressionStatement(methodcall), s_defaultReturnStatement });
+                callStatement = ExpressionStatement(methodcall);
             }
             else
             {
@@ -265,10 +293,16 @@ namespace {0}
                 {
                     throw new NotSupportedException();
                 }
-                return SingletonList<StatementSyntax>(ReturnStatement(BinaryExpression(SyntaxKind.EqualsExpression,
+                callStatement = ReturnStatement(BinaryExpression(SyntaxKind.EqualsExpression,
                     methodcall,
-                    retval)));
+                    retval));
             }
+            statements.Add(needUnsafe ? UnsafeStatement().WithBlock(Block(SingletonList(callStatement))) : callStatement);
+            if (!callStatement.IsKind(SyntaxKind.ReturnStatement))
+            {
+                statements.Add(s_defaultReturnStatement);
+            }
+            return List(statements);
         }
     }
 }
