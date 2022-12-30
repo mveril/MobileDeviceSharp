@@ -19,7 +19,7 @@ namespace MobileDeviceSharp.SourceGenerator
                 .Select((line, token) => line.Text!.ToString(line.Span));
             context.RegisterSourceOutput(nonFreeableFullNames, NonFreeableProducer);
             var freeableMethods = context.SyntaxProvider.CreateSyntaxProvider(MethodPredicate, MethodTransformer);
-            context.RegisterSourceOutput(freeableMethods, FreableProducer);
+            context.RegisterSourceOutput(freeableMethods, FreeableProducer);
         }
 
         MethodDeclarationSyntax GetFreeMethod()
@@ -46,7 +46,7 @@ namespace MobileDeviceSharp.SourceGenerator
             return (MethodDeclarationSyntax)member!;
         }
 
-        private void FreableProducer(SourceProductionContext context, (string namespaceName, string className, SyntaxList<StatementSyntax> freeCode)? methodData)
+        private void FreeableProducer(SourceProductionContext context, (string namespaceName, string className, SyntaxList<StatementSyntax> freeCode)? methodData)
         {
 
             if (methodData.HasValue)
