@@ -537,7 +537,7 @@ namespace MobileDeviceSharp.PropertyList.Native
         /// a pointer to a uint8_t variable.
         /// </param>
         [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_get_bool_val", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern void plist_get_bool_val(PlistHandle node, out byte val);
+        public static extern void plist_get_bool_val(PlistHandle node, [MarshalAs(UnmanagedType.U1)] out  bool val);
 
         /// <summary>
         /// Get the value of a #PLIST_UINT node.
@@ -668,7 +668,7 @@ namespace MobileDeviceSharp.PropertyList.Native
         /// the boolean value
         /// </param>
         [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_set_bool_val", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern void plist_set_bool_val(PlistHandle node, byte val);
+        public static extern void plist_set_bool_val(PlistHandle node, [MarshalAs(UnmanagedType.U1)] bool val);
 
         /// <summary>
         /// Set the value of a node.

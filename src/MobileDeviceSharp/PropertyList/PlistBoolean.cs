@@ -35,9 +35,9 @@ namespace MobileDeviceSharp.PropertyList
             get
             {
                 plist_get_bool_val(Handle, out var val);
-                return val != 0;
+                return val;
             }
-            set => plist_set_bool_val(Handle, value ? (byte)1 : (byte)0);
+            set => plist_set_bool_val(Handle, value);
         }
     }
 }
