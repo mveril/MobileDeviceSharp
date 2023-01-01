@@ -78,8 +78,8 @@ namespace MobileDeviceSharp.PropertyList
         /// <summary>
         /// Create plist dictionary from a dictionary of nodes
         /// </summary>
-        /// <param name="source"></param>
-        public PlistDictionary(IReadOnlyDictionary<string,PlistNode> source) : this()
+        /// <param name="source">The source to copy in this dictionary</param>
+        public PlistDictionary(IEnumerable<KeyValuePair<string, PlistNode>> source) : this()
         {
             foreach (var item in source)
             {
