@@ -97,7 +97,7 @@ namespace MobileDeviceSharp.PropertyList
         /// <inheritdoc/>
         public bool ContainsKey(string key)
         {
-            return !plist_dict_get_item(Handle, key).IsInvalid;
+            return !(plist_dict_get_item(Handle, key)?.IsInvalid).GetValueOrDefault(true);
         }
 
         /// <inheritdoc/>
