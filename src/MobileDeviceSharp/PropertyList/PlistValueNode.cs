@@ -16,11 +16,6 @@ namespace MobileDeviceSharp.PropertyList
 
         }
 
-        protected PlistValueNode()
-        {
-
-        }
-
         /// <summary>
         /// Get or set the value.
         /// </summary>
