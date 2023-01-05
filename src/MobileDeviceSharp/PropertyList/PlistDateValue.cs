@@ -7,7 +7,7 @@ namespace MobileDeviceSharp.PropertyList
 
     public sealed partial class PlistDate
     {
-        private record DateValue(int sec, int usec)
+        private record struct DateValue(int sec, int usec)
         {
 
             public static implicit operator DateTime(DateValue d)
