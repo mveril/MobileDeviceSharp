@@ -36,7 +36,9 @@ namespace MobileDeviceSharp.AFC
         {
             return AFCItemType.Create(fileInfo["st_ifmt"]);
         }
-
+#if !NETCOREAPP2_0_OR_GREATER
+        private static ReadOnlyDictionary<string, string> s_readonlydic = new(new Dictionary<string, string>());
+#endif
         internal IReadOnlyDictionary<string,string> GetFileInfo(string path)
         {
             try
@@ -48,7 +50,11 @@ namespace MobileDeviceSharp.AFC
             }
             catch (AFCException ex) when (ex.ErrorCode == (int)AFCError.ObjectNotFound)
             {
-                return new ReadOnlyDictionary<string, string>(new Dictionary<string,string>());
+#if NETCOREAPP1_0_OR_GREATER
+                return System.Collections.Immutable.ImmutableDictionary<string, string>.Empty;
+#else
+                return s_readonlydic;
+#endif
             }
         }
     }
