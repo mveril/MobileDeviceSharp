@@ -21,9 +21,17 @@ namespace MobileDeviceSharp.PropertyList
         }
 
         /// <summary>
+        /// Create <see cref="long"/> plist node.
+        /// </summary>
+        public PlistUid() : this(default(long))
+        {
+
+        }
+
+        /// <summary>
         /// Create <see cref="long"/> plist node from a value.
         /// </summary>
-        /// <param name="Value">the <see cref="long"/> value.</param>
+        /// <param name="Value">the <see cref="ulong"/> value.</param>
         public PlistUid(long value) : base(plist_new_uid(value))
         {
 

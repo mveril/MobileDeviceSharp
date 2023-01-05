@@ -16,6 +16,15 @@ namespace MobileDeviceSharp.PropertyList
         {
 
         }
+
+        /// <summary>
+        /// Create <see cref="double"/> plist node.
+        /// </summary>
+        public PlistReal() : this(default(double))
+        {
+
+        }
+
         /// <summary>
         /// Create <see cref="double"/> plist node from a value.
         /// </summary>

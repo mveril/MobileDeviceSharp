@@ -21,6 +21,14 @@ namespace MobileDeviceSharp.PropertyList
         }
 
         /// <summary>
+        /// Create <see cref="Boolean"/> plist node.
+        /// </summary>
+        public PlistBoolean() : this(default(bool))
+        {
+
+        }
+
+        /// <summary>
         /// Create <see cref="Boolean"/> plist node from a value.
         /// </summary>
         /// <param name="value">the <see cref="Boolean"/> value.</param>

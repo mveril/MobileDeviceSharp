@@ -21,6 +21,14 @@ namespace MobileDeviceSharp.PropertyList
         }
 
         /// <summary>
+        /// Create <see cref="long"/> plist node.
+        /// </summary>
+        public PlistInteger(): this(default(int))
+        {
+
+        }
+
+        /// <summary>
         /// Create <see cref="long"/> plist node from a value.
         /// </summary>
         /// <param name="Value">the <see cref="long"/> value.</param>
