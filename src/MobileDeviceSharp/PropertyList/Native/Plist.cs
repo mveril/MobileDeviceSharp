@@ -71,6 +71,18 @@ namespace MobileDeviceSharp.PropertyList.Native
         public static extern PlistHandle plist_new_uint(ulong val);
 
         /// <summary>
+        /// Create a new PlistHandle type #PLIST_UINT
+        /// </summary>
+        /// <param name="val">
+        /// the unsigned integer value
+        /// </param>
+        /// <returns>
+        /// the created item
+        /// </returns>
+        [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_new_uint", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
+        public static extern PlistHandle plist_new_uint([MarshalAs(UnmanagedType.U8)] long val);
+
+        /// <summary>
         /// Create a new PlistHandle type #PLIST_REAL
         /// </summary>
         /// <param name="val">
@@ -138,6 +150,18 @@ namespace MobileDeviceSharp.PropertyList.Native
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_new_uid", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
         public static extern PlistHandle plist_new_uid(ulong val);
+
+        /// <summary>
+        /// Create a new PlistHandle type #PLIST_UID
+        /// </summary>
+        /// <param name="val">
+        /// the unsigned integer value
+        /// </param>
+        /// <returns>
+        /// the created item
+        /// </returns>
+        [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_new_uid", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
+        public static extern PlistHandle plist_new_uid([MarshalAs(UnmanagedType.U8)] long val);
 
         /// <summary>
         /// Destruct a PlistHandle node and all its children recursively
@@ -537,7 +561,7 @@ namespace MobileDeviceSharp.PropertyList.Native
         /// a pointer to a uint8_t variable.
         /// </param>
         [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_get_bool_val", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern void plist_get_bool_val(PlistHandle node, [MarshalAs(UnmanagedType.U1)] out  bool val);
+        public static extern void plist_get_bool_val(PlistHandle node, [MarshalAs(UnmanagedType.U1)] out bool val);
 
         /// <summary>
         /// Get the value of a #PLIST_UINT node.
@@ -551,6 +575,19 @@ namespace MobileDeviceSharp.PropertyList.Native
         /// </param>
         [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_get_uint_val", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
         public static extern void plist_get_uint_val(PlistHandle node, out ulong val);
+
+        /// <summary>
+        /// Get the value of a #PLIST_UINT node.
+        /// This function does nothing if node is not of type #PLIST_UINT
+        /// </summary>
+        /// <param name="node">
+        /// the node
+        /// </param>
+        /// <param name="val">
+        /// a pointer to a uint64_t variable.
+        /// </param>
+        [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_get_uint_val", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
+        public static extern void plist_get_uint_val(PlistHandle node, [MarshalAs(UnmanagedType.U8)] out long val);
 
         /// <summary>
         /// Get the value of a #PLIST_REAL node.
@@ -631,6 +668,19 @@ namespace MobileDeviceSharp.PropertyList.Native
         public static extern void plist_get_uid_val(PlistHandle node, out ulong val);
 
         /// <summary>
+        /// Get the value of a #PLIST_UID node.
+        /// This function does nothing if node is not of type #PLIST_UID
+        /// </summary>
+        /// <param name="node">
+        /// the node
+        /// </param>
+        /// <param name="val">
+        /// a pointer to a uint64_t variable.
+        /// </param>
+        [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_get_uid_val", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
+        public static extern void plist_get_uid_val(PlistHandle node, [MarshalAs(UnmanagedType.U8)] out long val);
+
+        /// <summary>
         /// Set the value of a node.
         /// Forces type of node to #PLIST_KEY
         /// </summary>
@@ -655,7 +705,7 @@ namespace MobileDeviceSharp.PropertyList.Native
         /// freed by the node.
         /// </param>
         [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_set_string_val", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern void plist_set_string_val(PlistHandle node, [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.CustomMarshaler,MarshalTypeRef = typeof(UTF8Marshaler))] string val);
+        public static extern void plist_set_string_val(PlistHandle node, [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(UTF8Marshaler))] string val);
 
         /// <summary>
         /// Set the value of a node.
@@ -682,6 +732,19 @@ namespace MobileDeviceSharp.PropertyList.Native
         /// </param>
         [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_set_uint_val", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
         public static extern void plist_set_uint_val(PlistHandle node, ulong val);
+
+        /// <summary>
+        /// Set the value of a node.
+        /// Forces type of node to #PLIST_UINT
+        /// </summary>
+        /// <param name="node">
+        /// the node
+        /// </param>
+        /// <param name="val">
+        /// the unsigned integer value
+        /// </param>
+        [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_set_uint_val", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
+        public static extern void plist_set_uint_val(PlistHandle node, [MarshalAs(UnmanagedType.U8)] long val);
 
         /// <summary>
         /// Set the value of a node.
@@ -741,6 +804,19 @@ namespace MobileDeviceSharp.PropertyList.Native
         /// </param>
         [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_set_uid_val", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
         public static extern void plist_set_uid_val(PlistHandle node, ulong val);
+
+        /// <summary>
+        /// Set the value of a node.
+        /// Forces type of node to #PLIST_UID
+        /// </summary>
+        /// <param name="node">
+        /// the node
+        /// </param>
+        /// <param name="val">
+        /// the unsigned integer value
+        /// </param>
+        [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_set_uid_val", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
+        public static extern void plist_set_uid_val(PlistHandle node, [MarshalAs(UnmanagedType.U8)] long val);
 
         /// <summary>
         /// Export the #PlistHandle structure to XML format.

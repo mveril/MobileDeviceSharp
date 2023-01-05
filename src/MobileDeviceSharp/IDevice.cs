@@ -262,7 +262,7 @@ namespace MobileDeviceSharp
         /// <summary>
         /// Get the device capacity as byte
         /// </summary>
-        public ulong Capacity
+        public long Capacity
         {
             get
             {
@@ -472,7 +472,7 @@ namespace MobileDeviceSharp
                 using var intervalNode = lockdown.GetDomain()["TimeIntervalSince1970"];
                 if (intervalNode is PlistInteger timestampInteger)
                 {
-                    var timestamp = (long)timestampInteger.Value;
+                    var timestamp = timestampInteger.Value;
                     utcTime = DateTimeOffset.FromUnixTimeSeconds(timestamp);
                 }
                 else if(intervalNode is PlistReal timestampReal)
@@ -498,7 +498,7 @@ namespace MobileDeviceSharp
                 using var intervalNode = lockdown.GetDomain()["TimeIntervalSince1970"];
                 if (intervalNode is PlistInteger)
                 {
-                    lockdown.GetDomain()["TimeIntervalSince1970"] = new PlistInteger((ulong)value.ToUnixTimeSeconds());
+                    lockdown.GetDomain()["TimeIntervalSince1970"] = new PlistInteger(value.ToUnixTimeSeconds());
                 }
                 else if (intervalNode is PlistReal)
                 {
