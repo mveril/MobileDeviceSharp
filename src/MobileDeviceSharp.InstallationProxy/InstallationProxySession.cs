@@ -204,7 +204,18 @@ namespace MobileDeviceSharp.InstallationProxy
         /// <returns></returns>
         public Task InstallAsync(string path)
         {
-            return InstallAsync(path, null);
+            return InstallAsync(path, null, null);
+        }
+
+        /// <summary>
+        /// Install an application using a .ipa file stored on the computer.
+        /// </summary>
+        /// <param name="path">The path of the .ipa file to install.</param>
+        /// <param name="options">Options used to specify the way of installing.</param>
+        /// <returns></returns>
+        public Task InstallAsync(string path, InstallationProxyInstallOptions? options)
+        {
+            return InstallAsync(path, options, null);
         }
 
         /// <summary>
@@ -215,13 +226,26 @@ namespace MobileDeviceSharp.InstallationProxy
         /// <returns></returns>
         public Task InstallAsync(string path, IProgress<int>? progress)
         {
+            return InstallAsync(path, null, progress);
+        }
+
+        /// <summary>
+        /// Install an application using a .ipa file stored on the computer.
+        /// </summary>
+        /// <param name="path">The path of the .ipa file to install.</param>
+        /// <param name="options">Options used to specify the way of installing.</param>
+        /// <param name="progress">A <see cref="IProgress{int}"/> used to report the progress percentage.</param>
+        /// <returns></returns>
+        public Task InstallAsync(string path, InstallationProxyInstallOptions? options, IProgress<int>? progress)
+        {
+            using var optDic = options?.ToDictionary();
 #if NET5_0_OR_GREATER
             var tcs = new TaskCompletionSource();
 #else
             var tcs = new TaskCompletionSource<object?>();
 #endif
             var handle = GCHandle.Alloc(new TaskWithProgressOperationStatusContext(tcs, progress));
-            instproxy_install(Handle, path, PlistHandle.Zero, s_operationStatusCallback, GCHandle.ToIntPtr(handle));
+            instproxy_install(Handle, path, optDic?.Handle ?? PlistHandle.Zero, s_operationStatusCallback, GCHandle.ToIntPtr(handle));
             return tcs.Task;
         }
 
@@ -232,7 +256,7 @@ namespace MobileDeviceSharp.InstallationProxy
         /// <returns></returns>
         public Task UpgradeAsync(string path)
         {
-            return UpgradeAsync(path, null);
+            return UpgradeAsync(path, null, null);
         }
 
         /// <summary>
@@ -242,6 +266,18 @@ namespace MobileDeviceSharp.InstallationProxy
         /// <param name="progress">An <see cref="IProgress{int}"/> used to report the progress percentage.</param>
         /// <returns></returns>
         public Task UpgradeAsync(string path, IProgress<int>? progress)
+        {
+            return UpgradeAsync(path, null, progress);
+        }
+
+        /// <summary>
+        /// Upgrade an application using a .ipa file stored on the computer.
+        /// </summary>
+        /// <param name="path">The path of the .ipa file to install.</param>
+        /// <param name="options">Options used to specify the way of installing.</param>
+        /// <param name="progress">An <see cref="IProgress{int}"/> used to report the progress percentage.</param>
+        /// <returns></returns>
+        public Task UpgradeAsync(string path, InstallationProxyInstallOptions? options, IProgress<int>? progress)
         {
 #if NET5_0_OR_GREATER
             var tcs = new TaskCompletionSource();
