@@ -392,7 +392,7 @@ namespace MobileDeviceSharp.InstallationProxy.Native
         /// handled inside the specified callback function.
         /// </remarks>
         [System.Runtime.InteropServices.DllImportAttribute(InstallationProxy.LibraryName, EntryPoint = "instproxy_check_capabilities_match", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern InstallationProxyError instproxy_check_capabilities_match(InstallationProxyClientHandle client, [In, Out] string[]? capabilities, PlistHandle clientOptions, out PlistHandle result);
+        public static extern InstallationProxyError instproxy_check_capabilities_match(InstallationProxyClientHandle client, [In, Out] string?[] capabilities, PlistHandle clientOptions, out PlistHandle result);
 
         /// <summary>
         /// Checks a device for certain capabilities.
