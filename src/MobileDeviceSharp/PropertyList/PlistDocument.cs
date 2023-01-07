@@ -140,7 +140,7 @@ namespace MobileDeviceSharp.PropertyList
         {
             uint length = (uint)bin.Length;
             plist_from_bin(bin, length, out var handle);
-            using var node = PlistNode.From(handle);
+            var node = PlistNode.From(handle);
             if (node is not null)
             {
                 return new PlistDocument(node, PlistDocumentFormats.Binary);
@@ -164,7 +164,7 @@ namespace MobileDeviceSharp.PropertyList
                     plist_from_bin(ptr, length, out handle);
                 }
             }
-            using var node = PlistNode.From(handle);
+            var node = PlistNode.From(handle);
             if (node is not null)
             {
                 return new PlistDocument(node, PlistDocumentFormats.Binary);
@@ -238,13 +238,13 @@ namespace MobileDeviceSharp.PropertyList
                 var length = (uint)buffer.Count;
                 var ArrayOffset = new ArrayWithOffset(buffer.Array, buffer.Offset);
                 plist_from_memory(ArrayOffset, length, out var handle);
+                stream.Seek(length, SeekOrigin.Current);
                 var node = PlistNode.From(handle);
                 if (node is not null)
                 {
                     var format = plist_is_binary(ArrayOffset, length) != 0 ? PlistDocumentFormats.Binary : PlistDocumentFormats.XML;
                     return new PlistDocument(node, format);
                 }
-                stream.Seek(length, SeekOrigin.Current);
             }
             else
             {
@@ -258,11 +258,11 @@ namespace MobileDeviceSharp.PropertyList
             var ptr = stream.PositionPointer;
             var length = (uint)(stream.Length - stream.Position);
             plist_from_memory(ptr, length, out var handle);
+            stream.Seek(length, SeekOrigin.Current);
             var node = PlistNode.From(handle);
             if (node is not null)
             {
                 var format = plist_is_binary(ptr, length) != 0 ? PlistDocumentFormats.Binary : PlistDocumentFormats.XML;
-                stream.Seek(length,SeekOrigin.Current);
                 return new PlistDocument(node, format);
             }
             return null;
@@ -448,7 +448,6 @@ namespace MobileDeviceSharp.PropertyList
                     ums.CopyTo(stream);
                     stream.SetLength(ums.Length);
                     stream.Flush();
-                    stream.Seek(0, SeekOrigin.Begin);
                 }
 
             }
