@@ -11,6 +11,7 @@ using MobileDeviceSharp.PropertyList.Native;
 using System.Linq;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Collections.ObjectModel;
 #if NETCOREAPP3_0_OR_GREATER
 using System.Threading.Channels;
 #endif
@@ -88,10 +89,59 @@ namespace MobileDeviceSharp.InstallationProxy
         /// <summary>
         /// Get the list of application for the device.
         /// </summary>
+        /// <returns>The list of applications.</returns>
         public IEnumerable<Application> GetApplications()
         {
             return GetApplications(null, false);
         }
+
+        private PlistDictionary LookupInternal(string[] bundleIds)
+        {
+            var hresult = instproxy_lookup(Handle, bundleIds, PlistHandle.Zero, out var result);
+            if (hresult.IsError())
+                throw hresult.GetException();
+            return (PlistDictionary)PlistNode.From(result)!;
+        }
+
+        /// <summary>
+        /// Get application by Id.
+        /// The selected application.
+        /// </summary>
+        /// <param name="bundleId">A value corresponding to the <see cref="Application.BundleID"/></param>
+        public Application GetApplication(string bundleId)
+        {
+            var bundleIds = new string[] { bundleId };
+            using PlistDictionary dic = LookupInternal(bundleIds);
+            return new Application(Device, (PlistDictionary)dic[bundleId].Clone());
+        }
+
+        /// <summary>
+        /// Get applications by Ids.
+        /// </summary>
+        /// <param name="bundleId">A the list of <see cref="Application.BundleID"/> of the Applications we target.</param>
+        /// <returns>A readonly dictionary containing <see cref="Application.BundleID"/> as key and <see cref="Application"/> as values</returns>
+        public IReadOnlyDictionary<string, Application> GetApplications(IEnumerable<string> bundleIds)
+        {
+            return GetApplications(bundleIds.ToArray());
+        }
+
+        /// <summary>
+        /// Get applications by Ids.
+        /// </summary>
+        /// <param name="bundleId">A the list of <see cref="Application.BundleID"/> of the Applications we target.</param>
+        /// <returns>A readonly dictionary containing <see cref="Application.BundleID"/> as key and <see cref="Application"/> as values</returns>
+        public IReadOnlyDictionary<string, Application> GetApplications(params string[] bundleIds)
+        {
+            using var dic = LookupInternal(bundleIds);
+            var appsDic = new Dictionary<string, Application>();
+            foreach (var item in dic)
+            {
+                appsDic.Add(item.Key, new Application(Device, (PlistDictionary)item.Value.Clone()));
+            };
+            return new ReadOnlyDictionary<string, Application>(appsDic);
+        }
+
+
 
 #if NETCOREAPP3_0_OR_GREATER
 

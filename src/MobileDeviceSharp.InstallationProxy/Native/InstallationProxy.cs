@@ -152,7 +152,7 @@ namespace MobileDeviceSharp.InstallationProxy.Native
         /// an error occurred.
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(InstallationProxy.LibraryName, EntryPoint = "instproxy_lookup", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern InstallationProxyError instproxy_lookup(InstallationProxyClientHandle client, System.IntPtr appids, PlistHandle clientOptions, out PlistHandle result);
+        public static extern InstallationProxyError instproxy_lookup(InstallationProxyClientHandle client, [MarshalAs(UnmanagedType.CustomMarshaler,MarshalTypeRef=typeof(UTF8ArrayMarshaler))] string[] appids, PlistHandle clientOptions, out PlistHandle result);
 
         /// <summary>
         /// Install an application on the device.

@@ -9,6 +9,7 @@ using System.CommandLine;
 using System.Threading;
 using MobileDeviceSharp.DiagnosticsRelay;
 using MobileDeviceSharp.InstallationProxy;
+using System.Collections.Generic;
 
 namespace SampleConsole
 {
@@ -96,6 +97,19 @@ namespace SampleConsole
                 }
             }, false), watchOption, appType,visible);
             c.Add(listapps);
+            var app = new Command("get-apps");
+            var appIds = new Argument<string[]>("appids", "The Application bundle identifier");
+            app.AddArgument(appIds);
+            app.SetHandler((bool watch, string[] appIds) => HandlerBase(watch, async (device) =>
+            {
+                using var instproxysession = new InstallationProxySession(device);
+                var apps = instproxysession.GetApplications(appIds);
+                foreach (var app in apps.Values)
+                {
+                     Console.WriteLine($"{app.Name}: {app.BundleID} ({app.Version}) File sharing:{app.AllowFileShairing}");
+                }
+            }, false), watchOption, appIds);
+            c.AddCommand(app);
             await c.InvokeAsync(args);
         }
 
