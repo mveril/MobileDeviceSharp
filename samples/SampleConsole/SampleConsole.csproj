@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\MobileDeviceSharp.HouseArrest\MobileDeviceSharp.HouseArrest.csproj" />
     <ProjectReference Include="..\..\src\MobileDeviceSharp.InstallationProxy\MobileDeviceSharp.InstallationProxy.csproj" />
     <ProjectReference Include="..\..\src\MobileDeviceSharp\MobileDeviceSharp.csproj" />
     <ProjectReference Include="..\..\src\MobileDeviceSharp.AFC\MobileDeviceSharp.AFC.csproj" />
