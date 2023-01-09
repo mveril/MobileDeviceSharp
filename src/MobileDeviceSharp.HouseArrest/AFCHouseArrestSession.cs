@@ -33,5 +33,7 @@ namespace MobileDeviceSharp.HouseArrest
                 return Parent.Applicaton.ContainerPath;
             }
         }
+
+        public AFCDirectory Documents => this.GetAFCDirectory("/Documents");
     }
 }
