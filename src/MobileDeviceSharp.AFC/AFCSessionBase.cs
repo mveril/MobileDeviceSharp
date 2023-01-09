@@ -41,16 +41,11 @@ namespace MobileDeviceSharp.AFC
 #if !NETCOREAPP2_0_OR_GREATER
         private static ReadOnlyDictionary<string, string> s_readonlydic = new(new Dictionary<string, string>());
 #endif
-        internal IReadOnlyDictionary<string,string> GetFileInfo(string path)
+
+        internal IReadOnlyDictionary<string, string> GetFileInfo(string path)
         {
-            try
-            {
-                var hresult = afc_get_file_info(Handle, path, out var col);
-                if (hresult.IsError())
-                    throw hresult.GetException();
-                return col;
-            }
-            catch (AFCException ex) when (ex.ErrorCode == (int)AFCError.ObjectNotFound)
+            var hresult = afc_get_file_info(Handle, path, out var col);
+            if (hresult == AFCError.ObjectNotFound)
             {
 #if NETCOREAPP1_0_OR_GREATER
                 return System.Collections.Immutable.ImmutableDictionary<string, string>.Empty;
@@ -58,6 +53,11 @@ namespace MobileDeviceSharp.AFC
                 return s_readonlydic;
 #endif
             }
+            if (hresult.IsError())
+            {
+                throw hresult.GetException();
+            }
+            return col;
         }
     }
 }
