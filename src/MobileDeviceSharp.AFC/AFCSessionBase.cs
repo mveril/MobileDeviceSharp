@@ -25,7 +25,9 @@ namespace MobileDeviceSharp.AFC
 
         public abstract string RootPath { get; }
 
-        public AFCDirectory Root => new(this,"/");
+        protected AFCDirectory GetAFCDirectory(string path) => new AFCDirectory(this, path);
+
+        public AFCDirectory Root => GetAFCDirectory("/");
 
         public AFCItemType GetItemType(string path)
         {
