@@ -75,6 +75,10 @@ namespace MobileDeviceSharp
         public static IEnumerable<IDevice> List()
         {
             var hresult = idevice_get_device_list(out var udids, out _);
+            if (hresult == IDeviceError.NoDevice)
+            {
+                return Enumerable.Empty<IDevice>();
+            }
             if (hresult.IsError())
                 throw hresult.GetException();
             return udids.Select(id => new IDevice(id));
@@ -87,6 +91,10 @@ namespace MobileDeviceSharp
         public static IEnumerable<IDevice> ListExtended()
         {
             var hresult = idevice_get_device_list_extended(out var udids, out _);
+            if (hresult == IDeviceError.NoDevice)
+            {
+                return Enumerable.Empty<IDevice>();
+            }
             if (hresult.IsError())
                 throw hresult.GetException();
             return udids.Select(id => new IDevice(id));
