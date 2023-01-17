@@ -54,7 +54,7 @@ namespace MobileDeviceSharp.AFC.Native
         /// AFC_E_SUCCESS on success, or an AFC_E_* error code otherwise.
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(AFC.LibraryName, EntryPoint = "afc_client_start_service", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern AFCError afc_client_start_service(IDeviceHandle device, out AFCClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string? label);
+        public static extern AFCError afc_client_start_service(IDeviceHandle device, out AFCClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(UnmanagedType.CustomMarshaler, MarshalTypeRef =typeof(UTF8Marshaler))] string? label);
 
         /// <summary>
         /// Frees up an AFC client. If the connection was created by the client itself,
@@ -104,7 +104,7 @@ namespace MobileDeviceSharp.AFC.Native
         /// AFC_E_SUCCESS on success or an AFC_E_* error value.
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(AFC.LibraryName, EntryPoint = "afc_read_directory", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern AFCError afc_read_directory(AFCClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string path, [MarshalAs(UnmanagedType.CustomMarshaler,MarshalTypeRef =typeof(UTF8ArrayMarshaler))] out string[] directoryInformation);
+        public static extern AFCError afc_read_directory(AFCClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(UnmanagedType.CustomMarshaler, MarshalTypeRef =typeof(UTF8Marshaler))] string path, [MarshalAs(UnmanagedType.CustomMarshaler,MarshalTypeRef =typeof(UTF8ArrayMarshaler))] out string[] directoryInformation);
 
         /// <summary>
         /// Gets information about a specific file.
@@ -124,7 +124,7 @@ namespace MobileDeviceSharp.AFC.Native
         /// AFC_E_SUCCESS on success or an AFC_E_* error value.
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(AFC.LibraryName, EntryPoint = "afc_get_file_info", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern AFCError afc_get_file_info(AFCClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string path, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(AFCDictionaryMarshaler))] out IReadOnlyDictionary<string, string> fileInformation);
+        public static extern AFCError afc_get_file_info(AFCClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(UnmanagedType.CustomMarshaler, MarshalTypeRef =typeof(UTF8Marshaler))] string path, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(AFCDictionaryMarshaler))] out IReadOnlyDictionary<string, string> fileInformation);
 
         /// <summary>
         /// Opens a file on the device.
@@ -145,7 +145,7 @@ namespace MobileDeviceSharp.AFC.Native
         /// AFC_E_SUCCESS on success or an AFC_E_* error value.
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(AFC.LibraryName, EntryPoint = "afc_file_open", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern AFCError afc_file_open(AFCClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string filename, AFCFileMode fileMode, out ulong handle);
+        public static extern AFCError afc_file_open(AFCClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(UnmanagedType.CustomMarshaler, MarshalTypeRef =typeof(UTF8Marshaler))] string filename, AFCFileMode fileMode, out ulong handle);
 
         /// <summary>
         /// Closes a file on the device.
@@ -395,7 +395,7 @@ namespace MobileDeviceSharp.AFC.Native
         /// AFC_E_SUCCESS on success or an AFC_E_* error value.
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(AFC.LibraryName, EntryPoint = "afc_remove_path", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern AFCError afc_remove_path(AFCClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string path);
+        public static extern AFCError afc_remove_path(AFCClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(UnmanagedType.CustomMarshaler, MarshalTypeRef =typeof(UTF8Marshaler))] string path);
 
         /// <summary>
         /// Renames a file or directory on the device.
@@ -413,7 +413,7 @@ namespace MobileDeviceSharp.AFC.Native
         /// AFC_E_SUCCESS on success or an AFC_E_* error value.
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(AFC.LibraryName, EntryPoint = "afc_rename_path", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern AFCError afc_rename_path(AFCClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string from, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string to);
+        public static extern AFCError afc_rename_path(AFCClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(UnmanagedType.CustomMarshaler, MarshalTypeRef =typeof(UTF8Marshaler))] string from, [System.Runtime.InteropServices.MarshalAsAttribute(UnmanagedType.CustomMarshaler, MarshalTypeRef =typeof(UTF8Marshaler))] string to);
 
         /// <summary>
         /// Creates a directory on the device.
@@ -429,7 +429,7 @@ namespace MobileDeviceSharp.AFC.Native
         /// AFC_E_SUCCESS on success or an AFC_E_* error value.
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(AFC.LibraryName, EntryPoint = "afc_make_directory", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern AFCError afc_make_directory(AFCClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string path);
+        public static extern AFCError afc_make_directory(AFCClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(UnmanagedType.CustomMarshaler, MarshalTypeRef =typeof(UTF8Marshaler))] string path);
 
         /// <summary>
         /// Sets the size of a file on the device without prior opening it.
@@ -447,7 +447,7 @@ namespace MobileDeviceSharp.AFC.Native
         /// AFC_E_SUCCESS on success or an AFC_E_* error value.
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(AFC.LibraryName, EntryPoint = "afc_truncate", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern AFCError afc_truncate(AFCClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string path, ulong newsize);
+        public static extern AFCError afc_truncate(AFCClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(UnmanagedType.CustomMarshaler, MarshalTypeRef =typeof(UTF8Marshaler))] string path, ulong newsize);
 
         /// <summary>
         /// Creates a hard link or symbolic link on the device.
@@ -468,7 +468,7 @@ namespace MobileDeviceSharp.AFC.Native
         /// AFC_E_SUCCESS on success or an AFC_E_* error value.
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(AFC.LibraryName, EntryPoint = "afc_make_link", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern AFCError afc_make_link(AFCClientHandle client, AFCLinkType linktype, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string target, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string linkname);
+        public static extern AFCError afc_make_link(AFCClientHandle client, AFCLinkType linktype, [System.Runtime.InteropServices.MarshalAsAttribute(UnmanagedType.CustomMarshaler, MarshalTypeRef =typeof(UTF8Marshaler))] string target, [System.Runtime.InteropServices.MarshalAsAttribute(UnmanagedType.CustomMarshaler, MarshalTypeRef =typeof(UTF8Marshaler))] string linkname);
 
         /// <summary>
         /// Sets the modification time of a file on the device.
@@ -486,7 +486,7 @@ namespace MobileDeviceSharp.AFC.Native
         /// AFC_E_SUCCESS on success or an AFC_E_* error value.
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(AFC.LibraryName, EntryPoint = "afc_set_file_time", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern AFCError afc_set_file_time(AFCClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string path, ulong mtime);
+        public static extern AFCError afc_set_file_time(AFCClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(UnmanagedType.CustomMarshaler, MarshalTypeRef =typeof(UTF8Marshaler))] string path, ulong mtime);
 
         /// <summary>
         /// Deletes a file or directory including possible contents.
@@ -504,7 +504,7 @@ namespace MobileDeviceSharp.AFC.Native
         /// Only available in iOS 6 and later.
         /// </remarks>
         [System.Runtime.InteropServices.DllImportAttribute(AFC.LibraryName, EntryPoint = "afc_remove_path_and_contents", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern AFCError afc_remove_path_and_contents(AFCClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string path);
+        public static extern AFCError afc_remove_path_and_contents(AFCClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(UnmanagedType.CustomMarshaler, MarshalTypeRef =typeof(UTF8Marshaler))] string path);
 
         /// <summary>
         /// Get a specific key of the device info list for a client connection.
@@ -524,7 +524,7 @@ namespace MobileDeviceSharp.AFC.Native
         /// AFC_E_SUCCESS on success or an AFC_E_* error value.
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(AFC.LibraryName, EntryPoint = "afc_get_device_info_key", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern AFCError afc_get_device_info_key(AFCClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string key, out System.IntPtr value);
+        public static extern AFCError afc_get_device_info_key(AFCClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(UnmanagedType.CustomMarshaler, MarshalTypeRef =typeof(UTF8Marshaler))] string key, out System.IntPtr value);
 
         /// <summary>
         /// Frees up a char dictionary as returned by some AFC functions.
