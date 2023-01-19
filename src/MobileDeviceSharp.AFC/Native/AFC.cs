@@ -104,7 +104,7 @@ namespace MobileDeviceSharp.AFC.Native
         /// AFC_E_SUCCESS on success or an AFC_E_* error value.
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(AFC.LibraryName, EntryPoint = "afc_read_directory", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern AFCError afc_read_directory(AFCClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(UnmanagedType.CustomMarshaler, MarshalTypeRef =typeof(UTF8Marshaler))] string path, [MarshalAs(UnmanagedType.CustomMarshaler,MarshalTypeRef =typeof(UTF8ArrayMarshaler))] out string[] directoryInformation);
+        public static extern AFCError afc_read_directory(AFCClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(UnmanagedType.CustomMarshaler, MarshalTypeRef =typeof(UTF8Marshaler))] string path, [MarshalAs(UnmanagedType.CustomMarshaler,MarshalTypeRef =typeof(ArrayMarshaller<string,UTF8Marshaler>))] out string[] directoryInformation);
 
         /// <summary>
         /// Gets information about a specific file.

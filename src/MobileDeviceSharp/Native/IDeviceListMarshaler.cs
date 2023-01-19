@@ -7,7 +7,7 @@ namespace MobileDeviceSharp.Native
 {
 
 
-    class IDeviceListMarshaler : UTF8ArrayMarshaler
+    public class IDeviceListMarshaler : ArrayMarshaller<string, UTF8Marshaler>
     {
 
         private  static readonly Lazy<IDeviceListMarshaler> s_static_instance = new();

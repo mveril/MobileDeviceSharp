@@ -6,7 +6,7 @@ using System.Text;
 
 namespace MobileDeviceSharp.AFC.Native
 {
-    class AFCDictionaryMarshaler : UTF8DictionaryMarshaler
+    class AFCDictionaryMarshaler : DictionaryMarshaler<string, UTF8Marshaler>
     {
 
         private static readonly Lazy<AFCDictionaryMarshaler> s_static_instance = new();

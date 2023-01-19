@@ -121,7 +121,7 @@ namespace MobileDeviceSharp.NotificationProxy.Native
         /// or an error returned by np_observe_notification.
         /// </returns>
         [DllImportAttribute(NotificationProxy.LibraryName, EntryPoint = "np_observe_notifications", CallingConvention = CallingConvention.Cdecl)]
-        public static extern NotificationProxyError np_observe_notifications(NotificationProxyClientHandle client, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(UTF8ArrayMarshaler))] string[] notificationSpec);
+        public static extern NotificationProxyError np_observe_notifications(NotificationProxyClientHandle client, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(ArrayMarshaller<string, UTF8Marshaler>))] string[] notificationSpec);
 
         /// <summary>
         /// This function allows an application to define a callback function that will
