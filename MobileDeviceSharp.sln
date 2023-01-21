@@ -16,13 +16,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A266625F-760
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{D62FEDCA-D28F-47E0-94E5-DF23C2194813}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileDeviceSharp", "src\MobileDeviceSharp\MobileDeviceSharp.csproj", "{A3D2DE9E-6540-45C0-88B7-14444A85E5B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MobileDeviceSharp", "src\MobileDeviceSharp\MobileDeviceSharp.csproj", "{A3D2DE9E-6540-45C0-88B7-14444A85E5B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileDeviceSharp.AFC", "src\MobileDeviceSharp.AFC\MobileDeviceSharp.AFC.csproj", "{BB685216-C255-413D-A0A5-37F9FA3CA7F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MobileDeviceSharp.AFC", "src\MobileDeviceSharp.AFC\MobileDeviceSharp.AFC.csproj", "{BB685216-C255-413D-A0A5-37F9FA3CA7F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileDeviceSharp.SourceGenerator", "src\MobileDeviceSharp.SourceGenerator\MobileDeviceSharp.SourceGenerator.csproj", "{2D3265C3-2F53-4460-B86F-023DE54EAD4E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MobileDeviceSharp.SourceGenerator", "src\MobileDeviceSharp.SourceGenerator\MobileDeviceSharp.SourceGenerator.csproj", "{2D3265C3-2F53-4460-B86F-023DE54EAD4E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileDeviceSharp.CompilerServices", "src\MobileDeviceSharp.CompilerServices\MobileDeviceSharp.CompilerServices.csproj", "{4F0FCDF4-E053-4358-9285-F924A2F45361}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MobileDeviceSharp.CompilerServices", "src\MobileDeviceSharp.CompilerServices\MobileDeviceSharp.CompilerServices.csproj", "{4F0FCDF4-E053-4358-9285-F924A2F45361}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MobileDeviceSharp.InstallationProxy", "src\MobileDeviceSharp.InstallationProxy\MobileDeviceSharp.InstallationProxy.csproj", "{930401A2-BE80-4E89-90CD-3FB4C8C6B451}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,6 +56,10 @@ Global
 		{4F0FCDF4-E053-4358-9285-F924A2F45361}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F0FCDF4-E053-4358-9285-F924A2F45361}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F0FCDF4-E053-4358-9285-F924A2F45361}.Release|Any CPU.Build.0 = Release|Any CPU
+		{930401A2-BE80-4E89-90CD-3FB4C8C6B451}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{930401A2-BE80-4E89-90CD-3FB4C8C6B451}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{930401A2-BE80-4E89-90CD-3FB4C8C6B451}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{930401A2-BE80-4E89-90CD-3FB4C8C6B451}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -64,6 +70,7 @@ Global
 		{BB685216-C255-413D-A0A5-37F9FA3CA7F2} = {A266625F-7607-469F-BDA7-B9AB14ABBBF6}
 		{2D3265C3-2F53-4460-B86F-023DE54EAD4E} = {A266625F-7607-469F-BDA7-B9AB14ABBBF6}
 		{4F0FCDF4-E053-4358-9285-F924A2F45361} = {A266625F-7607-469F-BDA7-B9AB14ABBBF6}
+		{930401A2-BE80-4E89-90CD-3FB4C8C6B451} = {A266625F-7607-469F-BDA7-B9AB14ABBBF6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D3FE3A7F-3AA1-4D52-95F5-45F272CB3C49}

@@ -8,6 +8,8 @@ using MobileDeviceSharp.AFC;
 using System.CommandLine;
 using System.Threading;
 using MobileDeviceSharp.DiagnosticsRelay;
+using MobileDeviceSharp.InstallationProxy;
+using System.Collections.Generic;
 
 namespace SampleConsole
 {
@@ -15,6 +17,7 @@ namespace SampleConsole
     {
         static  async Task Main(string[] args)
         {
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             var c = new RootCommand();
             var watchOption = new Option<bool>("--watch", "Watch for device");
             c.AddGlobalOption(watchOption);
@@ -74,7 +77,45 @@ namespace SampleConsole
                 }
                 return Task.CompletedTask;
             }, true), watchOption, autoYesOption);
+            var listapps = new Command("list-apps", "List the apps");
+            var appType = new Option<string>("--apptype",()=>ApplicationType.Any.ToString(), $"the app type in all tese values {string.Join(", ",Enum.GetNames(typeof(ApplicationType)))}");
+            var visible = new Option<bool>("--only-visible",()=> true, $"Show visible apps only");
+            listapps.AddOption(appType);
+            listapps.AddOption(visible);
+            listapps.SetHandler((bool watch, string appType, bool visible) => HandlerBase(watch, async (device) =>
+            {
+                using var instproxysession = new InstallationProxySession(device);
+#if NETCOREAPP3_1_OR_GREATER
+                var apps = instproxysession.GetApplicationsAsync(new InstalltionProxyLookupOptions() { ApplicationType = (ApplicationType)Enum.Parse(typeof(ApplicationType), appType) }, !visible);
+                await foreach (var app in apps)
+#else
+                var apps = instproxysession.GetApplications(new InstalltionProxyLookupOptions() { ApplicationType = (ApplicationType)Enum.Parse(typeof(ApplicationType), appType) }, !visible);
+                foreach (var app in apps)
+#endif
+                {
+                    Console.WriteLine($"{app.Name}: {app.BundleID} ({app.Version}) File sharing:{app.AllowFileShairing}");
+                }
+            }, false), watchOption, appType,visible);
+            c.Add(listapps);
+            var app = new Command("get-apps");
+            var appIds = new Argument<string[]>("appids", "The Application bundle identifier");
+            app.AddArgument(appIds);
+            app.SetHandler((bool watch, string[] appIds) => HandlerBase(watch, async (device) =>
+            {
+                using var instproxysession = new InstallationProxySession(device);
+                var apps = instproxysession.GetApplications(appIds);
+                foreach (var app in apps.Values)
+                {
+                     Console.WriteLine($"{app.Name}: {app.BundleID} ({app.Version}) File sharing:{app.AllowFileShairing}");
+                }
+            }, false), watchOption, appIds);
+            c.AddCommand(app);
             await c.InvokeAsync(args);
+        }
+
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Console.WriteLine(e.ExceptionObject);
         }
 
         private static Task HandlerBase(bool watch, Func<IDevice, Task> task, bool needPair)
