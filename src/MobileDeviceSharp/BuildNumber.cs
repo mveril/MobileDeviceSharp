@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -175,15 +176,27 @@ namespace MobileDeviceSharp
         /// <param name="input">The imput string</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
         public static BuildNumber Parse(string input)
         {
+#if NET6_0_OR_GREATER
+            ArgumentNullException.ThrowIfNull(input);
+#else
             if (input == null)
-            {
                 throw new ArgumentNullException(nameof(input));
-            }
-
-            return ParseBuildNumber(input, throwOnFailure: true)!;
+#endif
+            return ParseBuildNumber(input.AsSpan(), true)!;
         }
+
+        /// <summary>
+        /// Parse the <paramref name="input"/> <see cref="string"/> to a build number
+        /// </summary>
+        /// <param name="input">The imput string</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        public static BuildNumber Parse(ReadOnlySpan<char> input)
+            => ParseBuildNumber(input, throwOnFailure: true)!;
 
         /// <summary>
         /// Tries to parse the <see cref="string"/> representation of a build number to an equivalent
@@ -194,31 +207,97 @@ namespace MobileDeviceSharp
         /// <param name="result">When this method returns, contains the <see cref="BuildNumber"/> equivalent of the values
         /// that is contained in input, if the conversion succeeded, or null
         /// if the conversion failed.
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_0_OR_GREATER
+        public static bool TryParse(string? input, [NotNullWhen(true)] out BuildNumber? result)
+#else
         public static bool TryParse(string? input, out BuildNumber? result)
+#endif
         {
-            if (input == null)
-            {
-                result = null;
-                return false;
-            }
+            return (result = ParseBuildNumber(input.AsSpan(), throwOnFailure: false)) is not null;
+        }
 
+        /// <summary>
+        /// Tries to parse the <see cref="string"/> representation of a build number to an equivalent
+        /// <see cref="BuildNumber"/> object, and returns a value that indicates whether the conversion
+        /// succeeded.
+        /// </summary>
+        /// <param name="input">A <see cref=" ReadOnlySpan{char}"/> that contains a build number to convert.</param>
+        /// <param name="result">When this method returns, contains the <see cref="BuildNumber"/> equivalent of the values
+        /// that is contained in input, if the conversion succeeded, or null
+        /// if the conversion failed.
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_0_OR_GREATER
+        public static bool TryParse(ReadOnlySpan<char> input, [NotNullWhen(true)] out BuildNumber? result)
+#else
+        public static bool TryParse(ReadOnlySpan<char> input, out BuildNumber? result)
+#endif
+        {
             return (result = ParseBuildNumber(input, throwOnFailure: false)) is not null;
         }
 
-        private static Regex s_buildRegex = new Regex(@"^(\d+)([A-Z])(\d+)([a-z])?$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
-
-        private static BuildNumber? ParseBuildNumber(string input, bool throwOnFailure)
+        private static BuildNumber? ParseBuildNumber(ReadOnlySpan<char> input, bool throwOnFailure)
         {
-            var m= s_buildRegex.Match(input);
-            if (!m.Success)
+            int index = 0;
+            int numberStart = 0;
+            int major, build;
+            char minor;
+            char? revision = null;
+
+            // Extract first number
+            while (index < input.Length && char.IsDigit(input[index]))
             {
-                if (throwOnFailure)
-                {
-                    throw new ArgumentException(input);
-                }
+                index++;
+            }
+            var majorSpan = input.Slice(numberStart, index - numberStart);
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1
+            if (numberStart == index || !int.TryParse(majorSpan, out major))
+#else
+            if (numberStart == index || !int.TryParse(majorSpan.ToString(), out major))
+#endif
+            {
+                if (throwOnFailure) throw new ArgumentException();
                 return null;
             }
-            return new BuildNumber(int.Parse(m.Groups[1].Value), m.Groups[2].Value[0], int.Parse(m.Groups[3].Value), m.Groups[4].Success ? m.Groups[4].Value[0] : null);
+
+            // Check if second character is an uppercase letter
+            if (index >= input.Length || input[index] is < 'A' or > 'Z')
+            {
+                if (throwOnFailure) throw new ArgumentException();
+                return null;
+            }
+            minor = input[index];
+            index++;
+
+            // Extract second number
+            numberStart = index;
+            while (index < input.Length && char.IsDigit(input[index]))
+            {
+                index++;
+            }
+            var buildSpan = input.Slice(numberStart, index - numberStart);
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
+            if (numberStart == index || !int.TryParse(buildSpan, out build))
+#else
+            if (numberStart == index || !int.TryParse(buildSpan.ToString(), out build))
+#endif
+            {
+                if (throwOnFailure) throw new ArgumentException();
+                return null;
+            }
+
+            // Check if fourth character (if present) is a lowercase letter
+            if (index < input.Length)
+            {
+                if (revision is >= 'a' and <= 'z')
+                {
+                    revision = input[index];
+                }
+                else
+                {
+                    if (throwOnFailure) throw new ArgumentException();
+                    return null;
+                }
+            }
+            return new BuildNumber(major, minor, build, revision);
         }
 
         // Force inline as the true/false ternary takes it above ALWAYS_INLINE size even though the asm ends up smaller
