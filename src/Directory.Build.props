@@ -3,5 +3,6 @@
   <LangVersion>10</LangVersion>
   <Nullable>enable</Nullable>
   <ImplicitUsings>enable</ImplicitUsings>
+  <GenerateDocumentationFile>true</GenerateDocumentationFile>
  </PropertyGroup>
 </Project>
