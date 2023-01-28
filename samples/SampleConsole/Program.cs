@@ -10,6 +10,7 @@ using System.Threading;
 using MobileDeviceSharp.DiagnosticsRelay;
 using MobileDeviceSharp.InstallationProxy;
 using System.Collections.Generic;
+using MobileDeviceSharp.HouseArrest;
 
 namespace SampleConsole
 {
@@ -110,6 +111,18 @@ namespace SampleConsole
                 }
             }, false), watchOption, appIds);
             c.AddCommand(app);
+            var openApp = new Command("open-app");
+            var appId = new Argument<string>("appid", "The Application bundle identifier");
+            openApp.AddArgument(appId);
+            openApp.SetHandler((bool watch, string appId) => HandlerBase(watch, async (device) =>
+            {
+                using var instproxysession = new InstallationProxySession(device);
+                var myApp = instproxysession.GetApplication(appId);
+                using var houseArrest = new HouseArrestSession(myApp, HouseArrestLocation.Documents);
+                using var afcSession = houseArrest.AFCSession;
+                ProcessItem(afcSession.Documents);
+            }, false), watchOption, appId);
+            c.AddCommand(openApp);
             await c.InvokeAsync(args);
         }
 
