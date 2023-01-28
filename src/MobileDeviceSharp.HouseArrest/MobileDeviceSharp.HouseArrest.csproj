@@ -2,9 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard20;netstandard21;netcoreapp2.0;netcoreapp2.1;netcoreapp3.0;netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
-    <LangVersion>11</LangVersion>
-    <Nullable>enable</Nullable>
-    <DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
+    <RuntimeIdentifiers>win-x64;win-x86;osx-x64;linux-x64</RuntimeIdentifiers>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
