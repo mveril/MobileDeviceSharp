@@ -475,30 +475,55 @@ namespace MobileDeviceSharp
         {
             get
             {
-                DateTimeOffset? utcTime;
+                DateTimeOffset utcTime;
                 using var lockdown = new LockdownSession(this, IsPaired);
-                using var intervalNode = lockdown.GetDomain()["TimeIntervalSince1970"];
-                if (intervalNode is PlistInteger timestampInteger)
-                {
-                    var timestamp = timestampInteger.Value;
-                    utcTime = DateTimeOffset.FromUnixTimeSeconds(timestamp);
-                }
-                else if(intervalNode is PlistReal timestampReal)
-                {
-                    var timestamp = timestampReal.Value;
+                var defaultDomain = lockdown.GetDomain();
+                using (var intervalNode = defaultDomain["TimeIntervalSince1970"])
+                { 
+                    if (intervalNode is PlistInteger timestampInteger)
+                    {
+                        var timestamp = timestampInteger.Value;
+                        utcTime = DateTimeOffset.FromUnixTimeSeconds(timestamp);
+                    }
+                    else if (intervalNode is PlistReal timestampReal)
+                    {
+                        var timestamp = timestampReal.Value;
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
-                    DateTimeOffset unix = DateTimeOffset.UnixEpoch;
+                        DateTimeOffset unix = DateTimeOffset.UnixEpoch;
 
 #else
                     DateTimeOffset unix = DateTimeOffset.FromUnixTimeSeconds(0);
 #endif
-                    utcTime = unix.AddSeconds(timestamp);
+                        utcTime = unix.AddSeconds(timestamp);
+                    }
+                    else
+                    {
+                        throw new NotSupportedException();
+                    }
+                }
+                TimeSpan? offset = null;
+                if (defaultDomain.TryGetValue("TimeZoneOffsetFromUTC", out var offsetPlist))
+                {
+                    using (offsetPlist)
+                    {
+                        if (offsetPlist is PlistReal offsetPlistReal)
+                        {
+                            offset = TimeSpan.FromSeconds(offsetPlistReal.Value);
+                        }
+                        else if (offsetPlist is PlistInteger offsetPlistInteger)
+                        {
+                            offset = TimeSpan.FromSeconds(offsetPlistInteger.Value);
+                        }
+                    }
+                }
+                if (offset.HasValue)
+                {
+                    return utcTime.ToOffset(offset.Value);
                 }
                 else
                 {
-                    throw new NotSupportedException();
+                    return TimeZoneInfo.ConvertTime(utcTime, TimeZone);
                 }
-                return TimeZoneInfo.ConvertTime(utcTime.Value, TimeZone);
             }
             set
             {
