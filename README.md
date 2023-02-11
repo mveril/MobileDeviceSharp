@@ -45,5 +45,13 @@ This namespace contains the core APIs.
 - …
 
 We also have `MobileDeviceSharp.SourceGenerator` and `MobileDeviceSharp.CompilerServices` to make programming these libraries easier using [Source Generators](https://docs.microsoft.com/dotnet/csharp/roslyn-sdk/source-generators-overview).
-### Conclusion
+## Code of Conduct
+Please note that this project is released with a [Contributor Code of Conduct.](CODE_OF_CONDUCT.md) By participating in this project you agree to abide by its terms.
+
+## Contributing
+We welcome contributions to the MobileDeviceSharp project. Please check out the [CONTRIBUTING.md](CONTRIBUTING.md) file for more information on how to get started.
+
+Please note that currently, this project does not have any unit tests. So, we ask that contributors take extra care to ensure the stability and reliability of the code when making changes. Thank you!
+
+## Conclusion
 We are aware that there is still a lot of work to implement all the APIs proposed in the [Libmobiledevice](https://libimobiledevice.org/) library in a modern C# compliant way, but it is a good starting point, and we hope that this project can grow over time to make it easy to develop software that connects with Apple Devices in .NET.
