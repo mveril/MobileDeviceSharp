@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-## Is your Service implementation request related to a problem? Please describe.
+## Is your service implementation request related to a problem? Please describe.
 
 A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
 
@@ -21,7 +21,7 @@ Example [House Arrest](https://docs.libimobiledevice.org/libimobiledevice/latest
 
 ## Proposed API surface (provide sample code, optional):
 
-Use C# code to show wanted API (you can also suggest to implement specific base class or interface from the [.NET base class library](https://learn.microsoft.com/en-us/dotnet/standard/framework-libraries#base-class-library)).
+Use C# code to show wanted API (you can also suggest to implement specific base class or interface from the [.NET base class library](https://learn.microsoft.com/dotnet/standard/framework-libraries#base-class-library)).
 
 ## Proposed API implementation (provide sample code, optional):
 
