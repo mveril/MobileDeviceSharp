@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-## Is your Service implementation request related to a problem? Please describe.
+## Is your service implementation request related to a problem? Please describe.
 
 A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
 
