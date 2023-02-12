@@ -21,7 +21,7 @@ Example [House Arrest](https://docs.libimobiledevice.org/libimobiledevice/latest
 
 ## Proposed API surface (provide sample code, optional):
 
-Use C# code to show wanted API (you can also suggest to implement specific base class or interface from the [.NET base class library](https://learn.microsoft.com/en-us/dotnet/standard/framework-libraries#base-class-library)).
+Use C# code to show wanted API (you can also suggest to implement specific base class or interface from the [.NET base class library](https://learn.microsoft.com/dotnet/standard/framework-libraries#base-class-library)).
 
 ## Proposed API implementation (provide sample code, optional):
 

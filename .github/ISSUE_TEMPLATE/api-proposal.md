@@ -16,7 +16,7 @@ Briefly describe what you want to accomplish with this API and why it is necessa
 Include detailed information on the features you would like to include in the API, such as input and output methods, required parameters, etc.
 
 ## Proposed API surface (provide sample code, optional):
-Use C# code to show wanted API (you can also suggest to implement specific base class or interface from the [.NET base class library](https://learn.microsoft.com/en-us/dotnet/standard/framework-libraries#base-class-library)).
+Use C# code to show wanted API (you can also suggest to implement specific base class or interface from the [.NET base class library](https://learn.microsoft.com/dotnet/standard/framework-libraries#base-class-library)).
 
 ## Proposed API implementation (provide sample code, optional): 
 
