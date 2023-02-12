@@ -1,6 +1,6 @@
 ---
 name: "Service implementation request \U0001F4F1"
-about: Request to implement C# API surface for a new libimobiledevice service
+about: Request to implement C# API surface for a new libimobiledevice service.
 title: "[New service]: Service name"
 labels: enhancement, New service
 assignees: ''

@@ -1,6 +1,6 @@
 ---
 name: "API Proposal \U0001F4A1"
-about: Suggest new API
+about: Suggest new API.
 title: "[API Proposal]:"
 labels: API, enhancement
 assignees: ''
@@ -18,7 +18,7 @@ Include detailed information on the features you would like to include in the AP
 ## Proposed API surface (provide sample code, optional):
 Use C# code to show wanted API (you can also suggest to implement specific base class or interface from the [.NET base class library](https://learn.microsoft.com/dotnet/standard/framework-libraries#base-class-library)).
 
-## Proposed API implementation (provide sample code, optional): 
+## Proposed API implementation (provide sample code, optional):
 
 ## Use Cases
 

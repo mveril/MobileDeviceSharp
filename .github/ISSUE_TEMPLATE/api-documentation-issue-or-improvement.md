@@ -1,6 +1,6 @@
 ---
 name: "API Documentation issue or improvement \U0001F4DA"
-about: Report issues in our API documentation comments
+about: Report issues in our API documentation comments.
 title: "[Documentation]: "
 labels: documentation
 assignees: ''
