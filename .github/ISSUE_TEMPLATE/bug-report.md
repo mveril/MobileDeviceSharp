@@ -29,6 +29,7 @@ If applicable, add screenshots to help explain your problem.
  - Is jailbroken [e.g. false]
 
 ## Dependencies.
+ - .NET target version [e.g. .NET Framework 4.7.1/.NET 5]
  - ITunes version (for Windows only) [e.g. 12.12.7.1 (Microsoft store)
  - Libimobiledevice (if it's not the version provided on the runtimes folder):
  - libplist (if it's not the version provided on the runtimes folder):: [e.g. 2.2.0]
