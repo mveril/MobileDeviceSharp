@@ -1,5 +1,5 @@
 ---
-name: "API Documentation or improvement \U0001F4DA"
+name: "API Documentation issue or improvement \U0001F4DA"
 about: An issue for the documentation of a method
 title: "[Documentation]: "
 labels: documentation
