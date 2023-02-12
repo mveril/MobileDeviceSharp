@@ -1,6 +1,6 @@
 ---
 name: "API Documentation issue or improvement \U0001F4DA"
-about: An issue for the documentation of a method
+about: Report issues in our API [documentation comments](https://learn.microsoft.com/dotnet/csharp/language-reference/language-specification/documentation-comments)
 title: "[Documentation]: "
 labels: documentation
 assignees: ''
