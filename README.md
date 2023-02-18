@@ -7,6 +7,7 @@ Somme examples:
 - The `LockdownSession.ParAsync` API can be used to pair a device asynchronously.
 - The `PlistDictionary` implement [IDictionary<String,PlistNode>](https://docs.microsoft.com/dotnet/api/system.collections.generic.idictionary-2) interface.
 - The `AFCStream` class allow interacting with Apple device files using the `Apple file conduit` protocol with the standard .NET [Stream](https://docs.microsoft.com/dotnet/api/system.io.stream) API.
+- With all supported framework the overloads of `InstallationProxySession.Getapplication()`... return an [IEnumerable&lt;Application&gt;](https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1) and on .NET Core 3 or greater `InstallationProxySession.Getapplication()` return an [IAsyncEnumerable&lt;Application&gt;](https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1)
 …
 
 ## Main API and associated libraries
@@ -43,6 +44,21 @@ This namespace contains the core APIs.
 - `AFCDirectory`
 - `AFCStream`
 - …
+### MobileDeviceSharp.InstallationProxy library
+#### MobileDeviceSharp.InstallationProxy
+> Provide .NET API for [installation_proxy.h](https://docs.libimobiledevice.org/libimobiledevice/latest/installation__proxy_8h.html)
+- `InstallationProxySession`
+- `Application`
+- `CapabilityMatcher`
+- `InstallationProxyArchiveOptions`
+- `InstallationProxyInstallOptions`
+- …
+
+### MobileDeviceSharp.HouseArrest library
+#### MobileDeviceSharp.HouseArrest
+> Provide .NET API for [house_arrest.h](https://docs.libimobiledevice.org/libimobiledevice/latest/house_arrest_8h.html)
+- `HouseArrestSession`
+- `AFCHouseArrestSession`
 
 We also have `MobileDeviceSharp.SourceGenerator` and `MobileDeviceSharp.CompilerServices` to make programming these libraries easier using [Source Generators](https://docs.microsoft.com/dotnet/csharp/roslyn-sdk/source-generators-overview).
 ## Code of Conduct
