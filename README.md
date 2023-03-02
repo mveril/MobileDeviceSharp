@@ -7,8 +7,8 @@ Somme examples:
 - The `LockdownSession.ParAsync` API can be used to pair a device asynchronously.
 - The `PlistDictionary` implement [IDictionary<String,PlistNode>](https://docs.microsoft.com/dotnet/api/system.collections.generic.idictionary-2) interface.
 - The `AFCStream` class allow interacting with Apple device files using the `Apple file conduit` protocol with the standard .NET [Stream](https://docs.microsoft.com/dotnet/api/system.io.stream) API.
-- With all supported framework the overloads of `InstallationProxySession.Getapplication()`... return an [IEnumerable&lt;Application&gt;](https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1) and on .NET Core 3 or greater `InstallationProxySession.Getapplication()` return an [IAsyncEnumerable&lt;Application&gt;](https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1)
-…
+- With all supported framework the overloads of `InstallationProxySession.GetApplications()` return an [IEnumerable&lt;Application&gt;](https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1) and on .NET Core 3 or greater `InstallationProxySession.GetApplications()` return an [IAsyncEnumerable&lt;Application&gt;](https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1)
+- …
 
 ## Main API and associated libraries
 We have created some libraries, indeed we wanted to separate the project into different libraries as much as possible (in the future we could try to make other separations if possible). In this part we will describe the content of the already implemented APIs (when it's possible a link with it's main associated native [Libmobiledevice](https://libimobiledevice.org/) library is provided)
@@ -18,7 +18,6 @@ This namespace contains the core APIs.
 - `IDevice` (provide .NET API for [libimobiledevice.h](https://docs.libimobiledevice.org/libimobiledevice/latest/libimobiledevice_8h.html))
 - `DeviceWatcher`
 - `LockdownSession` (Provide .NET API for [lockdown.h](https://docs.libimobiledevice.org/libimobiledevice/latest/lockdown_8h.html))
-
 - …
 
 #### MobileDeviceSharp.Usbmuxd
