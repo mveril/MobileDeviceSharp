@@ -38,7 +38,7 @@ namespace MobileDeviceSharp.InstallationProxy
         public bool Match { get; }
 
 
-        public HashSet<string> _MatchedCapabilities;
+        private HashSet<string> _MatchedCapabilities;
 
         /// <summary>
         /// Get the set of requested capabilities.
@@ -56,7 +56,7 @@ namespace MobileDeviceSharp.InstallationProxy
 #else
         public IReadOnlyCollection<string> MatchedCapabilities => _MatchedCapabilities;
 #endif
-        public HashSet<string> _MismatchCapabilities;
+        private HashSet<string> _MismatchCapabilities;
 
         /// <summary>
         /// Get the set of capabilites mismatched.
