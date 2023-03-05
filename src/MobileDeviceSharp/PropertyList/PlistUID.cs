@@ -31,12 +31,13 @@ namespace MobileDeviceSharp.PropertyList
         /// <summary>
         /// Create <see cref="long"/> plist node from a value.
         /// </summary>
-        /// <param name="Value">the <see cref="ulong"/> value.</param>
+        /// <param name="value">the <see cref="ulong"/> value.</param>
         public PlistUid(long value) : base(plist_new_uid(value))
         {
 
         }
 
+        /// <inheritdoc/>
         public override long Value
         {
             get

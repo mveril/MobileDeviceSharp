@@ -6,23 +6,52 @@ using System.Text;
 
 namespace MobileDeviceSharp
 {
+    /// <summary>
+    /// A watcher used to detect device connection.
+    /// </summary>
     public sealed class DeviceWatcher : IDisposable
     {
         private UsbmuxdSubscriptionContextHandle handle = UsbmuxdSubscriptionContextHandle.Zero;
         private readonly UsbmuxdEventCallBack _callBack;
-        public event EventHandler<DeviceEventArgs>? DeviceAdded, DeviceRemoved, DevicePaired;
+
+        /// <summary>
+        /// Raised when a device is added.
+        /// </summary>
+        public event EventHandler<DeviceEventArgs> DeviceAdded;
+
+        /// <summary>
+        /// Raised when a device is removed.
+        /// </summary>
+        public event EventHandler<DeviceEventArgs>? DeviceRemoved;
+
+        /// <summary>
+        /// Raised when a device is paired.
+        /// </summary>
+        public event EventHandler<DeviceEventArgs>? DevicePaired;
+
         private System.Threading.SynchronizationContext? _context;
+
+        /// <summary>
+        /// Initialise a new instance of <see cref="DeviceWatcher"/>.
+        /// </summary>
         public DeviceWatcher() : this(IDeviceLookupOptions.All)
         {
 
         }
 
+        /// <summary>
+        /// /// Initialise a new instance of <see cref="DeviceWatcher"/>.
+        /// </summary>
+        /// <param name="connectionType">The specified connection lookup option.</param>
         public DeviceWatcher(IDeviceLookupOptions connectionType)
         {
             _callBack = new UsbmuxdEventCallBack(Callback);
             ConnectionType = connectionType;
         }
 
+        /// <summary>
+        /// Starts watching for device connections.
+        /// </summary>
         public void Start()
         {
             if (!IsRunning)
@@ -32,11 +61,20 @@ namespace MobileDeviceSharp
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the watcher is running.
+        /// </summary>
         public bool IsRunning => !handle.IsInvalid;
 
+        /// <summary>
+        /// Gets the type of device connections to watch for.
+        /// </summary>
         public IDeviceLookupOptions ConnectionType { get; }
 
-        private void Stop()
+        /// <summary>
+        /// Stops watching for device connections.
+        /// </summary>
+        public void Stop()
         {
             if (IsRunning)
             {
@@ -85,6 +123,7 @@ namespace MobileDeviceSharp
             DevicePaired?.Invoke(this, deviceEventArgs);
         }
 
+        /// <inheritdoc/>
         public void Dispose() => Stop();
     }
 }

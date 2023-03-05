@@ -10,8 +10,17 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace MobileDeviceSharp.Usbmuxd
 {
+    /// <summary>
+    /// This class can be used to interact with Usbmuxd daemon.
+    /// </summary>
     public static class UsbmuxdService
     {
+        /// <summary>
+        /// Read a pair record.
+        /// </summary>
+        /// <param name="udid">The device uuid</param>
+        /// <param name="pairRecordPlist">The returned plist document containing pair record information.</param>
+        /// <returns><see langword="true"/> on success.</returns>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
         public static bool TryReadPairRecord(string udid, [MaybeNullWhen(false)] out PlistDocument pairRecordPlist)
 #else
@@ -36,6 +45,12 @@ namespace MobileDeviceSharp.Usbmuxd
             }
         }
 
+        /// <summary>
+        /// Try to save pair record.
+        /// </summary>
+        /// <param name="udid">Device udid.</param>
+        /// <param name="pairRecordPlist">The plist document containing the pair record.</param>
+        /// <returns></returns>
         public static bool TrySavePairRecord(string udid, PlistDocument pairRecordPlist)
         {
             // I use directly native methods because the length is uint
@@ -56,11 +71,23 @@ namespace MobileDeviceSharp.Usbmuxd
             return success;
         }
 
+        /// <summary>
+        /// Try to delete a pair record.
+        /// </summary>
+        /// <param name="udid">Device udid.</param>
+        /// <returns></returns>
         public static bool TryDeletePairRecord(string udid)
         {
             return usbmuxd_delete_pair_record(udid) == 0;
         }
 
+        /// <summary>
+        /// Get the device info.
+        /// </summary>
+        /// <param name="udid">The device udid.</param>
+        /// <param name="connectionOption">The connection type.</param>
+        /// <param name="device">The returned device info.</param>
+        /// <returns><see langword="true"/> on success.</returns>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
         public static bool TryGetDeviceInfo(string udid, IDeviceLookupOptions connectionOption, [MaybeNullWhen(false)] out UsbmuxdDeviceInfo device)
 #else
@@ -79,6 +106,9 @@ namespace MobileDeviceSharp.Usbmuxd
             return usbmuxd_get_device_by_udid(udid, out device) == 0;
         }
 
+        /// <summary>
+        /// Get the socket type.
+        /// </summary>
         public static UsbmuxdSocketType SocketType
         {
             get
@@ -88,6 +118,9 @@ namespace MobileDeviceSharp.Usbmuxd
             }
         }
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
+        /// <summary>
+        /// Get the socket endpoint used by Usbmuxd.
+        /// </summary>
         public static System.Net.EndPoint SocketEndPoint
         {
             get

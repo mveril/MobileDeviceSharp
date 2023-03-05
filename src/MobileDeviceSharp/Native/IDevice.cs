@@ -44,7 +44,7 @@ namespace MobileDeviceSharp.Native
         /// <param name="callback">
         /// Callback function to call.
         /// </param>
-        /// <param name="user_data">
+        /// <param name="userData">
         /// Application-specific data passed as parameter
         /// to the registered callback function.
         /// </param>
@@ -233,7 +233,7 @@ namespace MobileDeviceSharp.Native
         /// <param name="len">
         /// Size of the buffer to send.
         /// </param>
-        /// <param name="sent_bytes">
+        /// <param name="sentBytes">
         /// Pointer to an uint32_t that will be filled
         /// with the number of bytes actually sent.
         /// </param>
@@ -258,7 +258,7 @@ namespace MobileDeviceSharp.Native
         /// <param name="len">
         /// Buffer size or number of bytes to receive.
         /// </param>
-        /// <param name="recv_bytes">
+        /// <param name="recvBytes">
         /// Number of bytes actually received.
         /// </param>
         /// <param name="timeout">
@@ -286,7 +286,7 @@ namespace MobileDeviceSharp.Native
         /// <param name="len">
         /// Buffer size or number of bytes to receive.
         /// </param>
-        /// <param name="recv_bytes">
+        /// <param name="recvBytes">
         /// Number of bytes actually received.
         /// </param>
         /// <returns>
@@ -339,7 +339,7 @@ namespace MobileDeviceSharp.Native
         /// enabled and does no further error checking on cleanup.
         /// </returns>
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_connection_disable_bypass_ssl", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IDeviceError idevice_connection_disable_bypass_ssl(IDeviceConnectionHandle connection, char sslbypass);
+        public static extern IDeviceError idevice_connection_disable_bypass_ssl(IDeviceConnectionHandle connection, char sslBypass);
 
         /// <summary>
         /// Get the underlying file descriptor for a connection

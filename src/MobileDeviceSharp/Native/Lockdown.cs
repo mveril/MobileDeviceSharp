@@ -213,13 +213,13 @@ namespace MobileDeviceSharp.Native
         /// <param name="client">
         /// The lockdownd client
         /// </param>
-        /// <param name="host_id">
+        /// <param name="hostId">
         /// The HostID of the computer
         /// </param>
-        /// <param name="session_id">
+        /// <param name="sessionId">
         /// The new session_id of the created session
         /// </param>
-        /// <param name="ssl_enabled">
+        /// <param name="sslEnabled">
         /// Whether SSL communication is used in the session
         /// </param>
         /// <returns>
@@ -237,7 +237,7 @@ namespace MobileDeviceSharp.Native
         /// <param name="client">
         /// The lockdown client
         /// </param>
-        /// <param name="session_id">
+        /// <param name="sessionId">
         /// The id of a running session
         /// </param>
         /// <returns>
@@ -288,7 +288,7 @@ namespace MobileDeviceSharp.Native
         /// <param name="client">
         /// The lockdown client
         /// </param>
-        /// <param name="pair_record">
+        /// <param name="pairRecord">
         /// The pair record to use for pairing. If NULL is passed, then
         /// the pair records from the current machine are used. New records will be
         /// generated automatically when pairing is done for the first time.
@@ -309,7 +309,7 @@ namespace MobileDeviceSharp.Native
         /// <param name="client">
         /// The lockdown client
         /// </param>
-        /// <param name="pair_record">
+        /// <param name="pairRecord">
         /// The pair record to use for pairing. If NULL is passed, then
         /// the pair records from the current machine are used. New records will be
         /// generated automatically when pairing is done for the first time.
@@ -340,7 +340,7 @@ namespace MobileDeviceSharp.Native
         /// <param name="client">
         /// The lockdown client
         /// </param>
-        /// <param name="pair_record">
+        /// <param name="pairRecord">
         /// The pair record to validate pairing with. If NULL is
         /// passed, then the pair record is read from the internal pairing record
         /// management.
@@ -364,7 +364,7 @@ namespace MobileDeviceSharp.Native
         /// <param name="client">
         /// The lockdown client
         /// </param>
-        /// <param name="pair_record">
+        /// <param name="pairRecord">
         /// The pair record to validate pairing with. If NULL is
         /// passed, then the pair record is read from the internal pairing record
         /// management.
@@ -386,7 +386,7 @@ namespace MobileDeviceSharp.Native
         /// <param name="client">
         /// The lockdown client
         /// </param>
-        /// <param name="pair_record">
+        /// <param name="pairRecord">
         /// The pair record to use for unpair. If NULL is passed, then
         /// the pair records from the current machine are used.
         /// </param>
@@ -408,7 +408,7 @@ namespace MobileDeviceSharp.Native
         /// <param name="client">
         /// The lockdown client
         /// </param>
-        /// <param name="activation_record">
+        /// <param name="activationRecord">
         /// The activation record plist dictionary
         /// </param>
         /// <returns>
@@ -497,7 +497,7 @@ namespace MobileDeviceSharp.Native
         /// <param name="client">
         /// An initialized lockdownd client.
         /// </param>
-        /// <param name="device_name">
+        /// <param name="deviceName">
         /// Holds the name of the device. The caller is
         /// responsible for freeing the memory.
         /// </param>

@@ -7,6 +7,9 @@ using static MobileDeviceSharp.PropertyList.Native.Plist;
 
 namespace MobileDeviceSharp.PropertyList
 {
+    /// <summary>
+    /// Represent a plist node which contain a <see cref="string"/> value.
+    /// </summary>
     public sealed class PlistString : PlistValueNode<string>
     {
         /// <summary>
@@ -21,7 +24,7 @@ namespace MobileDeviceSharp.PropertyList
         /// <summary>
         /// Create <see cref="string"/> plist node from a value.
         /// </summary>
-        /// <param name="Value">The <see cref="string"/> value.</param>
+        /// <param name="value">The <see cref="string"/> value.</param>
         public PlistString(string value) : base(plist_new_string(value))
         {
 
@@ -30,7 +33,7 @@ namespace MobileDeviceSharp.PropertyList
         /// <summary>
         /// Create <see cref="string"/> plist node from a <see cref="ReadOnlySpan{Char}"/>.
         /// </summary>
-        /// <param name="Value">The <see cref="string"/> value as <see cref="ReadOnlySpan{char}"/>.</param>
+        /// <param name="value">The <see cref="string"/> value as <see cref="ReadOnlySpan{Char}"/>.</param>
         public PlistString(ReadOnlySpan<char> value) : base(plist_new_string(new string(value.ToArray())))
         {
 

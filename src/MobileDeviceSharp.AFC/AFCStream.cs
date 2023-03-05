@@ -8,14 +8,27 @@ using static MobileDeviceSharp.AFC.Native.AFC;
 
 namespace MobileDeviceSharp.AFC
 {
+    /// <summary>
+    /// Represents a Stream object that can be used to read from or write to a file on an Apple device using AFC.
+    /// </summary>
     public sealed class AFCStream : Stream
     {
-
+        /// <summary>
+        /// Gets the <see cref="AFCSessionBase"/> object associated with this stream.
+        /// </summary>
         public AFCSessionBase Session { get;  }
 
         private readonly string _path;
         private ulong _fHandle;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AFCStream"/> class with the specified <see cref="AFCSessionBase"/> and file path, mode, access, and lock operation.
+        /// </summary>
+        /// <param name="session">The <see cref="AFCSessionBase"/> object associated with this stream.</param>
+        /// <param name="path">The file path on the device to be associated with this stream.</param>
+        /// <param name="mode">The <see cref="FileMode"/> to use when opening or creating the file on the device.</param>
+        /// <param name="access">The <see cref="FileAccess"/> mode to use when accessing the file on the device.</param>
+        /// <param name="fileLock">The <see cref="AFCLockOp"/> to apply to the file on the device when opening the stream.</param>
         public AFCStream(AFCSessionBase session, string path, FileMode mode, FileAccess access, AFCLockOp fileLock)
         {
             var file = new AFCFile(session, path);
@@ -86,6 +99,10 @@ namespace MobileDeviceSharp.AFC
                 }
         }
 
+        /// <summary>
+        /// Locks the file associated with this stream with the specified <see cref="AFCLockOp"/> operation.
+        /// </summary>
+        /// <param name="operation">The <see cref="AFCLockOp"/> operation to apply to the file.</param>
         public void Lock(AFCLockOp operation)
         {
             var hresult = afc_file_lock(Session.Handle, _fHandle, operation);
@@ -93,13 +110,21 @@ namespace MobileDeviceSharp.AFC
                 throw hresult.GetException().ToStandardException(AFCItemType.File, _path);
         }
 
+        /// <summary>
+        /// Gets the <see cref="FileAccess"/> mode used when accessing the file on the device.
+        /// </summary>
         public FileAccess FileAccess { get; }
+
+        /// <inheritdoc/>
         public override bool CanRead => (!Session?.IsClosed).GetValueOrDefault(false) && FileAccess.HasFlag(FileAccess.Read);
 
+        /// <inheritdoc/>
         public override bool CanSeek => (!Session?.IsClosed).GetValueOrDefault(false);
 
+        /// <inheritdoc/>
         public override bool CanWrite => (!Session?.IsClosed).GetValueOrDefault(false) && FileAccess.HasFlag(FileAccess.Write);
 
+        /// <inheritdoc/>
         public override long Length
         {
             get
@@ -109,6 +134,7 @@ namespace MobileDeviceSharp.AFC
             }
         }
 
+        /// <inheritdoc/>
         public override long Position
         {
             get
@@ -126,11 +152,13 @@ namespace MobileDeviceSharp.AFC
             }
         }
 
+        /// <inheritdoc/>
         public override void Flush()
         {
 
         }
 
+        /// <inheritdoc/>
         public override Task FlushAsync(CancellationToken cancellationToken)
         {
             return Task.CompletedTask;
@@ -156,6 +184,7 @@ namespace MobileDeviceSharp.AFC
         }
 #endif
 
+        /// <inheritdoc/>
         public override int Read(byte[] buffer, int offset, int count)
         {
             ValidateBufferArguments(buffer, offset, count);
@@ -167,6 +196,7 @@ namespace MobileDeviceSharp.AFC
         }
 
 #if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+        /// <inheritdoc/>
         public override int Read(Span<byte> buffer)
         {
             if (GetType() != typeof(AFCStream))
@@ -190,6 +220,7 @@ namespace MobileDeviceSharp.AFC
             return (int)byteread;
         }
 #endif
+        /// <inheritdoc/>
         public override unsafe int ReadByte()
         {
             byte b;
@@ -208,6 +239,7 @@ namespace MobileDeviceSharp.AFC
 #endif
         }
 
+        /// <inheritdoc/>
         public override long Seek(long offset, SeekOrigin origin)
         {
             ValidateHandle();
@@ -217,6 +249,7 @@ namespace MobileDeviceSharp.AFC
             return Position;
         }
 
+        /// <inheritdoc/>
         public override void SetLength(long value)
         {
             if (value<0)
@@ -239,6 +272,7 @@ namespace MobileDeviceSharp.AFC
             }
         }
 
+        /// <inheritdoc/>
         public override void Write(byte[] buffer, int offset, int count)
         {
             ValidateBufferArguments(buffer, offset, count);
@@ -250,6 +284,7 @@ namespace MobileDeviceSharp.AFC
                 throw new IOException("Write operation failed.", hresult.GetException());
         }
 #if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+        /// <inheritdoc/>
         public override void Write(ReadOnlySpan<byte> buffer)
         {
             if (GetType() != typeof(AFCStream))
@@ -273,6 +308,7 @@ namespace MobileDeviceSharp.AFC
         }
 
 #endif
+        /// <inheritdoc/>
         public override unsafe void WriteByte(byte value)
         {
 #if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
@@ -302,7 +338,7 @@ namespace MobileDeviceSharp.AFC
 
         private bool _isDisposed = false;
 
-
+        /// <inheritdoc/>
         protected override void Dispose(bool disposing)
         {
             ValidateHandle();

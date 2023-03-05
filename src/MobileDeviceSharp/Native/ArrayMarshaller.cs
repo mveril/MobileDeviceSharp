@@ -8,6 +8,11 @@ using System.Text;
 
 namespace MobileDeviceSharp.Native
 {
+    /// <summary>
+    /// A generic marshaller to marshall null terminated array of <typeparamref name="T"/>.
+    /// </summary>
+    /// <typeparam name="T">The type contained in the array.</typeparam>
+    /// <typeparam name="TMarshaler">The marshaller used to marshal the value of type <typeparamref name="T"/>.</typeparam>
     public class ArrayMarshaller<T, TMarshaler> : CustomMashaler<T[]> where TMarshaler : CustomMashaler<T>
     {
         private readonly TMarshaler _itemMarshaler;
@@ -42,22 +47,32 @@ namespace MobileDeviceSharp.Native
             }
             throw new NotSupportedException();
         }
-
+        /// <summary>
+        /// Initialize a new <see cref="ArrayMarshaller{T, TMarshaler}"/>.
+        /// </summary>
         public ArrayMarshaller() : this(GetMarshallerInstance())
         {
             
         }
 
+        /// <summary>
+        /// Initialize a new <see cref="ArrayMarshaller{T, TMarshaler}"/> with a <paramref name="cookie"/>.
+        /// </summary>
         public ArrayMarshaller(string cookie) : this(GetMarshallerInstance(cookie))
         {
         
         }
 
+        /// <summary>
+        /// Initialize a new <see cref="ArrayMarshaller{T, TMarshaler}"/> with the specified <paramref name="itemMarshaller"/>.
+        /// </summary>
+        /// <param name="itemMarshaller">The marshaller used to marshal the type <typeparamref name="T"/>.</param>
         public ArrayMarshaller(TMarshaler itemMarshaller)
         {
             _itemMarshaler = itemMarshaller;
         }
 
+        /// <inheritdoc/>.
         public override unsafe IntPtr MarshalManagedToNative(T[] managedObj)
         {
 
@@ -77,6 +92,7 @@ namespace MobileDeviceSharp.Native
             return pUnmanagedData;
         }
 
+        /// <inheritdoc/>.
         public override unsafe T[] MarshalNativeToManaged(IntPtr pNativeData)
         {
             var list = new List<T>();
@@ -98,6 +114,8 @@ namespace MobileDeviceSharp.Native
             }
             return Array.Empty<T>();
         }
+
+        /// <inheritdoc/>.
         public override unsafe void CleanUpNativeData(IntPtr pNativeData)
         {
             if (pNativeData != IntPtr.Zero)
@@ -120,11 +138,13 @@ namespace MobileDeviceSharp.Native
             Marshal.FreeHGlobal(pNativeData);
         }
 
+        /// <inheritdoc/>
         public override void CleanUpManagedData(T[] managedObj)
         {
 
         }
 
+        /// <inheritdoc/>
         public override int GetNativeDataSize()
         {
             return -1;

@@ -13,6 +13,13 @@ namespace MobileDeviceSharp
     /// <typeparam name="TError">The type of the enum  representing the hresult of the service methods.</typeparam>
     public abstract class ServiceSessionBase<THandle, TError> : IOSHandleWrapperBase<THandle> where THandle : IOSHandle,new() where TError : Enum
     {
+        /// <summary>
+        /// Initialize a service session.
+        /// </summary>
+        /// <param name="device">The targeted device.</param>
+        /// <param name="serviceID">The service identifier.</param>
+        /// <param name="withEscrowBag">An escrow bag</param>
+        /// <param name="ClientNew">The <see cref="ClientNewCallback{THandle, TError}"/>used to create the service.</param>
         protected ServiceSessionBase(IDevice device ,string serviceID, bool withEscrowBag, ClientNewCallback<THandle,TError> ClientNew) : base()
         {
             var init = ClientNew;
@@ -28,6 +35,11 @@ namespace MobileDeviceSharp
             Handle = handle;
         }
 
+        /// <summary>
+        /// Initialize a service session.
+        /// </summary>
+        /// <param name="device">The targeted device.</param>
+        /// <param name="startService">The <see cref="StartServiceCallback{THandle, TError}"/> used to create the service.</param>
         protected ServiceSessionBase(IDevice device, StartServiceCallback<THandle, TError> startService) : base()
         {
             var init = startService;

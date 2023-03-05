@@ -23,7 +23,7 @@ namespace MobileDeviceSharp.PropertyList
 
         /// <summary>
         /// Initialize a new Plist node with the default <see cref="DateTime"/>.
-        /// </summary
+        /// </summary>
         public PlistDate() : this(new DateValue())
         {
 

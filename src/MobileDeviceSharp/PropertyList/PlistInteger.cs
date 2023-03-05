@@ -7,7 +7,7 @@ using static MobileDeviceSharp.PropertyList.Native.Plist;
 namespace MobileDeviceSharp.PropertyList
 {
     /// <summary>
-    /// Represent a plist node that contain an <see cref="long"/> value
+    /// Represent a plist node that contain an integer value.
     /// </summary>
     public sealed class PlistInteger : PlistValueNode<long>
     {
@@ -37,6 +37,7 @@ namespace MobileDeviceSharp.PropertyList
 
         }
 
+        /// <inheritdoc/>.
         public override long Value
         {
             get

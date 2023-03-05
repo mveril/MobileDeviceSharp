@@ -11,6 +11,9 @@ namespace MobileDeviceSharp
 {
     public sealed partial class LockdownSession
     {
+        /// <summary>
+        /// Represent a lockdown domain used to get specific type of value from the <see cref="LockdownSession"/>.
+        /// </summary>
         public class LockdownDomain
         {
             internal LockdownDomain(LockdownSession session, string? domainName)
@@ -30,9 +33,21 @@ namespace MobileDeviceSharp
 
             }
 
+            /// <summary>
+            /// The <see cref="LockdownSession"/> used to create this Lockdown domain.
+            /// </summary>
             public LockdownSession Session { get; }
+
+            /// <summary>
+            /// The name of the LockdownDomain.
+            /// </summary>
             public string? Name { get; }
 
+            /// <summary>
+            /// Get a value from the device associated to this <see cref="LockdownDomain"/>.
+            /// </summary>
+            /// <param name="key"></param>
+            /// <returns>The requested value.</returns>
             public PlistNode this[string key]
             {
                 get
@@ -56,7 +71,7 @@ namespace MobileDeviceSharp
             }
 
             /// <summary>
-            /// Try get a value for and <paramref name="key"/>.
+            /// Try get a value for the <paramref name="key"/>.
             /// </summary>
             /// <param name="key">The target key.</param>
             /// <param name="node">The result <see cref="PlistNode"/></param>
@@ -84,12 +99,20 @@ namespace MobileDeviceSharp
                 return err;
             }
 
+            /// <summary>
+            /// Get a <see cref="PlistDictionary"/> representation of this <see cref="LockdownDomain"/>.
+            /// </summary>
+            /// <returns></returns>
             public PlistDictionary ToDictionary()
             {
                 lockdownd_get_value(Session.Handle, Name, null, out var plistHandle);
                 return new PlistDictionary(plistHandle);
             }
 
+            /// <summary>
+            /// Convert the <see cref="LockdownDomain"/> to a <see cref="PlistDictionary"/> representation.
+            /// </summary>
+            /// <param name="lockdownDomain">The targeted domain.</param>
             public static explicit operator PlistDictionary(LockdownDomain lockdownDomain) => lockdownDomain.ToDictionary();
         }
     }

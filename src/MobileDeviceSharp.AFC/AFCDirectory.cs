@@ -8,6 +8,9 @@ using static MobileDeviceSharp.AFC.Native.AFC;
 
 namespace MobileDeviceSharp.AFC
 {
+    /// <summary>
+    /// Represent an Apple File conduit directory.
+    /// </summary>
     public sealed class AFCDirectory : AFCItem
     {
         internal AFCDirectory(AFCSessionBase session, string path) : base(session, path)

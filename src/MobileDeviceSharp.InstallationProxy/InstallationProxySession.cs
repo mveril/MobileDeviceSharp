@@ -24,6 +24,11 @@ namespace MobileDeviceSharp.InstallationProxy
     public class InstallationProxySession : ServiceSessionBase<InstallationProxyClientHandle, InstallationProxyError>
     {
         private static readonly StartServiceCallback<InstallationProxyClientHandle, InstallationProxyError> s_startService = instproxy_client_start_service;
+        
+        /// <summary>
+        /// Create an installation proxy session for the specified <paramref name="device"/>.
+        /// </summary>
+        /// <param name="device"></param>
         public InstallationProxySession(IDevice device) : base(device, s_startService)
         {
 
@@ -118,7 +123,7 @@ namespace MobileDeviceSharp.InstallationProxy
         /// <summary>
         /// Get applications by Ids.
         /// </summary>
-        /// <param name="bundleId">A the list of <see cref="Application.BundleID"/> of the Applications we target.</param>
+        /// <param name="bundleIds">A the list of <see cref="Application.BundleID"/> of the Applications we target.</param>
         /// <returns>A readonly dictionary containing <see cref="Application.BundleID"/> as key and <see cref="Application"/> as values</returns>
         public IReadOnlyDictionary<string, Application> GetApplications(IEnumerable<string> bundleIds)
         {
@@ -128,7 +133,7 @@ namespace MobileDeviceSharp.InstallationProxy
         /// <summary>
         /// Get applications by Ids.
         /// </summary>
-        /// <param name="bundleId">A the list of <see cref="Application.BundleID"/> of the Applications we target.</param>
+        /// <param name="bundleIds">A the list of <see cref="Application.BundleID"/> of the Applications we target.</param>
         /// <returns>A readonly dictionary containing <see cref="Application.BundleID"/> as key and <see cref="Application"/> as values</returns>
         public IReadOnlyDictionary<string, Application> GetApplications(params string[] bundleIds)
         {
@@ -281,7 +286,7 @@ namespace MobileDeviceSharp.InstallationProxy
         /// Install an application using a .ipa file stored on the computer.
         /// </summary>
         /// <param name="path">The path of the .ipa file to install.</param>
-        /// <param name="progress">A <see cref="IProgress{int}"/> used to report the progress percentage.</param>
+        /// <param name="progress">A <see cref="IProgress{Int32}"/> used to report the progress percentage.</param>
         /// <returns></returns>
         public Task InstallAsync(string path, IProgress<int>? progress)
         {
@@ -293,7 +298,7 @@ namespace MobileDeviceSharp.InstallationProxy
         /// </summary>
         /// <param name="path">The path of the .ipa file to install.</param>
         /// <param name="options">Options used to specify the way of installing.</param>
-        /// <param name="progress">A <see cref="IProgress{int}"/> used to report the progress percentage.</param>
+        /// <param name="progress">A <see cref="IProgress{Int32}"/> used to report the progress percentage.</param>
         /// <returns></returns>
         public Task InstallAsync(string path, InstallationProxyInstallOptions? options, IProgress<int>? progress)
         {
@@ -322,7 +327,7 @@ namespace MobileDeviceSharp.InstallationProxy
         /// Upgrade an application using a .ipa file stored on the computer.
         /// </summary>
         /// <param name="path">The path of the .ipa file to install.</param>
-        /// <param name="progress">An <see cref="IProgress{int}"/> used to report the progress percentage.</param>
+        /// <param name="progress">An <see cref="IProgress{Int32}"/> used to report the progress percentage.</param>
         /// <returns></returns>
         public Task UpgradeAsync(string path, IProgress<int>? progress)
         {
@@ -334,7 +339,7 @@ namespace MobileDeviceSharp.InstallationProxy
         /// </summary>
         /// <param name="path">The path of the .ipa file to install.</param>
         /// <param name="options">Options used to specify the way of installing.</param>
-        /// <param name="progress">An <see cref="IProgress{int}"/> used to report the progress percentage.</param>
+        /// <param name="progress">An <see cref="IProgress{Int32}"/> used to report the progress percentage.</param>
         /// <returns></returns>
         public Task UpgradeAsync(string path, InstallationProxyInstallOptions? options, IProgress<int>? progress)
         {
@@ -362,7 +367,7 @@ namespace MobileDeviceSharp.InstallationProxy
         /// Uninstall the application with the specified <paramref name="bundleId"/>.
         /// </summary>
         /// <param name="bundleId">The Bundle identifier of the application to uninstall.</param>
-        /// <param name="progress">An <see cref="IProgress{int}"/> used to report the progress percentage.</param>
+        /// <param name="progress">An <see cref="IProgress{Int32}"/> used to report the progress percentage.</param>
         /// <returns></returns>
         public Task UninstallAsync(string bundleId, IProgress<int>? progress)
         {
@@ -392,7 +397,7 @@ namespace MobileDeviceSharp.InstallationProxy
         /// </summary>
         /// <param name="bundleId">The Bundle identifier of the application to archive.</param>
         /// <param name="options">Options used to specify the way of archiving.</param>
-        /// <param name="progress">An <see cref="IProgress{int}"/> used to report the progress percentage.</param>
+        /// <param name="progress">An <see cref="IProgress{Int32}"/> used to report the progress percentage.</param>
         /// <returns></returns>
         public Task ArchiveAsync(string bundleId, InstallationProxyArchiveOptions? options, IProgress<int>? progress)
         {
@@ -411,7 +416,7 @@ namespace MobileDeviceSharp.InstallationProxy
         /// Uninstall the application with the specified <paramref name="bundleId"/>.
         /// </summary>
         /// <param name="bundleId">The Bundle identifier of the application to archive.</param>
-        /// <param name="progress">An <see cref="IProgress{int}"/> used to report the progress percentage.</param>
+        /// <param name="progress">An <see cref="IProgress{Int32}"/> used to report the progress percentage.</param>
         /// <returns></returns>
         public Task ArchiveAsync(string bundleId, IProgress<int>? progress)
         {
@@ -442,7 +447,7 @@ namespace MobileDeviceSharp.InstallationProxy
         /// Restore the application with the specified <paramref name="bundleId"/>.
         /// </summary>
         /// <param name="bundleId">The Bundle identifier of the application to restore.</param>
-        /// <param name="progress">An <see cref="IProgress{int}"/> used to report the progress percentage.</param>
+        /// <param name="progress">An <see cref="IProgress{Int32}"/> used to report the progress percentage.</param>
         /// <returns></returns>
         public Task RestoreAsync(string bundleId, IProgress<int>? progress)
         {

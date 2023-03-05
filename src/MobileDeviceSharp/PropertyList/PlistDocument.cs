@@ -30,6 +30,10 @@ namespace MobileDeviceSharp.PropertyList
         /// Get the root node of this Plist document
         /// </summary>
         public PlistNode RootNode { get; }
+
+        /// <summary>
+        /// Get or set the default format of this document.
+        /// </summary>
         public PlistDocumentFormats Format { get; set; }
 
 
@@ -464,6 +468,7 @@ namespace MobileDeviceSharp.PropertyList
         /// </summary>
         /// <param name="stream"></param>
         /// <param name="format"></param>
+        /// <param name="token">The cancellation token.</param>
         /// <exception cref="FormatException"></exception>
         public async Task SaveAsAsync(Stream stream, PlistDocumentFormats format, CancellationToken token)
 #else
@@ -540,6 +545,7 @@ namespace MobileDeviceSharp.PropertyList
         /// Save the document on the specified <paramref name="stream"/> with the predefined format
         /// </summary>
         /// <param name="stream"></param>
+        /// <param name="token">The cancellation token.</param>
         public async Task SaveAsync(Stream stream, CancellationToken token)
         {
             await SaveAsAsync(stream, Format, token);

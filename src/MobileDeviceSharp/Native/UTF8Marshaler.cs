@@ -7,10 +7,14 @@ using System.Text;
 
 namespace MobileDeviceSharp.Native
 {
+    /// <summary>
+    /// A marshaller for UTF8 string.
+    /// </summary>
     public class UTF8Marshaler : CustomMashaler<string>
     {
         private static readonly Lazy<UTF8Marshaler> s_static_instance = new();
 
+        /// <inheritdoc/>
         public override unsafe IntPtr MarshalManagedToNative(string managedObj)
         {
             // managedObj is not null terminated
@@ -31,6 +35,7 @@ namespace MobileDeviceSharp.Native
             return ptr;
         }
 
+        /// <inheritdoc/>
         public override string MarshalNativeToManaged(IntPtr pNativeData)
         {
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP1_1_OR_GREATER
@@ -55,15 +60,18 @@ namespace MobileDeviceSharp.Native
 #endif
         }
 
+        /// <inheritdoc/>
         public override void CleanUpNativeData(IntPtr pNativeData)
         {
             Marshal.FreeHGlobal(pNativeData);
         }
 
+        /// <inheritdoc/>
         public override void CleanUpManagedData(string managedObj)
         {
         }
 
+        /// <inheritdoc/>
         public override int GetNativeDataSize()
         {
             return -1;

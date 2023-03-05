@@ -6,7 +6,9 @@ using System.Text;
 namespace MobileDeviceSharp.Native
 {
 
-
+    /// <summary>
+    /// A marshaller for the <see cref="MobileDeviceSharp.Native.IDevice.idevice_get_device_list(out string[], out int)"/>
+    /// </summary>
     public class IDeviceListMarshaler : ArrayMarshaller<string, UTF8Marshaler>
     {
 

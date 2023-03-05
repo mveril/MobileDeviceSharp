@@ -95,7 +95,7 @@ namespace MobileDeviceSharp.PropertyList.Native
         public static extern PlistHandle plist_new_real(double val);
 
         /// <summary>
-        /// Create a new PlistHandle type #PLIST_DATA
+        /// Create a new PlistHandle type #plistData
         /// </summary>
         /// <param name="val">
         /// the binary buffer
@@ -110,7 +110,7 @@ namespace MobileDeviceSharp.PropertyList.Native
         public static extern PlistHandle plist_new_data(byte[] val, ulong length);
 
         /// <summary>
-        /// Create a new PlistHandle type #PLIST_DATA
+        /// Create a new PlistHandle type #plistData
         /// </summary>
         /// <param name="val">
         /// the binary buffer
@@ -603,8 +603,8 @@ namespace MobileDeviceSharp.PropertyList.Native
         public static extern void plist_get_real_val(PlistHandle node, out double val);
 
         /// <summary>
-        /// Get the value of a #PLIST_DATA node.
-        /// This function does nothing if node is not of type #PLIST_DATA
+        /// Get the value of a #plistData node.
+        /// This function does nothing if node is not of type #plistData
         /// </summary>
         /// <param name="node">
         /// the node
@@ -620,7 +620,7 @@ namespace MobileDeviceSharp.PropertyList.Native
         public static extern void plist_get_data_val(PlistHandle node, out byte[] val, out ulong length);
 
         /// <summary>
-        /// Get a pointer to the data buffer of a #PLIST_DATA node.
+        /// Get a pointer to the data buffer of a #plistData node.
         /// </summary>
         /// <param name="node">
         /// The node
@@ -761,7 +761,7 @@ namespace MobileDeviceSharp.PropertyList.Native
 
         /// <summary>
         /// Set the value of a node.
-        /// Forces type of node to #PLIST_DATA
+        /// Forces type of node to #plistData
         /// </summary>
         /// <param name="node">
         /// the node
@@ -824,7 +824,7 @@ namespace MobileDeviceSharp.PropertyList.Native
         /// <param name="plist">
         /// the root node to export
         /// </param>
-        /// <param name="plist_xml">
+        /// <param name="plistXml">
         /// a pointer to a C-string. This function allocates the memory,
         /// caller is responsible for freeing it. Data is UTF-8 encoded.
         /// </param>
@@ -837,7 +837,7 @@ namespace MobileDeviceSharp.PropertyList.Native
         /// <summary>
         /// Frees the memory allocated by plist_to_xml().
         /// </summary>
-        /// <param name="plist_xml">
+        /// <param name="plistXml">
         /// The buffer allocated by plist_to_xml().
         /// </param>
         [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_to_xml_free", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
@@ -849,7 +849,7 @@ namespace MobileDeviceSharp.PropertyList.Native
         /// <param name="plist">
         /// the root node to export
         /// </param>
-        /// <param name="plist_bin">
+        /// <param name="plistBin">
         /// a pointer to a char* buffer. This function allocates the memory,
         /// caller is responsible for freeing it.
         /// </param>
@@ -862,7 +862,7 @@ namespace MobileDeviceSharp.PropertyList.Native
         /// <summary>
         /// Frees the memory allocated by plist_to_bin().
         /// </summary>
-        /// <param name="plist_bin">
+        /// <param name="plistBin">
         /// The buffer allocated by plist_to_bin().
         /// </param>
         [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_to_bin_free", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
@@ -871,7 +871,7 @@ namespace MobileDeviceSharp.PropertyList.Native
         /// <summary>
         /// Import the #PlistHandle structure from XML format.
         /// </summary>
-        /// <param name="plist_xml">
+        /// <param name="plistXml">
         /// a pointer to the xml buffer.
         /// </param>
         /// <param name="length">
@@ -886,7 +886,7 @@ namespace MobileDeviceSharp.PropertyList.Native
         /// <summary>
         /// Import the #PlistHandle structure from XML format.
         /// </summary>
-        /// <param name="plist_xml">
+        /// <param name="plistXml">
         /// a pointer to the xml buffer.
         /// </param>
         /// <param name="length">
@@ -901,7 +901,7 @@ namespace MobileDeviceSharp.PropertyList.Native
         /// <summary>
         /// Import the #PlistHandle structure from binary format.
         /// </summary>
-        /// <param name="plist_bin">
+        /// <param name="plistBin">
         /// a pointer to the xml buffer.
         /// </param>
         /// <param name="length">
@@ -916,7 +916,7 @@ namespace MobileDeviceSharp.PropertyList.Native
         /// <summary>
         /// Import the #PlistHandle structure from binary format.
         /// </summary>
-        /// <param name="plist_bin">
+        /// <param name="plistBin">
         /// a pointer to the xml buffer.
         /// </param>
         /// <param name="length">
@@ -930,10 +930,10 @@ namespace MobileDeviceSharp.PropertyList.Native
 
         /// <summary>
         /// Import the #PlistHandle structure from memory data.
-        /// This method will look at the first bytes of plist_data
-        /// to determine if plist_data contains a binary or XML plist.
+        /// This method will look at the first bytes of plistData
+        /// to determine if plistData contains a binary or XML plist.
         /// </summary>
-        /// <param name="plist_data">
+        /// <param name="plistData">
         /// a pointer to the memory buffer containing plist data.
         /// </param>
         /// <param name="length">
@@ -947,10 +947,10 @@ namespace MobileDeviceSharp.PropertyList.Native
 
         /// <summary>
         /// Import the #PlistHandle structure from memory data.
-        /// This method will look at the first bytes of plist_data
-        /// to determine if plist_data contains a binary or XML plist.
+        /// This method will look at the first bytes of plistData
+        /// to determine if plistData contains a binary or XML plist.
         /// </summary>
-        /// <param name="plist_data">
+        /// <param name="plistData">
         /// a pointer to the memory buffer containing plist data.
         /// </param>
         /// <param name="length">
@@ -964,10 +964,10 @@ namespace MobileDeviceSharp.PropertyList.Native
 
         /// <summary>
         /// Import the #PlistHandle structure from memory data.
-        /// This method will look at the first bytes of plist_data
-        /// to determine if plist_data contains a binary or XML plist.
+        /// This method will look at the first bytes of plistData
+        /// to determine if plistData contains a binary or XML plist.
         /// </summary>
-        /// <param name="plist_data">
+        /// <param name="plistData">
         /// a pointer to the memory buffer containing plist data.
         /// </param>
         /// <param name="length">
@@ -981,13 +981,13 @@ namespace MobileDeviceSharp.PropertyList.Native
 
         /// <summary>
         /// Test if in-memory plist data is binary or XML
-        /// This method will look at the first bytes of plist_data
-        /// to determine if plist_data contains a binary or XML plist.
+        /// This method will look at the first bytes of plistData
+        /// to determine if plistData contains a binary or XML plist.
         /// This method is not validating the whole memory buffer to check if the
         /// content is truly a plist, it's only using some heuristic on the first few
-        /// bytes of plist_data.
+        /// bytes of plistData.
         /// </summary>
-        /// <param name="plist_data">
+        /// <param name="plistData">
         /// a pointer to the memory buffer containing plist data.
         /// </param>
         /// <param name="length">
@@ -1001,13 +1001,13 @@ namespace MobileDeviceSharp.PropertyList.Native
 
         /// <summary>
         /// Test if in-memory plist data is binary or XML
-        /// This method will look at the first bytes of plist_data
-        /// to determine if plist_data contains a binary or XML plist.
+        /// This method will look at the first bytes of plistData
+        /// to determine if plistData contains a binary or XML plist.
         /// This method is not validating the whole memory buffer to check if the
         /// content is truly a plist, it's only using some heuristic on the first few
-        /// bytes of plist_data.
+        /// bytes of plistData.
         /// </summary>
-        /// <param name="plist_data">
+        /// <param name="plistData">
         /// a pointer to the memory buffer containing plist data.
         /// </param>
         /// <param name="length">
@@ -1021,13 +1021,13 @@ namespace MobileDeviceSharp.PropertyList.Native
 
         /// <summary>
         /// Test if in-memory plist data is binary or XML
-        /// This method will look at the first bytes of plist_data
-        /// to determine if plist_data contains a binary or XML plist.
+        /// This method will look at the first bytes of plistData
+        /// to determine if plistData contains a binary or XML plist.
         /// This method is not validating the whole memory buffer to check if the
         /// content is truly a plist, it's only using some heuristic on the first few
-        /// bytes of plist_data.
+        /// bytes of plistData.
         /// </summary>
-        /// <param name="plist_data">
+        /// <param name="plistData">
         /// a pointer to the memory buffer containing plist data.
         /// </param>
         /// <param name="length">
@@ -1079,10 +1079,10 @@ namespace MobileDeviceSharp.PropertyList.Native
         /// <summary>
         /// Compare two node values
         /// </summary>
-        /// <param name="node_l">
+        /// <param name="nodeL">
         /// left node to compare
         /// </param>
-        /// <param name="node_r">
+        /// <param name="nodeR">
         /// rigth node to compare
         /// </param>
         /// <returns>
@@ -1198,9 +1198,9 @@ namespace MobileDeviceSharp.PropertyList.Native
         /// </param>
         /// <returns>
         /// 0 if the node's value and cmpval are equal,
-        /// > 0 if the node's value is lexicographically greater than cmpval,
+        /// $gt; 0 if the node's value is lexicographically greater than cmpval,
         /// or
-        /// <
+        /// &lt;
         /// 0 if the node's value is lexicographically less than cmpval.
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_string_val_compare", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
@@ -1222,9 +1222,9 @@ namespace MobileDeviceSharp.PropertyList.Native
         /// </param>
         /// <returns>
         /// 0 if the node's value and cmpval are equal,
-        /// > 0 if the node's value is lexicographically greater than cmpval,
+        /// &gt; 0 if the node's value is lexicographically greater than cmpval,
         /// or
-        /// <
+        /// &lt;
         /// 0 if the node's value is lexicographically less than cmpval.
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_string_val_compare_with_size", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
@@ -1260,9 +1260,9 @@ namespace MobileDeviceSharp.PropertyList.Native
         /// </param>
         /// <returns>
         /// 0 if the node's value and cmpval are equal,
-        /// > 0 if the node's value is lexicographically greater than cmpval,
+        /// &gt; 0 if the node's value is lexicographically greater than cmpval,
         /// or
-        /// <
+        /// &lt;
         /// 0 if the node's value is lexicographically less than cmpval.
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_key_val_compare", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
@@ -1284,9 +1284,9 @@ namespace MobileDeviceSharp.PropertyList.Native
         /// </param>
         /// <returns>
         /// 0 if the node's value and cmpval are equal,
-        /// > 0 if the node's value is lexicographically greater than cmpval,
+        /// &gt; 0 if the node's value is lexicographically greater than cmpval,
         /// or
-        /// <
+        /// &lt;
         /// 0 if the node's value is lexicographically less than cmpval.
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_key_val_compare_with_size", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
@@ -1310,14 +1310,14 @@ namespace MobileDeviceSharp.PropertyList.Native
         public static extern int plist_key_val_contains(PlistHandle keynode, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string substr);
 
         /// <summary>
-        /// Helper function to compare the data of a PLIST_DATA node against
+        /// Helper function to compare the data of a plistData node against
         /// a given blob and size.
         /// This function basically behaves like memcmp after making sure the
         /// size of the node's data value is equal to the size of cmpval (n),
         /// making this a "full match" comparison.
         /// </summary>
         /// <param name="datanode">
-        /// node of type PLIST_DATA
+        /// node of type plistData
         /// </param>
         /// <param name="cmpval">
         /// data blob to compare against
@@ -1327,23 +1327,23 @@ namespace MobileDeviceSharp.PropertyList.Native
         /// </param>
         /// <returns>
         /// 0 if the node's data blob and cmpval are equal,
-        /// > 0 if the node's value is lexicographically greater than cmpval,
+        /// &gt; 0 if the node's value is lexicographically greater than cmpval,
         /// or
-        /// <
+        /// &lt;
         /// 0 if the node's value is lexicographically less than cmpval.
         /// </returns>
-        [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_data_val_compare", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern int plist_data_val_compare(PlistHandle datanode, ref char cmpval, uint n);
+        [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plistData_val_compare", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
+        public static extern int plistData_val_compare(PlistHandle datanode, ref char cmpval, uint n);
 
         /// <summary>
-        /// Helper function to compare the data of a PLIST_DATA node against
+        /// Helper function to compare the data of a plistData node against
         /// a given blob and size, while no more than n bytes are compared.
         /// This function basically behaves like memcmp after making sure the
         /// size of the node's data value is at least n, making this a
         /// "starts with" comparison.
         /// </summary>
         /// <param name="datanode">
-        /// node of type PLIST_DATA
+        /// node of type plistData
         /// </param>
         /// <param name="cmpval">
         /// data blob to compare against
@@ -1353,17 +1353,17 @@ namespace MobileDeviceSharp.PropertyList.Native
         /// </param>
         /// <returns>
         /// 0 if the node's value and cmpval are equal,
-        /// > 0 if the node's value is lexicographically greater than cmpval,
+        /// &gt; 0 if the node's value is lexicographically greater than cmpval,
         /// or
-        /// <
+        /// &lt;
         /// 0 if the node's value is lexicographically less than cmpval.
         /// </returns>
-        [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_data_val_compare_with_size", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern int plist_data_val_compare_with_size(PlistHandle datanode, ref char cmpval, uint n);
+        [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plistData_val_compare_with_size", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
+        public static extern int plistData_val_compare_with_size(PlistHandle datanode, ref char cmpval, uint n);
 
         /// <summary>
         /// Helper function to match a given data blob within the value of a
-        /// PLIST_DATA node.
+        /// plistData node.
         /// </summary>
         /// <param name="datanode">
         /// node of type PLIST_KEY
@@ -1378,7 +1378,7 @@ namespace MobileDeviceSharp.PropertyList.Native
         /// 1 if the node's value contains the given data blob
         /// or 0 if not.
         /// </returns>
-        [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_data_val_contains", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern int plist_data_val_contains(PlistHandle datanode, ref char cmpval, uint n);
+        [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plistData_val_contains", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
+        public static extern int plistData_val_contains(PlistHandle datanode, ref char cmpval, uint n);
     }
 }

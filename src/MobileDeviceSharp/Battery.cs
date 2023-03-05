@@ -7,7 +7,7 @@ using MobileDeviceSharp.PropertyList;
 namespace MobileDeviceSharp
 {
     /// <summary>
-    /// A class used to get the battery info of the device.
+    /// Represent the battery information of the device.
     /// </summary>
     public sealed class Battery
     {

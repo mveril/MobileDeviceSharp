@@ -156,6 +156,9 @@ namespace MobileDeviceSharp
             }
         }
 
+        /// <summary>
+        /// Get the string version of the <see cref="DeviceClass"/>.
+        /// </summary>
         public string RawDeviceClass
         {
             get
@@ -397,6 +400,10 @@ namespace MobileDeviceSharp
         /// </summary>
         [NotificationProxyEventName(NotificationProxyEvents.Recevable.NP_TIMEZONE_CHANGED)]
         public event EventHandler? TimeZoneChanged;
+
+        /// <summary>
+        /// Get or set the <see cref="TimeZoneInfo"/> of the device.
+        /// </summary>
         public TimeZoneInfo TimeZone
         {
             get

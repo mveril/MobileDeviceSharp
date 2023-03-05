@@ -6,10 +6,14 @@ namespace MobileDeviceSharp.Usbmuxd.Native
 {
     public enum UsbmuxdSocketType
     {
-        // Use UNIX sockets. The default on Linux and macOS.
+        /// <summary>
+        /// Use UNIX sockets. The default on Linux and macOS.
+        /// </summary>
         UNIX = 1,
 
-     	// Use TCP sockets. The default and only option on Windows.
-	    TCP = 2
+        /// <summary>
+        /// Use TCP sockets. The default and only option on Windows.
+        /// </summary>
+        TCP = 2
     }
 }

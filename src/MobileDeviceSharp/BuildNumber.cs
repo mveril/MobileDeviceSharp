@@ -24,7 +24,7 @@ namespace MobileDeviceSharp
         /// <summary>
         /// Create an Apple OS build number.
         /// </summary>
-        /// <param name="major">Major build number (generaly increased when the OS major version increased).<./param>
+        /// <param name="major">Major build number (generaly increased when the OS major version increased).</param>
         /// <param name="minor">Minor build number (generaly increased when the OS minor version increased).</param>
         /// <param name="build">build build number (generaly increased when the OS minor or build version increased).</param>
         /// <param name="revision">Generaly only present for beta release.</param>
@@ -83,6 +83,7 @@ namespace MobileDeviceSharp
             _revision = buildNumber._revision;
         }
 
+        /// <inheritdoc/>
         public int CompareTo(object? buildNumber)
         {
             if (buildNumber == null)
@@ -98,6 +99,7 @@ namespace MobileDeviceSharp
             throw new ArgumentException(nameof(buildNumber));
         }
 
+        /// <inheritdoc/>
         public int CompareTo(BuildNumber? value)
         {
             return
@@ -110,11 +112,13 @@ namespace MobileDeviceSharp
                 0;
         }
 
+        /// <inheritdoc/>
         public override bool Equals(object? obj)
         {
             return Equals(obj as BuildNumber);
         }
 
+        /// <inheritdoc/>
         public bool Equals(BuildNumber? obj)
         {
             return object.ReferenceEquals(obj, this) ||
@@ -125,6 +129,7 @@ namespace MobileDeviceSharp
                 _revision == obj._revision);
         }
 
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             // Let's assume that most buildNumber numbers will be pretty small and just
@@ -140,6 +145,7 @@ namespace MobileDeviceSharp
             return accumulator;
         }
 
+        /// <inheritdoc/>
         public override string ToString() => $"{Major}{Minor}{Build}{(_revision.HasValue ? _revision : string.Empty)}";
 
         /// <inheritdoc/>
@@ -203,10 +209,11 @@ namespace MobileDeviceSharp
         /// <see cref="BuildNumber"/> object, and returns a value that indicates whether the conversion
         /// succeeded.
         /// </summary>
-        /// <param name="input">A string that contains a build number to convert.</param>
+        /// <param name="input">A <see cref="string"/> that contains a build number to convert.</param>
         /// <param name="result">When this method returns, contains the <see cref="BuildNumber"/> equivalent of the values
-        /// that is contained in input, if the conversion succeeded, or null
-        /// if the conversion failed.
+        /// that is contained in input, if the conversion succeeded, or <see langword="null"></see>
+        /// if the conversion failed.</param>
+        /// <returns><see langword="true"/> if s was converted successfully; otherwise, <see langword="false"/>.</returns>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_0_OR_GREATER
         public static bool TryParse(string? input, [NotNullWhen(true)] out BuildNumber? result)
 #else
@@ -221,10 +228,11 @@ namespace MobileDeviceSharp
         /// <see cref="BuildNumber"/> object, and returns a value that indicates whether the conversion
         /// succeeded.
         /// </summary>
-        /// <param name="input">A <see cref=" ReadOnlySpan{char}"/> that contains a build number to convert.</param>
+        /// <param name="input">A <see cref="ReadOnlySpan{Char}"/> that contains a build number to convert.</param>
         /// <param name="result">When this method returns, contains the <see cref="BuildNumber"/> equivalent of the values
-        /// that is contained in input, if the conversion succeeded, or null
-        /// if the conversion failed.
+        /// that is contained in input, if the conversion succeeded, or <see langword="null"></see>
+        /// if the conversion failed.</param>
+        /// <returns><see langword="true"/> if s was converted successfully; otherwise, <see langword="false"/>.</returns>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_0_OR_GREATER
         public static bool TryParse(ReadOnlySpan<char> input, [NotNullWhen(true)] out BuildNumber? result)
 #else

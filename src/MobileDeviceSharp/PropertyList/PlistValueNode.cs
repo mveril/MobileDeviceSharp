@@ -11,6 +11,10 @@ namespace MobileDeviceSharp.PropertyList
     /// <typeparam name="T">The value type</typeparam>
     public abstract class PlistValueNode<T> : PlistNode where T : notnull
     {
+        /// <summary>
+        /// Represent a <see cref="PlistNode"/> containing a <see cref="Value"/>.
+        /// </summary>
+        /// <param name="handle"></param>
         protected PlistValueNode(PlistHandle handle) : base(handle)
         {
 

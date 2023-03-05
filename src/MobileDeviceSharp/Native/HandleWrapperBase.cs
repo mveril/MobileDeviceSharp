@@ -51,6 +51,11 @@ namespace MobileDeviceSharp.Native
         public bool IsClosed => Handle.IsClosed;
 
         private bool _disposedValue;
+
+        /// <summary>
+        /// Dispose method for releasing managed and unmanaged resources.
+        /// </summary>
+        /// <param name="disposing">Indicates if the method is being called from the Dispose method or from the finalizer</param>
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposedValue)
@@ -63,11 +68,15 @@ namespace MobileDeviceSharp.Native
             }
         }
 
+        /// <summary>
+        /// Finalizer for releasing unmanaged resources.
+        /// </summary>
         ~IOSHandleWrapperBase()
         {
             Dispose(disposing: false);
         }
 
+        /// <inheritdoc/>
         public void Dispose()
         {
             Dispose(disposing: true);

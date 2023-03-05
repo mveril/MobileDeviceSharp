@@ -27,6 +27,9 @@ namespace MobileDeviceSharp.PropertyList
             Handle = handle;
         }
 
+        /// <summary>
+        /// Initialize an instance of a <see cref="PlistNode"/>.
+        /// </summary>
         protected PlistNode()
         {
 

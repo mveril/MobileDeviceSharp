@@ -82,7 +82,7 @@ namespace MobileDeviceSharp.InstallationProxy.Native
         /// <param name="client">
         /// The connected installation_proxy client
         /// </param>
-        /// <param name="client_options">
+        /// <param name="clientOptions">
         /// The client options to use, as PLIST_DICT, or NULL.
         /// Valid client options include:
         /// "ApplicationType" -> "System"
@@ -107,7 +107,7 @@ namespace MobileDeviceSharp.InstallationProxy.Native
         /// <param name="client">
         /// The connected installation_proxy client
         /// </param>
-        /// <param name="client_options">
+        /// <param name="clientOptions">
         /// The client options to use, as PLIST_DICT, or NULL.
         /// Valid client options include:
         /// "ApplicationType" -> "System"
@@ -115,12 +115,12 @@ namespace MobileDeviceSharp.InstallationProxy.Native
         /// "ApplicationType" -> "Internal"
         /// "ApplicationType" -> "Any"
         /// </param>
-        /// <param name="status_cb">
+        /// <param name="statusCallBack">
         /// Callback function to process each page of application
         /// information. Passing a callback is required.
         /// </param>
-        /// <param name="user_data">
-        /// Callback data passed to status_cb.
+        /// <param name="userData">
+        /// Callback data passed to statusCallBack.
         /// </param>
         /// <returns>
         /// INSTPROXY_E_SUCCESS on success or an INSTPROXY_E_* error value if
@@ -139,7 +139,7 @@ namespace MobileDeviceSharp.InstallationProxy.Native
         /// An array of bundle identifiers that MUST have a terminating
         /// NULL entry or NULL to lookup all.
         /// </param>
-        /// <param name="client_options">
+        /// <param name="clientOptions">
         /// The client options to use, as PLIST_DICT, or NULL.
         /// Currently there are no known client options, so pass NULL here.
         /// </param>
@@ -160,24 +160,24 @@ namespace MobileDeviceSharp.InstallationProxy.Native
         /// <param name="client">
         /// The connected installation_proxy client
         /// </param>
-        /// <param name="pkg_path">
+        /// <param name="pkgPath">
         /// Path of the installation package (inside the AFC jail)
         /// </param>
-        /// <param name="client_options">
+        /// <param name="clientOptions">
         /// The client options to use, as PLIST_DICT, or NULL.
         /// Valid options include:
         /// "iTunesMetadata" -> PLIST_DATA
         /// "ApplicationSINF" -> PLIST_DATA
         /// "PackageType" -> "Developer"
-        /// If PackageType -> Developer is specified, then pkg_path points to
+        /// If PackageType -> Developer is specified, then pkgPath points to
         /// an .app directory instead of an install package.
         /// </param>
-        /// <param name="status_cb">
+        /// <param name="statusCallBack">
         /// Callback function for progress and status information. If
         /// NULL is passed, this function will run synchronously.
         /// </param>
-        /// <param name="user_data">
-        /// Callback data passed to status_cb.
+        /// <param name="userData">
+        /// Callback data passed to statusCallBack.
         /// </param>
         /// <returns>
         /// INSTPROXY_E_SUCCESS on success or an INSTPROXY_E_* error value if
@@ -200,24 +200,24 @@ namespace MobileDeviceSharp.InstallationProxy.Native
         /// <param name="client">
         /// The connected installation_proxy client
         /// </param>
-        /// <param name="pkg_path">
+        /// <param name="pkgPath">
         /// Path of the installation package (inside the AFC jail)
         /// </param>
-        /// <param name="client_options">
+        /// <param name="clientOptions">
         /// The client options to use, as PLIST_DICT, or NULL.
         /// Valid options include:
         /// "iTunesMetadata" -> PLIST_DATA
         /// "ApplicationSINF" -> PLIST_DATA
         /// "PackageType" -> "Developer"
-        /// If PackageType -> Developer is specified, then pkg_path points to
+        /// If PackageType -> Developer is specified, then pkgPath points to
         /// an .app directory instead of an install package.
         /// </param>
-        /// <param name="status_cb">
+        /// <param name="statusCallBack">
         /// Callback function for progress and status information. If
         /// NULL is passed, this function will run synchronously.
         /// </param>
-        /// <param name="user_data">
-        /// Callback data passed to status_cb.
+        /// <param name="userData">
+        /// Callback data passed to statusCallBack.
         /// </param>
         /// <returns>
         /// INSTPROXY_E_SUCCESS on success or an INSTPROXY_E_* error value if
@@ -241,16 +241,16 @@ namespace MobileDeviceSharp.InstallationProxy.Native
         /// <param name="appid">
         /// ApplicationIdentifier of the app to uninstall
         /// </param>
-        /// <param name="client_options">
+        /// <param name="clientOptions">
         /// The client options to use, as PLIST_DICT, or NULL.
         /// Currently there are no known client options, so pass NULL here.
         /// </param>
-        /// <param name="status_cb">
+        /// <param name="statusCallBack">
         /// Callback function for progress and status information. If
         /// NULL is passed, this function will run synchronously.
         /// </param>
-        /// <param name="user_data">
-        /// Callback data passed to status_cb.
+        /// <param name="userData">
+        /// Callback data passed to statusCallBack.
         /// </param>
         /// <returns>
         /// INSTPROXY_E_SUCCESS on success or an INSTPROXY_E_* error value if
@@ -271,7 +271,7 @@ namespace MobileDeviceSharp.InstallationProxy.Native
         /// <param name="client">
         /// The connected installation_proxy client
         /// </param>
-        /// <param name="client_options">
+        /// <param name="clientOptions">
         /// The client options to use, as PLIST_DICT, or NULL.
         /// Currently there are no known client options, so pass NULL here.
         /// </param>
@@ -298,18 +298,18 @@ namespace MobileDeviceSharp.InstallationProxy.Native
         /// <param name="appid">
         /// ApplicationIdentifier of the app to archive.
         /// </param>
-        /// <param name="client_options">
+        /// <param name="clientOptions">
         /// The client options to use, as PLIST_DICT, or NULL.
         /// Valid options include:
         /// "SkipUninstall" -> Boolean
         /// "ArchiveType" -> "ApplicationOnly"
         /// </param>
-        /// <param name="status_cb">
+        /// <param name="statusCallBack">
         /// Callback function for progress and status information. If
         /// NULL is passed, this function will run synchronously.
         /// </param>
-        /// <param name="user_data">
-        /// Callback data passed to status_cb.
+        /// <param name="userData">
+        /// Callback data passed to statusCallBack.
         /// </param>
         /// <returns>
         /// INSTPROXY_E_SUCCESS on success or an INSTPROXY_E_* error value if
@@ -334,17 +334,17 @@ namespace MobileDeviceSharp.InstallationProxy.Native
         /// <param name="appid">
         /// ApplicationIdentifier of the app to restore.
         /// </param>
-        /// <param name="client_options">
+        /// <param name="clientOptions">
         /// The client options to use, as PLIST_DICT, or NULL.
         /// Valid options include:
         /// "ArchiveType" -> "DocumentsOnly"
         /// </param>
-        /// <param name="status_cb">
+        /// <param name="statusCallBack">
         /// Callback function for progress and status information. If
         /// NULL is passed, this function will run synchronously.
         /// </param>
-        /// <param name="user_data">
-        /// Callback data passed to status_cb.
+        /// <param name="userData">
+        /// Callback data passed to statusCallBack.
         /// </param>
         /// <returns>
         /// INSTPROXY_E_SUCCESS on success or an INSTPROXY_E_* error value if
@@ -359,38 +359,7 @@ namespace MobileDeviceSharp.InstallationProxy.Native
         [System.Runtime.InteropServices.DllImportAttribute(InstallationProxy.LibraryName, EntryPoint = "instproxy_restore", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
         public static extern InstallationProxyError instproxy_restore(InstallationProxyClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string appid, PlistHandle clientOptions, InstallationProxyStatusCallBack statusCallBack, System.IntPtr userData);
 
-        /// <summary>
-        /// Removes a previously archived application from the device.
-        /// This function removes the ZIP archive from the 'ApplicationArchives'
-        /// directory.
-        /// </summary>
-        /// <param name="client">
-        /// The connected installation proxy client
-        /// </param>
-        /// <param name="appid">
-        /// ApplicationIdentifier of the archived app to remove.
-        /// </param>
-        /// <param name="client_options">
-        /// The client options to use, as PLIST_DICT, or NULL.
-        /// Currently there are no known client options, so passing NULL is fine.
-        /// </param>
-        /// <param name="status_cb">
-        /// Callback function for progress and status information. If
-        /// NULL is passed, this function will run synchronously.
-        /// </param>
-        /// <param name="user_data">
-        /// Callback data passed to status_cb.
-        /// </param>
-        /// <returns>
-        /// INSTPROXY_E_SUCCESS on success or an INSTPROXY_E_* error value if
-        /// an error occurred.
-        /// </returns>
-        /// <remarks>
-        /// If a callback function is given (async mode), this function returns
-        /// INSTPROXY_E_SUCCESS immediately if the status updater thread has been
-        /// created successfully; any error occuring during the command has to be
-        /// handled inside the specified callback function.
-        /// </remarks>
+
         [System.Runtime.InteropServices.DllImportAttribute(InstallationProxy.LibraryName, EntryPoint = "instproxy_check_capabilities_match", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
         public static extern InstallationProxyError instproxy_check_capabilities_match(InstallationProxyClientHandle client, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef =typeof(ArrayMarshaller<string, UTF8Marshaler>))] string[] capabilities, PlistHandle clientOptions, out PlistHandle result);
 
@@ -404,7 +373,7 @@ namespace MobileDeviceSharp.InstallationProxy.Native
         /// An array of char* with capability names that MUST have a
         /// terminating NULL entry.
         /// </param>
-        /// <param name="client_options">
+        /// <param name="clientOptions">
         /// The client options to use, as PLIST_DICT, or NULL.
         /// Currently there are no known client options, so pass NULL here.
         /// </param>
@@ -477,10 +446,10 @@ namespace MobileDeviceSharp.InstallationProxy.Native
         /// <param name="total">
         /// Pointer to store the total number of items.
         /// </param>
-        /// <param name="current_index">
+        /// <param name="currentIndex">
         /// Pointer to store the current index of all browsed items.
         /// </param>
-        /// <param name="current_amount">
+        /// <param name="currentAmount">
         /// Pointer to store the amount of items in the
         /// current list.
         /// </param>
@@ -499,7 +468,7 @@ namespace MobileDeviceSharp.InstallationProxy.Native
         /// <param name="status">
         /// The dictionary status response to use.
         /// </param>
-        /// <param name="name">
+        /// <param name="percent">
         /// Pointer to store the progress in percent (0-100) or -1 if not
         /// progress was found in the status.
         /// </param>
@@ -507,18 +476,18 @@ namespace MobileDeviceSharp.InstallationProxy.Native
         public static extern void instproxy_status_get_percent_complete(PlistHandle status, out int percent);
 
         /// <summary>
-        /// Creates a new client_options plist.
+        /// Creates a new clientOptions plist.
         /// </summary>
         /// <returns>
         /// A new plist_t of type PLIST_DICT.
         /// </returns>
-        [System.Runtime.InteropServices.DllImportAttribute(InstallationProxy.LibraryName, EntryPoint = "instproxy_client_options_new", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern PlistHandle instproxy_client_options_new();
+        [System.Runtime.InteropServices.DllImportAttribute(InstallationProxy.LibraryName, EntryPoint = "instproxy_clientOptions_new", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
+        public static extern PlistHandle instproxy_clientOptions_new();
 
         /// <summary>
-        /// Adds one or more new key:value pairs to the given client_options.
+        /// Adds one or more new key:value pairs to the given clientOptions.
         /// </summary>
-        /// <param name="client_options">
+        /// <param name="clientOptions">
         /// The client options to modify.
         /// </param>
         /// <param name="...">
@@ -529,13 +498,13 @@ namespace MobileDeviceSharp.InstallationProxy.Native
         /// keys "ApplicationSINF", "iTunesMetadata", "ReturnAttributes" which are
         /// expecting a plist_t node as value and "SkipUninstall" expects int.
         /// </remarks>
-        [System.Runtime.InteropServices.DllImportAttribute(InstallationProxy.LibraryName, EntryPoint = "instproxy_client_options_add", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern void instproxy_client_options_add(PlistHandle clientOptions);
+        [System.Runtime.InteropServices.DllImportAttribute(InstallationProxy.LibraryName, EntryPoint = "instproxy_clientOptions_add", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
+        public static extern void instproxy_clientOptions_add(PlistHandle clientOptions);
 
         /// <summary>
-        /// Adds attributes to the given client_options to filter browse results.
+        /// Adds attributes to the given clientOptions to filter browse results.
         /// </summary>
-        /// <param name="client_options">
+        /// <param name="clientOptions">
         /// The client options to modify.
         /// </param>
         /// <param name="...">
@@ -544,18 +513,18 @@ namespace MobileDeviceSharp.InstallationProxy.Native
         /// <remarks>
         /// The values passed are expected to be strings.
         /// </remarks>
-        [System.Runtime.InteropServices.DllImportAttribute(InstallationProxy.LibraryName, EntryPoint = "instproxy_client_options_set_return_attributes", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern void instproxy_client_options_set_return_attributes(PlistHandle clientOptions);
+        [System.Runtime.InteropServices.DllImportAttribute(InstallationProxy.LibraryName, EntryPoint = "instproxy_clientOptions_set_return_attributes", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
+        public static extern void instproxy_clientOptions_set_return_attributes(PlistHandle clientOptions);
 
         /// <summary>
-        /// Frees client_options plist.
+        /// Frees clientOptions plist.
         /// </summary>
-        /// <param name="client_options">
+        /// <param name="clientOptions">
         /// The client options plist to free. Does nothing if NULL
         /// is passed.
         /// </param>
-        [System.Runtime.InteropServices.DllImportAttribute(InstallationProxy.LibraryName, EntryPoint = "instproxy_client_options_free", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern void instproxy_client_options_free(PlistHandle clientOptions);
+        [System.Runtime.InteropServices.DllImportAttribute(InstallationProxy.LibraryName, EntryPoint = "instproxy_clientOptions_free", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
+        public static extern void instproxy_clientOptions_free(PlistHandle clientOptions);
 
         /// <summary>
         /// Queries the device for the path of an application.
@@ -563,7 +532,7 @@ namespace MobileDeviceSharp.InstallationProxy.Native
         /// <param name="client">
         /// The connected installation proxy client.
         /// </param>
-        /// <param name="appid">
+        /// <param name="appId">
         /// ApplicationIdentifier of app to retrieve the path for.
         /// </param>
         /// <param name="path">
@@ -576,6 +545,6 @@ namespace MobileDeviceSharp.InstallationProxy.Native
         /// value if an error occurred.
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(InstallationProxy.LibraryName, EntryPoint = "instproxy_client_get_path_for_bundle_identifier", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern InstallationProxyError instproxy_client_get_path_for_bundle_identifier(InstallationProxyClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string bundleId, out System.IntPtr path);
+        public static extern InstallationProxyError instproxy_client_get_path_for_bundle_identifier(InstallationProxyClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string appId, out System.IntPtr path);
     }
 }

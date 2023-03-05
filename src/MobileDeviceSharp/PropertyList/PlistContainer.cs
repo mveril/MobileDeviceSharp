@@ -42,9 +42,19 @@ namespace MobileDeviceSharp.PropertyList
             }
         }
 
+        /// <summary>
+        /// Clone an item in the container.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <returns></returns>
         protected abstract object CloneItem(object item);
 
         IEnumerator IEnumerable.GetEnumerator() => CoreGetEnumerator();
+
+        /// <summary>
+        /// Get the <see cref="IEnumerator"/> for the container.
+        /// </summary>
+        /// <returns>An new instance of the enumerator</returns>
         protected abstract IEnumerator CoreGetEnumerator();
     }
 }

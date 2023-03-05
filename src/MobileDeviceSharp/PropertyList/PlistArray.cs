@@ -102,9 +102,10 @@ namespace MobileDeviceSharp.PropertyList
             }
         }
 
-
+        /// <inheritdoc/>.
         protected override IEnumerator CoreGetEnumerator() => new Enumerator(this);
 
+        /// <inheritdoc/>.
         protected override object CloneItem(object item) => ((PlistNode)item).Clone();
 
         /// <inheritdoc/>

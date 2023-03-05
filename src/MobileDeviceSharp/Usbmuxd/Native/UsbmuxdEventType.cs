@@ -1,7 +1,7 @@
 ﻿namespace MobileDeviceSharp.Usbmuxd.Native
 {
     /// <summary>
-    /// event types for event callback function
+    /// Event types for event callback function
     /// </summary>
     public enum UsbmuxdEventType : int
     {

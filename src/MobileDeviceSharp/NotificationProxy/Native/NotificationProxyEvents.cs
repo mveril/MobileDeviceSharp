@@ -1,13 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using MobileDeviceSharp.NotificationProxy;
 
 namespace MobileDeviceSharp.NotificationProxy.Native
 {
+    /// <summary>
+    /// Represent a struct containing a list of NotificationProxy events.
+    /// </summary>
     public struct NotificationProxyEvents
     {
 
-        /// Event Can be send
+        /// <summary>
+        /// Event that can be send with <see cref="NotificationProxySessionBase.RaiseEvent(string)"/>
+        /// </summary>
         public struct Sendable
         {
             public const string NP_SYNC_WILL_START = "com.apple.itunes-mobdev.syncWillStart";
@@ -15,6 +21,9 @@ namespace MobileDeviceSharp.NotificationProxy.Native
             public const string NP_SYNC_DID_FINISH = "com.apple.itunes-mobdev.syncDidFinish";
             public const string NP_SYNC_LOCK_REQUEST = "com.apple.itunes-mobdev.syncLockRequest";
         }
+        /// <summary>
+        /// Event that can be receved by with <see cref="NotificationProxySessionBase.ObserveNotification(string)"/> or <see cref="NotificationProxySessionBase.ObserveNotificationAsync(string)"/>.
+        /// </summary>
         public struct Recevable
         {
         /// Event Can be receved

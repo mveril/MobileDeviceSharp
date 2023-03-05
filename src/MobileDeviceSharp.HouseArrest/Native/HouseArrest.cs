@@ -162,7 +162,7 @@ namespace MobileDeviceSharp.HouseArrest.Native
         /// <param name="client">
         /// The house_arrest client to use.
         /// </param>
-        /// <param name="afc_client">
+        /// <param name="afcClient">
         /// Pointer that will be set to a newly allocated afc_client_t
         /// upon successful return.
         /// </param>

@@ -7,9 +7,21 @@ using System.Text;
 
 namespace MobileDeviceSharp
 {
+    /// <summary>
+    /// An exception thrown by the imobiledevice library.
+    /// </summary>
     public abstract class MobileDeviceException : ExternalException
     {
+        /// <summary>
+        /// Initialize a new instace of the <see cref="MobileDeviceException"/>.
+        /// </summary>
         public MobileDeviceException() : base() { }
+
+        /// <summary>
+        /// Initialize a new instace of the <see cref="MobileDeviceException"/> with the specified <paramref name="errorCode"/> and <paramref name="message"/>.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="errorCode"></param>
         public MobileDeviceException(string message, int errorCode) : base(message,errorCode) { }
 
         protected static string GetMessageForHResult<T>(T value) where T : Enum

@@ -213,7 +213,7 @@ namespace MobileDeviceSharp.InstallationProxy
         /// <summary>
         /// Uninstall the current application.
         /// </summary>
-        /// <param name="progress">An <see cref="IProgress{int}"/> used to report the progress percentage.</param>
+        /// <param name="progress">An <see cref="IProgress{Int32}"/> used to report the progress percentage.</param>
         /// <returns></returns>
         public async Task UninstallAsync(IProgress<int> progress)
         {
@@ -234,7 +234,7 @@ namespace MobileDeviceSharp.InstallationProxy
         /// <summary>
         /// Archive the current application.
         /// </summary>
-        /// <param name="progress">An <see cref="IProgress{int}"/> used to report the progress percentage.</param>
+        /// <param name="progress">An <see cref="IProgress{Int32}"/> used to report the progress percentage.</param>
         /// <returns></returns>
         public async Task ArchiveAsync(IProgress<int> progress)
         {

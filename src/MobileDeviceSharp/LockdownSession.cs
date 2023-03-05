@@ -116,7 +116,7 @@ namespace MobileDeviceSharp
         }
 
         /// <summary>
-        /// Get the device <see cref="Ulid"/>
+        /// Get the device Udid.
         /// </summary>
         public string DeviceUdid
         {
@@ -127,10 +127,25 @@ namespace MobileDeviceSharp
             }
         }
 
+        /// <summary>
+        /// Get a Lockdown domain with the specified <paramref name="domainName"/>.
+        /// </summary>
+        /// <param name="domainName">The name of the domain.</param>
+        /// <returns>The requested <see cref="LockdownDomain"/>.</returns>
         public LockdownDomain GetDomain(string? domainName) => new(this, domainName);
 
+        /// <summary>
+        /// Get the default Lockdown domain.
+        /// </summary>
+        /// <returns>The requested <see cref="LockdownDomain"/>.</returns>
         public LockdownDomain GetDomain() => GetDomain(null);
 
+        /// <summary>
+        /// Try to get a lockdown domain with the specified <paramref name="domainName"/>.
+        /// </summary>
+        /// <param name="domainName">The name of the domain requested domain.</param>
+        /// <param name="domain">The requested <see cref="LockdownDomain"/>.</param>
+        /// <returns></returns>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_0_OR_GREATER
         public bool TryGetDomain(string domainName, [MaybeNullWhen(false)] out LockdownDomain domain)
 #else
@@ -167,7 +182,7 @@ namespace MobileDeviceSharp
         /// </summary>
         /// <param name="serviceID"></param>
         /// <param name="withEscrowBag"></param>
-        /// <returns>The service descriptor handle</returns>
+        /// <returns>The service descriptor handle.</returns>
         public LockdownServiceDescriptorHandle StartService(string serviceID, bool withEscrowBag)
         {
             if (withEscrowBag)
@@ -186,9 +201,9 @@ namespace MobileDeviceSharp
         }
 
         /// <summary>
-        /// Start a pairing operatoion with the specified <paramref name="pairRecordHandle"/>.
+        /// Start a pairing operation with the specified <paramref name="pairRecordHandle"/>.
         /// </summary>
-        /// <param name="pairRecordHandle">The handle of the pairRecord</param>
+        /// <param name="pairRecordHandle">The handle of the pair record.</param>
         /// <param name="progress">Used to report the progress</param>
         /// <param name="cancellationToken">A cancelation token used to cancel stop the operation</param>
         /// <returns>Return <see langword="true"/> if the user accept pairng else <see langword="false"/>.</returns>
@@ -278,7 +293,7 @@ namespace MobileDeviceSharp
         }
 
         /// <summary>
-        /// Start a pairing operatoion with the specified <paramref name="pairRecordHandle"/>.
+        /// Start a pairing operation.
         /// </summary>
         /// <returns>Return <see langword="true"/> if the user accept pairng else <see langword="false"/>.</returns>
         public Task<bool> PairAsync()
@@ -287,7 +302,7 @@ namespace MobileDeviceSharp
         }
 
         /// <summary>
-        /// Start a pairing operatoion with the specified <paramref name="pairRecordHandle"/>.
+        /// Start a pairing operation with the specified <paramref name="pairRecordHandle"/>.
         /// </summary>
         /// <param name="pairRecordHandle">The handle of the pairRecord</param>
         /// <returns>Return <see langword="true"/> if the user accept pairng else <see langword="false"/>.</returns>
@@ -297,7 +312,7 @@ namespace MobileDeviceSharp
         }
 
         /// <summary>
-        /// Start a pairing operatoion with the specified <paramref name="pairRecordHandle"/>.
+        /// Start a pairing operation with the specified <paramref name="pairRecordHandle"/>.
         /// </summary>
         /// <param name="pairRecordHandle">The handle of the pairRecord</param>
         /// <param name="progress">Used to report the progress</param>
@@ -308,9 +323,10 @@ namespace MobileDeviceSharp
         }
 
         /// <summary>
-        /// Start a pairing operatoion with the specified <paramref name="pairRecordHandle"/>.
+        /// Start a pairing operation with the specified <paramref name="pairRecordHandle"/>.
         /// </summary>
         /// <param name="pairRecordHandle">The handle of the pairRecord</param>
+        /// <param name="token">The cancellation token.</param>
         /// <returns>Return <see langword="true"/> if the user accept pairng else <see langword="false"/>.</returns>
         public Task<bool> PairAsync(LockdownPairRecordHandle pairRecordHandle, CancellationToken token)
         {
@@ -318,7 +334,7 @@ namespace MobileDeviceSharp
         }
 
         /// <summary>
-        /// Start a pairing operatoion with the specified <paramref name="pairRecordHandle"/>.
+        /// Start a pairing operation.
         /// </summary>
         /// <param name="cancellationToken">A cancelation token used to cancel stop the operation</param>
         /// <returns>Return <see langword="true"/> if the user accept pairng else <see langword="false"/>.</returns>
@@ -328,7 +344,7 @@ namespace MobileDeviceSharp
         }
 
         /// <summary>
-        /// Start a pairing operatoion with the specified <paramref name="pairRecordHandle"/>.
+        /// Start a pairing operation.
         /// </summary>
         /// <param name="progress">Used to report the progress</param>
         /// <returns>Return <see langword="true"/> if the user accept pairng else <see langword="false"/>.</returns>
@@ -338,7 +354,7 @@ namespace MobileDeviceSharp
         }
 
         /// <summary>
-        /// Start a pairing operatoion with the specified <paramref name="pairRecordHandle"/>.
+        /// Start a pairing operation.
         /// </summary>
         /// <param name="progress">Used to report the progress</param>
         /// <param name="cancellationToken">A cancelation token used to cancel stop the operation</param>
@@ -361,7 +377,7 @@ namespace MobileDeviceSharp
         }
 
         /// <summary>
-        /// Try to unpair the device with the specified <paramref name="pairRecordHandle"/>.
+        /// Try to unpair the device.
         /// </summary>
         /// <returns></returns>
         public bool Unpair()

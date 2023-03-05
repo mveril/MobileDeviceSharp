@@ -5,6 +5,9 @@ using System.Text;
 
 namespace MobileDeviceSharp.Native
 {
+    /// <summary>
+    /// Rperesent a special <see cref="UTF8Marshaler"/> with a extra operation to normalize the string from unamanaged <see cref="NormalizationForm.FormD"/> to managed <see cref="NormalizationForm.FormC"/> and reverse.
+    /// </summary>
     public class UTF8DecomposedMarshaler : CustomMashaler<string>
     {
         private static readonly Lazy<UTF8DecomposedMarshaler> s_static_instance = new();
@@ -22,12 +25,14 @@ namespace MobileDeviceSharp.Native
             _utf8Marshaler = UTF8Marshaler.GetInstance();
         }
 
+        /// <inheritdoc/>.
         public override unsafe IntPtr MarshalManagedToNative(string managedObj)
         {
             var normalized = managedObj.Normalize(NormalizationForm.FormD);
             return _utf8Marshaler.MarshalManagedToNative(normalized);
         }
 
+        /// <inheritdoc/>.
         public override string MarshalNativeToManaged(IntPtr pNativeData)
         {
             var managedObj = _utf8Marshaler.MarshalNativeToManaged(pNativeData);
@@ -35,16 +40,19 @@ namespace MobileDeviceSharp.Native
             return normalized;
         }
 
+        /// <inheritdoc/>.
         public override void CleanUpNativeData(IntPtr pNativeData)
         {
             _utf8Marshaler.CleanUpNativeData(pNativeData);
         }
 
+        /// <inheritdoc/>.
         public override void CleanUpManagedData(string managedObj)
         {
             _utf8Marshaler.CleanUpManagedData(managedObj);
         }
 
+        /// <inheritdoc/>.
         public override int GetNativeDataSize()
         {
             return _utf8Marshaler.GetNativeDataSize();

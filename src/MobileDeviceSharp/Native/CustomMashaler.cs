@@ -22,8 +22,10 @@ namespace MobileDeviceSharp.Native
         /// <param name="managedObj">The managed object to be destroyed.</param>
         public abstract void CleanUpManagedData(T managedObj);
 
+        /// <inheritdoc/>
         public abstract void CleanUpNativeData(IntPtr pNativeData);
 
+        /// <inheritdoc/>
         public abstract int GetNativeDataSize();
 
         IntPtr ICustomMarshaler.MarshalManagedToNative(object ManagedObj)

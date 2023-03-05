@@ -5,6 +5,9 @@ using MobileDeviceSharp.PropertyList;
 
 namespace MobileDeviceSharp.InstallationProxy
 {
+    /// <summary>
+    /// Represente options that can be pased to an insstalltion proxy operation.
+    /// </summary>
     public sealed class InstallationProxyInstallOptions : InstallationProxyOperationOptions
     {
         /// <summary>

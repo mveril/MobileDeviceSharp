@@ -6,6 +6,9 @@ using static MobileDeviceSharp.PropertyList.Native.Plist;
 
 namespace MobileDeviceSharp.PropertyList
 {
+    /// <summary>
+    /// Represent a Plist node that contain a real (<see cref="double"/>) value.
+    /// </summary>
     public sealed class PlistReal : PlistValueNode<double>
     {
         /// <summary>
@@ -34,6 +37,7 @@ namespace MobileDeviceSharp.PropertyList
 
         }
 
+        /// <inheritdoc/>
         public override double Value
         {
             get

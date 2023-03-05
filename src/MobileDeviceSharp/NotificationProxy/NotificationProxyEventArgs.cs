@@ -10,7 +10,7 @@ namespace MobileDeviceSharp.NotificationProxy
     public sealed class NotificationProxyEventArgs : EventArgs
     {
         /// <summary>
-        /// The name of the notificationproxy event. Lot of constants are available <see cref="MobileDeviceSharp.Native.NotificationProxyEvents"/>.
+        /// The name of the notificationproxy event. Lot of constants are available <see cref="Native.NotificationProxyEvents"/>.
         /// </summary>
         public string EventName { get; }
 

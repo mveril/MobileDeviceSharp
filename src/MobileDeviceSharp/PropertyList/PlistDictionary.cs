@@ -167,6 +167,7 @@ namespace MobileDeviceSharp.PropertyList
             }
         }
 
+        /// <inheritdoc/>.
         protected override object CloneItem(object item)
         {
             var titem = (KeyValuePair<string, PlistNode>)item;

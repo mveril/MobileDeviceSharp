@@ -20,6 +20,7 @@ namespace MobileDeviceSharp.PropertyList
 
         }
 
+        /// <inheritdoc/>
         public override string Value
         {
             get

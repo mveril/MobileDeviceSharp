@@ -2,10 +2,13 @@
 
 namespace MobileDeviceSharp.InstallationProxy
 {
+
+#pragma warning disable CS0419 // La référence de l'attribut cref est ambiguë
     /// <summary>
     /// Represent the result of a <see cref="InstallationProxySession.CheckCapabilityMatch"/> operation.
     /// </summary>
     public class CapabilityMatcher
+#pragma warning restore CS0419 // La référence de l'attribut cref est ambiguë
     {
 #if NET5_0_OR_GREATER
         internal CapabilityMatcher(bool match, IReadOnlySet<string> capabilities, IReadOnlySet<string> mismatchCapabilities)

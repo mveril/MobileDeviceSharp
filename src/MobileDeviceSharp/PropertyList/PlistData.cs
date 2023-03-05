@@ -50,6 +50,7 @@ namespace MobileDeviceSharp.PropertyList
             }
         }
 
+        /// <inheritdoc/>
         public override byte[] Value
         {
             get
@@ -61,7 +62,7 @@ namespace MobileDeviceSharp.PropertyList
         }
 
         /// <summary>
-        /// Get a <see cref="ReadOnlySpan{byte}"/> to have a readonly access to the data without copying them.
+        /// Get a <see cref="ReadOnlySpan{Byte}"/> to have a readonly access to the data without copying them.
         /// </summary>
         /// <returns>A <see cref="ReadOnlySpan{Byte}"/> pointing to the underlying data.</returns>
         public ReadOnlySpan<byte> AsReadOnlySpan()
