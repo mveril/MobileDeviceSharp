@@ -14,7 +14,7 @@ namespace MobileDeviceSharp.Native
     /// </summary>
     /// <typeparam name="T">The type of the key and value.</typeparam>
     /// <typeparam name="TMarshaler">The type of the marshaller of <typeparamref name="T"/>.</typeparam>
-    public class DictionaryMarshaler<T,TMarshaler> : CustomMashaler<IReadOnlyDictionary<T,T>> where TMarshaler : CustomMashaler<T>
+    public class DictionaryMarshaler<T,TMarshaler> : CustomMashaler<IReadOnlyDictionary<T,T>> where TMarshaler : CustomMashaler<T> where T : notnull
     {
 
         private readonly ArrayMarshaller<T,TMarshaler> _arrayMarshaler;
