@@ -2,12 +2,24 @@
 
 namespace MobileDeviceSharp.AFC
 {
+    /// <summary>
+    /// Represent the type of an AFC item.
+    /// </summary>
     public readonly struct AFCItemType : IEquatable<AFCItemType>
     {
+        /// <summary>
+        /// Represent a regular file.
+        /// </summary>
         public static AFCItemType File { get; } = new AFCItemType("S_IFREG");
 
+        /// <summary>
+        /// Represent a directory.
+        /// </summary>
         public static AFCItemType Directory { get; } = new AFCItemType("S_IFDIR");
 
+        /// <summary>
+        /// Represent a symbolic link.
+        /// </summary>
         public static AFCItemType SymbolicLink { get; } = new AFCItemType("S_IFLNK");
 
         internal string Name { get; }

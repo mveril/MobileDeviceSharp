@@ -43,7 +43,12 @@ namespace MobileDeviceSharp.AFC
         const string BIRTHTIME = "st_birthtime";
         private const string MTIME = "st_mtime";
 
-        protected DateTime getDateValue(string key)
+        /// <summary>
+        /// Get value for a date from a FileInfo key.
+        /// </summary>
+        /// <param name="key">The FileInfo key</param>
+        /// <returns></returns>
+        protected DateTime GetDateValue(string key)
         {
             var nanosec = long.Parse(GetFileInfo()[key]);
             var milisec = nanosec * 1e-6;
@@ -58,13 +63,16 @@ namespace MobileDeviceSharp.AFC
         /// <summary>
         /// Gets the creation time of the item.
         /// </summary>
-        public DateTime CreationTime => getDateValue(BIRTHTIME);
+        public DateTime CreationTime => GetDateValue(BIRTHTIME);
 
         /// <summary>
         /// Gets the last modified time.
         /// </summary>
-        public DateTime LastModifiedTime => getDateValue(MTIME);
+        public DateTime LastModifiedTime => GetDateValue(MTIME);
 
+        /// <summary>
+        /// Get the Apple File Conduit Session.
+        /// </summary>
         public AFCSessionBase Session { get; }
 
         /// <summary>
@@ -140,6 +148,13 @@ namespace MobileDeviceSharp.AFC
                 throw hresult.GetException();
             Path = destination;
         }
+
+        /// <summary>
+        /// Create a symbolic link.
+        /// </summary>
+        /// <param name="linkType">The type of symbolic link.</param>
+        /// <param name="linkPath">The path of the symbolic link.</param>
+        /// <returns></returns>
         public AFCItem MakeLink(AFCLinkType linkType, string linkPath)
         {
             var hresult = afc_make_link(Session.Handle, linkType, Path, linkPath);
