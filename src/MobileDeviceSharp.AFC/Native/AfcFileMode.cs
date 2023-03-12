@@ -3,7 +3,7 @@
     /// <summary>
     /// Flags for afc_file_open
     /// </summary>
-    public enum AFCFileMode : int
+    internal enum AFCFileMode : int
     {
 
         FopenRdonly = 1,
