@@ -59,6 +59,13 @@ This namespace contains the core APIs.
 - `HouseArrestSession`
 - `AFCHouseArrestSession`
 
+
+### MobileDeviceSharp.SpringBoardServices library
+#### MobileDeviceSharp.SpringBoardServices
+> Provide .NET API for [sbservices.h](https://docs.libimobiledevice.org/libimobiledevice/latest/sbservices_8h.html)
+- `SpringBoardServiceSession`
+
+
 We also have `MobileDeviceSharp.SourceGenerator` and `MobileDeviceSharp.CompilerServices` to make programming these libraries easier using [Source Generators](https://docs.microsoft.com/dotnet/csharp/roslyn-sdk/source-generators-overview).
 ## Code of Conduct
 Please note that this project is released with a [Contributor Code of Conduct.](CODE_OF_CONDUCT.md) By participating in this project you agree to abide by its terms.
