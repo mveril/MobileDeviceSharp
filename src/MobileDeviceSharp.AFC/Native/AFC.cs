@@ -84,7 +84,7 @@ namespace MobileDeviceSharp.AFC.Native
         /// AFC_E_SUCCESS on success or an AFC_E_* error value.
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(AFC.LibraryName, EntryPoint = "afc_get_device_info", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern AFCError afc_get_device_info(AFCClientHandle client, out System.IntPtr deviceInformation);
+        public static extern AFCError afc_get_device_info(AFCClientHandle client, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(AFCDictionaryMarshaler))] out IReadOnlyDictionary<string, string> deviceInformation);
 
         /// <summary>
         /// Gets a directory listing of the directory requested.
@@ -524,7 +524,7 @@ namespace MobileDeviceSharp.AFC.Native
         /// AFC_E_SUCCESS on success or an AFC_E_* error value.
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(AFC.LibraryName, EntryPoint = "afc_get_device_info_key", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern AFCError afc_get_device_info_key(AFCClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(UnmanagedType.CustomMarshaler, MarshalTypeRef =typeof(UTF8Marshaler))] string key, out System.IntPtr value);
+        public static extern AFCError afc_get_device_info_key(AFCClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(UnmanagedType.CustomMarshaler, MarshalTypeRef =typeof(UTF8Marshaler))] string key, [System.Runtime.InteropServices.MarshalAsAttribute(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(UTF8Marshaler))] out string value);
 
         /// <summary>
         /// Frees up a char dictionary as returned by some AFC functions.
