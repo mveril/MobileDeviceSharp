@@ -63,6 +63,11 @@ namespace MobileDeviceSharp.AFC
         public AFCDirectory Root => GetAFCDirectory("/");
 
         /// <summary>
+        /// Get the <see cref="AFCDriveInfo"/> for this object which allow to find some imformation for the drive.
+        /// </summary>
+        public AFCDriveInfo DriveInfo  => new AFCDriveInfo(this);
+
+        /// <summary>
         /// Gets the type of the item at the specified path.
         /// </summary>
         /// <param name="path">The path to the item to get the type of.</param>
