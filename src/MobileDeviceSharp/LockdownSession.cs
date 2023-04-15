@@ -219,13 +219,13 @@ namespace MobileDeviceSharp
 
         private async Task<bool> PairCoreAsync(LockdownPairRecordHandle pairRecordHandle, IProgress<PairingState> progress, CancellationToken cancellationToken)
         {
+            using var np = new InsecureNotificationProxySession(_device);
+            var requestPairTask = np.ObserveNotificationAsync("com.apple.mobile.lockdown.request_pair", cancellationToken);
             LockdownError? err = null;
+            PairingState? lastPairingReport = null;
             while (true)
             {
-                if (!err.HasValue)
-                {
-                    err = lockdownd_pair(Handle, pairRecordHandle);
-                }
+                err = lockdownd_pair(Handle, pairRecordHandle);
                 switch (err)
                 {
                     case LockdownError.Success:
@@ -237,25 +237,24 @@ namespace MobileDeviceSharp
                         _device.IsPaired = false;
                         return _device.IsPaired;
                     case LockdownError.PasswordProtected:
-                        progress.Report(PairingState.PasswordProtected);
-                        do
+                        if (lastPairingReport != PairingState.PasswordProtected)
                         {
-                            await Task.Delay(200, cancellationToken).ConfigureAwait(false);
-                            err = lockdownd_pair(Handle, pairRecordHandle);
-                        } while (err is LockdownError.PasswordProtected);
+                            progress.Report(PairingState.PasswordProtected);
+                            lastPairingReport = PairingState.PasswordProtected;
+                        }
                         break;
                     case LockdownError.PairingDialogResponsePending:
-                        progress.Report(PairingState.PairingDialogResponsePending);
-                        using (var np = new InsecureNotificationProxySession(_device))
+                        if (lastPairingReport != PairingState.PairingDialogResponsePending)
                         {
-                            await np.ObserveNotificationAsync("com.apple.mobile.lockdown.request_pair", cancellationToken).ConfigureAwait(false);
+                            progress.Report(PairingState.PairingDialogResponsePending);
+                            lastPairingReport = PairingState.PairingDialogResponsePending;
                         }
-                        err = null;
                         break;
                     default:
                         _device.IsPaired = false;
                         throw ((LockdownError)err).GetException();
                 }
+                await Task.WhenAny(Task.Delay(200,cancellationToken), requestPairTask).ConfigureAwait(false);
             }
         }
 
