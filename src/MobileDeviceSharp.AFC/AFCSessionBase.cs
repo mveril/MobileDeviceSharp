@@ -57,15 +57,19 @@ namespace MobileDeviceSharp.AFC
         /// <returns>the diretory.</returns>
         protected AFCDirectory GetAFCDirectory(string path) => new AFCDirectory(this, path);
 
+        private AFCDirectory? _root = null;
+
         /// <summary>
         /// Gets the root directory of the AFC file system.
         /// </summary>
-        public AFCDirectory Root => GetAFCDirectory("/");
+        public AFCDirectory Root => _root ??= GetAFCDirectory("/");
+
+        private AFCDriveInfo? _driveInfo =null;
 
         /// <summary>
         /// Get the <see cref="AFCDriveInfo"/> for this object which allow to find some imformation for the drive.
         /// </summary>
-        public AFCDriveInfo DriveInfo  => new AFCDriveInfo(this);
+        public AFCDriveInfo DriveInfo  => _driveInfo ??= new AFCDriveInfo(this);
 
         /// <summary>
         /// Gets the type of the item at the specified path.

@@ -56,9 +56,11 @@ namespace MobileDeviceSharp.HouseArrest
             }
         }
 
+        private AFCDirectory? _document = null;
+
         /// <summary>
         /// Get the document folder (accessible whatether you chose <see cref="HouseArrestLocation.Container"/> or <see cref="HouseArrestLocation.Documents"/>.
         /// </summary>
-        public AFCDirectory Documents => this.GetAFCDirectory("/Documents");
+        public AFCDirectory Documents => _document ??= GetAFCDirectory("/Documents");
     }
 }
