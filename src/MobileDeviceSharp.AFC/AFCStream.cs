@@ -41,12 +41,12 @@ namespace MobileDeviceSharp.AFC
             {
                 if (!file.Exists)
                 {
-                    Console.WriteLine(file.Path);
-                    Console.WriteLine(file.Parent?.Exists);
-                    var err=afc_file_open(session.Handle, path, AFCFileMode.FopenWronly, out ulong tmpfhandle);
-                    Console.WriteLine(err.ToString());
+
+                    var hresult=afc_file_open(session.Handle, path, AFCFileMode.FopenWronly, out ulong tmpfhandle);
+                    if (hresult.IsError())
+                        throw hresult.GetException().ToStandardException(AFCItemType.File, _path);
                     isNew = true;
-                    var hresult = afc_file_close(session.Handle, tmpfhandle);
+                    hresult = afc_file_close(session.Handle, tmpfhandle);
                     if (hresult.IsError())
                         throw hresult.GetException().ToStandardException(AFCItemType.File, _path);
                 }
