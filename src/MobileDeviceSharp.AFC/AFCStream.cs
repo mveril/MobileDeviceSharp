@@ -26,77 +26,31 @@ namespace MobileDeviceSharp.AFC
         /// </summary>
         /// <param name="session">The <see cref="AFCSessionBase"/> object associated with this stream.</param>
         /// <param name="path">The file path on the device to be associated with this stream.</param>
-        /// <param name="mode">The <see cref="FileMode"/> to use when opening or creating the file on the device.</param>
-        /// <param name="access">The <see cref="FileAccess"/> mode to use when accessing the file on the device.</param>
+        /// <param name="fileMode">The <see cref="FileMode"/> to use when opening or creating the file on the device.</param>
+        /// <param name="fileAccess">The <see cref="FileAccess"/> mode to use when accessing the file on the device.</param>
         /// <param name="fileLock">The <see cref="AFCLockOp"/> to apply to the file on the device when opening the stream.</param>
-        public AFCStream(AFCSessionBase session, string path, FileMode mode, FileAccess access, AFCLockOp fileLock)
+        /// <exception cref="NotSupportedException">You try to use an unsupported value of <see cref="FileMode"/> (<see cref="FileMode.CreateNew"/> or <see cref="FileMode.Truncate"/> that is not supported by AppleFileConduit.</exception>
+        /// <exception cref="ArgumentException">You use an invalid combinaison of <see cref="FileAccess"/> and <see cref="FileMode"/></exception>
+        public AFCStream(AFCSessionBase session, string path, FileMode fileMode, FileAccess fileAccess, AFCLockOp fileLock)
         {
-            var file = new AFCFile(session, path);
             Session = session;
             _path = path;
-            FileAccess = access;
-            var needTruncate = mode == FileMode.Truncate || mode == FileMode.Create;
-            bool isNew = false;
-            void CreateNew()
+            _fileAccess = fileAccess;
+            AFCFileMode AFCMode = (fileMode, fileAccess) switch
             {
-                if (!file.Exists)
-                {
-
-                    var hresult=afc_file_open(session.Handle, path, AFCFileMode.FopenWronly, out ulong tmpfhandle);
-                    if (hresult.IsError())
-                        throw hresult.GetException().ToStandardException(AFCItemType.File, _path);
-                    isNew = true;
-                    hresult = afc_file_close(session.Handle, tmpfhandle);
-                    if (hresult.IsError())
-                        throw hresult.GetException().ToStandardException(AFCItemType.File, _path);
-                }
-            }
-            switch (mode)
-            {
-                case FileMode.Append:
-                case FileMode.Open:
-                case FileMode.Truncate:
-                   if (!file.Exists)
-                        throw new InvalidOperationException();
-                    break;
-                case FileMode.CreateNew:
-                    if (file.Exists)
-                        throw new InvalidOperationException();
-                    if (access == FileAccess.ReadWrite)
-                    {
-                        CreateNew();
-                    }
-                    break;
-                case FileMode.Create:
-                case FileMode.OpenOrCreate:
-                    if (access == FileAccess.ReadWrite)
-                    {
-                        CreateNew();
-                    }
-                    break;
-                default:
-                    break;
-            }
-            AFCFileMode AFCMode = (access, mode) switch
-            {
-                (FileAccess.Read, FileMode.Open) => AFCFileMode.FopenRdonly, // r
-                (FileAccess.ReadWrite, FileMode.Open or FileMode.Truncate or FileMode.OpenOrCreate) => AFCFileMode.FopenRw, //r+
-                (FileAccess.Write, FileMode.Open or FileMode.Truncate or FileMode.CreateNew or FileMode.OpenOrCreate or FileMode.Create) => AFCFileMode.FopenWronly, // w
-                (FileAccess.ReadWrite, FileMode.Append) => AFCFileMode.FopenRdappend, //a+
-                (FileAccess.Write, FileMode.Append or FileMode.OpenOrCreate) => AFCFileMode.FopenAppend, //a+
-                (FileAccess.ReadWrite, FileMode.Create) => AFCFileMode.FopenRw, // rw+
-                _ => throw new InvalidOperationException(),
+                (FileMode.Open, FileAccess.Read) => AFCFileMode.FopenRdonly, // r
+                (FileMode.OpenOrCreate, FileAccess.ReadWrite) => AFCFileMode.FopenRw, // r+
+                (FileMode.Create, FileAccess.Write) => AFCFileMode.FopenWronly, // w
+                (FileMode.Create, FileAccess.ReadWrite) => AFCFileMode.FopenWr, // w+
+                (FileMode.Append, FileAccess.Write) => AFCFileMode.FopenAppend, // a
+                (FileMode.Append, FileAccess.ReadWrite) => AFCFileMode.FopenRdappend, // "a+"
+                (FileMode.CreateNew or FileMode.Truncate, _) => throw new NotSupportedException($"The {nameof(FileMode)} {fileMode} is not supported by AFC"),
+                _ => throw new ArgumentException($"Invalid combination of {fileMode} and {fileAccess}.")
             };
             var hresult = afc_file_open(Session.Handle, path, AFCMode, out _fHandle);
             if (hresult.IsError())
                 throw hresult.GetException().ToStandardException(AFCItemType.File, _path);
                 Lock(fileLock);
-                if (!isNew && needTruncate)
-                {
-                    hresult = afc_file_truncate(session.Handle, _fHandle, 0);
-                    if (hresult.IsError())
-                        hresult.GetException().ToStandardException(AFCItemType.File, _path);
-                }
         }
 
         /// <summary>
@@ -110,19 +64,16 @@ namespace MobileDeviceSharp.AFC
                 throw hresult.GetException().ToStandardException(AFCItemType.File, _path);
         }
 
-        /// <summary>
-        /// Gets the <see cref="FileAccess"/> mode used when accessing the file on the device.
-        /// </summary>
-        public FileAccess FileAccess { get; }
+        private readonly FileAccess _fileAccess;
 
         /// <inheritdoc/>
-        public override bool CanRead => (!Session?.IsClosed).GetValueOrDefault(false) && FileAccess.HasFlag(FileAccess.Read);
+        public override bool CanRead => (!Session?.IsClosed).GetValueOrDefault(false) && _fileAccess.HasFlag(FileAccess.Read);
 
         /// <inheritdoc/>
         public override bool CanSeek => (!Session?.IsClosed).GetValueOrDefault(false);
 
         /// <inheritdoc/>
-        public override bool CanWrite => (!Session?.IsClosed).GetValueOrDefault(false) && FileAccess.HasFlag(FileAccess.Write);
+        public override bool CanWrite => (!Session?.IsClosed).GetValueOrDefault(false) && _fileAccess.HasFlag(FileAccess.Write);
 
         /// <inheritdoc/>
         public override long Length
