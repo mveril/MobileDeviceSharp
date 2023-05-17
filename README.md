@@ -1,17 +1,17 @@
 # MobileDeviceSharp
 ## A C# object-oriented wrapper around Libimobiledevice
-[Libmobiledevice](https://libimobiledevice.org/) is a cool project. It is useful to interact programmatically with Apple devices exactly like [iTunes](https://www.apple.com/itunes) do. It's a C Open source library. An Open source .NET bindings library exits on NuGet, and it's called [imobiledevice-net](https://www.nuget.org/packages/imobiledevice-net), but this library is just a binding and remains a 100 % functional programming API. So it does not respect C# language standards.
+[Libimobiledevice](https://libimobiledevice.org/) is a cool project. It is useful to interact programmatically with Apple devices exactly like [iTunes](https://www.apple.com/itunes) do. It's a C Open source library. An Open source .NET bindings library exits on NuGet, and it's called [imobiledevice-net](https://www.nuget.org/packages/imobiledevice-net), but this library is just a binding and remains a 100 % functional programming API. So it does not respect C# language standards.
 The objective of this project is to provide a fully object-oriented API for C# and .NET developers to interact with Apple device. It uses [Libimobiledevice](https://libimobiledevice.org) under the hood but try to use all the C# languages features to provide an easy-to-use API.
 Somme examples:
 
 - The `LockdownSession.ParAsync` API can be used to pair a device asynchronously.
 - The `PlistDictionary` implement [IDictionary<String,PlistNode>](https://docs.microsoft.com/dotnet/api/system.collections.generic.idictionary-2) interface.
 - The `AFCStream` class allow interacting with Apple device files using the `Apple file conduit` protocol with the standard .NET [Stream](https://docs.microsoft.com/dotnet/api/system.io.stream) API.
-- With all supported framework the overloads of `InstallationProxySession.GetApplications()` return an [IEnumerable&lt;Application&gt;](https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1) and on .NET Core 3 or greater `InstallationProxySession.GetApplications()` return an [IAsyncEnumerable&lt;Application&gt;](https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1)
+- With all supported framework the overloads of `InstallationProxySession.GetApplications()` return an [IEnumerable&lt;Application&gt;](https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1) and on .NET Core 3 or greater `InstallationProxySession.GetApplicationsAsync()` return an [IAsyncEnumerable&lt;Application&gt;](https://learn.microsoft.com/dotnet/api/system.collections.generic.iasyncenumerable-1)
 - …
 
 ## Main API and associated libraries
-We have created some libraries, indeed we wanted to separate the project into different libraries as much as possible (in the future we could try to make other separations if possible). In this part we will describe the content of the already implemented APIs (when it's possible a link with it's main associated native [Libmobiledevice](https://libimobiledevice.org/) library is provided)
+We have created some libraries, indeed we wanted to separate the project into different libraries as much as possible (in the future we could try to make other separations if possible). In this part we will describe the content of the already implemented APIs (when it's possible a link with it's main associated native [Libimobiledevice](https://libimobiledevice.org/) library is provided)
 ### MobileDeviceSharp library
 #### MobileDeviceSharp
 This namespace contains the core APIs.
@@ -76,4 +76,4 @@ We welcome contributions to the MobileDeviceSharp project. Please check out the 
 Please note that currently, this project does not have any unit tests. So, we ask that contributors take extra care to ensure the stability and reliability of the code when making changes. Thank you!
 
 ## Conclusion
-We are aware that there is still a lot of work to implement all the APIs proposed in the [Libmobiledevice](https://libimobiledevice.org/) library in a modern C# compliant way, but it is a good starting point, and we hope that this project can grow over time to make it easy to develop software that connects with Apple Devices in .NET.
+We are aware that there is still a lot of work to implement all the APIs proposed in the [Libimobiledevice](https://libimobiledevice.org/) library in a modern C# compliant way, but it is a good starting point, and we hope that this project can grow over time to make it easy to develop software that connects with Apple Devices in .NET.
