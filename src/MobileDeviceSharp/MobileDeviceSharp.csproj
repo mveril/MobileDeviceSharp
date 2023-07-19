@@ -18,14 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="GenerateHandle.txt" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <AdditionalFiles Include="GenerateHandle.txt" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="NativeLibraryLoader" Version="1.0.12" />
     <PackageReference Include="ConcurrentHashSet" Version="1.3.0" />
   </ItemGroup>
@@ -47,7 +39,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MobileDeviceSharp.SourceGenerator\MobileDeviceSharp.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-    <ProjectReference Include="..\MobileDeviceSharp.CompilerServices\MobileDeviceSharp.CompilerServices.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

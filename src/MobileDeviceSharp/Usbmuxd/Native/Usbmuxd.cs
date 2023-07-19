@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 using MobileDeviceSharp.CompilerServices;
+using MobileDeviceSharp.Native;
 
 namespace MobileDeviceSharp.Usbmuxd.Native
 {
@@ -43,7 +44,7 @@ namespace MobileDeviceSharp.Usbmuxd.Native
         /// <returns>
         /// 0 on success or a negative errno value.
         /// </returns>
-        [GenerateHandle("UsbmuxdSubscriptionContext")]
+        [UsedForRelease<UsbmuxdSubscriptionContextHandle>]
         [DllImportAttribute(Usbmuxd.LibraryName, EntryPoint = "usbmuxd_events_unsubscribe", CallingConvention = CallingConvention.Cdecl)]
         public static extern int usbmuxd_events_unsubscribe(UsbmuxdSubscriptionContextHandle context);
 

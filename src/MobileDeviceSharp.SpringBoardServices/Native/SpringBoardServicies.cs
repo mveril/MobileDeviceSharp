@@ -71,7 +71,7 @@ namespace MobileDeviceSharp.SpringBoardServices.Native
             /// SBSERVICES_E_SUCCESS on success, SBSERVICES_E_INVALID_ARG when
             /// client is NULL, or an SBSERVICES_E_* error code otherwise.
             /// </returns>
-            [GenerateHandle("SpringBoardServicesClient")]
+            [UsedForRelease<SpringBoardServicesClientHandle>]
             [System.Runtime.InteropServices.DllImportAttribute(SpringBoardServices.LibraryName, EntryPoint = "sbservices_client_free", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
             public static extern SpringBoardServicesError sbservices_client_free(System.IntPtr client);
 

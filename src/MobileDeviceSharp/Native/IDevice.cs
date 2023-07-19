@@ -121,7 +121,6 @@ namespace MobileDeviceSharp.Native
         /// <returns>
         /// IDEVICE_E_SUCCESS on success or an error value when an error occurred.
         /// </returns>
-        [GenerateHandleAttribute("IDeviceInfo")]
         [DllImport(IDevice.LibraryName, EntryPoint = "idevice_device_list_extended_free", CallingConvention = CallingConvention.Cdecl)]
         public static extern IDeviceError idevice_device_list_extended_free(System.IntPtr devices);
 
@@ -185,7 +184,7 @@ namespace MobileDeviceSharp.Native
         /// <param name="device">
         /// idevice_t to free.
         /// </param>
-        [GenerateHandle("IDevice")]
+        [UsedForRelease<IDeviceHandle>]
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_free", CallingConvention = CallingConvention.Cdecl)]
         public static extern IDeviceError idevice_free(System.IntPtr device);
 
@@ -217,7 +216,7 @@ namespace MobileDeviceSharp.Native
         /// <returns>
         /// IDEVICE_E_SUCCESS if ok, otherwise an error code.
         /// </returns>
-        [GenerateHandle("IDeviceConnection")]
+        [UsedForRelease<IDeviceConnectionHandle>]
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_disconnect", CallingConvention = CallingConvention.Cdecl)]
         public static extern IDeviceError idevice_disconnect(System.IntPtr connection);
 

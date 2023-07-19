@@ -77,7 +77,7 @@ namespace MobileDeviceSharp.HouseArrest.Native
         /// a proper cleanup. Do not call this function if you still need to
         /// perform AFC operations since it will close the connection.
         /// </remarks>
-        [GenerateHandle("HouseArrestClient")]
+        [UsedForRelease<HouseArrestClientHandle>]
         [System.Runtime.InteropServices.DllImportAttribute(HouseArrest.LibraryName, EntryPoint = "house_arrest_client_free", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
         public static extern HouseArrestError house_arrest_client_free(System.IntPtr client);
 

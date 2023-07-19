@@ -27,6 +27,5 @@ namespace MobileDeviceSharp.Native
         {
 
         }
-
     }
 }

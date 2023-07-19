@@ -72,7 +72,7 @@ namespace MobileDeviceSharp.InstallationProxy.Native
         /// INSTPROXY_E_SUCCESS on success
         /// or INSTPROXY_E_INVALID_ARG if client is NULL.
         /// </returns>
-        [GenerateHandle("InstallationProxyClient")]
+        [UsedForRelease<InstallationProxyClientHandle>]
         [System.Runtime.InteropServices.DllImportAttribute(InstallationProxy.LibraryName, EntryPoint = "instproxy_client_free", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
         public static extern InstallationProxyError instproxy_client_free(System.IntPtr client);
 

@@ -169,7 +169,7 @@ namespace MobileDeviceSharp.PropertyList.Native
         /// <param name="plist">
         /// the plist to free
         /// </param>
-        [GenerateHandle("Plist")]
+        [UsedForRelease<PlistHandle>]
         [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_free", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
         public static extern void plist_free(System.IntPtr plist);
 
