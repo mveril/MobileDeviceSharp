@@ -63,7 +63,7 @@ namespace MobileDeviceSharp.AFC.Native
         /// <param name="client">
         /// The client to free.
         /// </param>
-        [MobileDeviceSharp.CompilerServices.GenerateHandle("AFCClient")]
+        [MobileDeviceSharp.CompilerServices.UsedForRelease<AFCClientHandle>]
         [System.Runtime.InteropServices.DllImportAttribute(AFC.LibraryName, EntryPoint = "afc_client_free", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
         public static extern AFCError afc_client_free(System.IntPtr client);
 

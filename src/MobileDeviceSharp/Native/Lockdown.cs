@@ -79,7 +79,7 @@ namespace MobileDeviceSharp.Native
         /// <returns>
         /// LOCKDOWN_E_SUCCESS on success, LOCKDOWN_E_INVALID_ARG when client is NULL
         /// </returns>
-        [GenerateHandleAttribute("LockdownClient")]
+        [UsedForRelease<LockdownClientHandle>]
         [DllImport(Lockdown.LibraryName, EntryPoint = "lockdownd_client_free", CallingConvention = CallingConvention.Cdecl)]
         public static extern LockdownError lockdownd_client_free(System.IntPtr client);
 
@@ -550,7 +550,7 @@ namespace MobileDeviceSharp.Native
         /// <returns>
         /// LOCKDOWN_E_SUCCESS on success
         /// </returns>
-        [GenerateHandle("LockdownServiceDescriptor")]
+        [UsedForRelease<LockdownServiceDescriptorHandle>]
         [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_service_descriptor_free", CallingConvention = CallingConvention.Cdecl)]
         public static extern LockdownError lockdownd_service_descriptor_free(System.IntPtr service);
 

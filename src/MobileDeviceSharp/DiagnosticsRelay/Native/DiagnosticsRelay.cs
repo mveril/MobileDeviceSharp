@@ -71,7 +71,7 @@ namespace MobileDeviceSharp.DiagnosticsRelay.Native
         /// is invalid, or DIAGNOSTICS_RELAY_E_UNKNOWN_ERROR when the was an
         /// error freeing the parent property_list_service client.
         /// </returns>
-        [CompilerServices.GenerateHandle("DiagnosticsRelayClient")]
+        [CompilerServices.UsedForRelease<DiagnosticsRelayClientHandle>]
         [System.Runtime.InteropServices.DllImportAttribute(DiagnosticsRelay.LibraryName, EntryPoint = "diagnostics_relay_client_free", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
         public static extern DiagnosticsRelayError diagnostics_relay_client_free(System.IntPtr client);
 

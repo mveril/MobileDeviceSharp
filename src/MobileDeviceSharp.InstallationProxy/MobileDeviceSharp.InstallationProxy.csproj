@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MobileDeviceSharp.SourceGenerator\MobileDeviceSharp.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-    <ProjectReference Include="..\MobileDeviceSharp.CompilerServices\MobileDeviceSharp.CompilerServices.csproj" />
     <ProjectReference Include="..\MobileDeviceSharp\MobileDeviceSharp.csproj" />
   </ItemGroup>
 

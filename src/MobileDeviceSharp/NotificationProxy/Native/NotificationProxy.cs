@@ -70,7 +70,7 @@ namespace MobileDeviceSharp.NotificationProxy.Native
         /// <returns>
         /// NP_E_SUCCESS on success, or NP_E_INVALID_ARG when client is NULL.
         /// </returns>
-        [GenerateHandle("NotificationProxyClient")]
+        [UsedForRelease<NotificationProxyClientHandle>]
         [DllImportAttribute(NotificationProxy.LibraryName, EntryPoint = "np_client_free", CallingConvention = CallingConvention.Cdecl)]
         public static extern NotificationProxyError np_client_free(System.IntPtr client);
 

@@ -6,22 +6,58 @@ namespace MobileDeviceSharp.SourceGenerator
     internal class HandleGenerator : IIncrementalGenerator
     {
         const string AttrNamespace = "MobileDeviceSharp.CompilerServices";
-        const string AttrName = "GenerateHandleAttribute";
+        const string AttrName = "UsedForReleaseAttribute`1";
 
 
         public void Initialize(IncrementalGeneratorInitializationContext context)
         {
-            var nonFreeableFullNames = context.AdditionalTextsProvider
-                .Where(file => Path.GetFileName(file.Path).Equals("GenerateHandle.txt", StringComparison.OrdinalIgnoreCase))
-                .Select((file, token) => file.GetText())
-                .Where((text) => text is not null)
-                .SelectMany((text, token) => text!.Lines)
-                .Where((line) => !line.Span.IsEmpty)
-                .Select((line, token) => line.Text!.ToString(line.Span));
-            var nonfreeableProvider = nonFreeableFullNames.Combine(context.CompilationProvider);
-            context.RegisterSourceOutput(nonfreeableProvider, NonFreeableProducer);
-            var freeableMethods = context.SyntaxProvider.CreateSyntaxProvider(MethodPredicate, MethodTransformer);
-            context.RegisterSourceOutput(freeableMethods, FreeableProducer);
+            var iosHandlesProvider = context.SyntaxProvider.CreateSyntaxProvider(IOSHandlesPredicate, IOSHandlesTransformer);
+            var releaseMethodProvider = context.SyntaxProvider.CreateSyntaxProvider(ReleaseMethodPredicate, ReleaseMethodTransformer).Collect();
+            var provider = iosHandlesProvider.Combine(releaseMethodProvider).Combine(context.CompilationProvider);
+            context.RegisterSourceOutput(provider, Producer);
+        }
+
+        private void Producer(SourceProductionContext context, ((INamedTypeSymbol? handleType, ImmutableArray<UsedForReleaseProvidedResult?> methodData) syntaxSource, Compilation compilation) sourceData)
+        {
+            var ((handleType, usedForReleaseProviderResults), compilation) = sourceData;
+            usedForReleaseProviderResults = usedForReleaseProviderResults.Where(x => x is not null).ToImmutableArray();
+            if (handleType is null)
+            {
+                return;
+            }
+            MethodDeclarationSyntax freeMethod;
+            var attributeDat = usedForReleaseProviderResults.FirstOrDefault(result => (result?.ClassType.Equals(handleType, SymbolEqualityComparer.Default)).GetValueOrDefault(false));
+            if (attributeDat is null)
+            {
+                freeMethod = GetFreeMethod(compilation);
+            }
+            else
+            {
+                freeMethod = GetFreeMethod(attributeDat.FreeCode);
+            }
+            var (fileName, source) = GetSource(handleType, freeMethod);
+            context.AddSource(fileName, source);
+        }
+
+        private bool IOSHandlesPredicate(SyntaxNode node, CancellationToken token)
+        {
+            if (node is ClassDeclarationSyntax classSyntax && classSyntax.Modifiers.Any(m => m.IsKind(SyntaxKind.PartialKeyword)))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private INamedTypeSymbol? IOSHandlesTransformer(GeneratorSyntaxContext context, CancellationToken token)
+        {
+            var type = (ClassDeclarationSyntax)context.Node;
+            var IOSHandleBaseType = context.SemanticModel.Compilation.GetTypeByMetadataName("MobileDeviceSharp.Native.IOSHandle")!;
+            var typeSymbol = context.SemanticModel.GetDeclaredSymbol(type)!;
+            if (IOSHandleBaseType.Equals(typeSymbol.BaseType, SymbolEqualityComparer.Default))
+            {
+                return typeSymbol;
+            }
+            return null;
         }
 
         MethodDeclarationSyntax GetFreeMethod(Compilation compilation)
@@ -48,27 +84,7 @@ namespace MobileDeviceSharp.SourceGenerator
             return (MethodDeclarationSyntax)member!;
         }
 
-        private void FreeableProducer(SourceProductionContext context, (string namespaceName, string className, SyntaxList<StatementSyntax> freeCode)? methodData)
-        {
-
-            if (methodData.HasValue)
-            {
-                var (nameSpace, className, freeCode) = methodData.Value;
-                var (fileName, source) = GetSource(nameSpace, className, GetFreeMethod(freeCode));
-                context.AddSource(fileName, source);
-            }
-        }
-
-        private void NonFreeableProducer(SourceProductionContext context, (string fullClassName, Compilation compilation) data)
-        {
-            var index = data.fullClassName.LastIndexOf(".");
-            var namespaceName = data.fullClassName.Substring(0, index);
-            var handleBaseName = data.fullClassName.Substring(index + 1);
-            var (fileName, source) = GetSource(namespaceName, handleBaseName, GetFreeMethod(data.compilation));
-            context.AddSource(fileName, source);
-        }
-
-        private (string name, SourceText source) GetSource(string namespaceName, string handleBaseName, MethodDeclarationSyntax ReleaseHandleDeclaration)
+        private (string name, SourceText source) GetSource(ITypeSymbol classType, MethodDeclarationSyntax ReleaseHandleDeclaration)
         {
             const string sourceFormat = @"using System;
 using System.Diagnostics;
@@ -190,35 +206,41 @@ namespace {0}
     }}
 }}
 ";
-            var className = $"{handleBaseName}Handle";
+            var className = classType.Name;
+            var namespaceName = classType.ContainingNamespace;
             var source = string.Format(sourceFormat, namespaceName, className, ReleaseHandleDeclaration.NormalizeWhitespace().ToFullString());
             var srcstring = CSharpSyntaxTree.ParseText(source).GetRoot().NormalizeWhitespace().ToFullString();
             return ($"{className}.g.cs", SourceText.From(srcstring, Encoding.UTF8));
         }
 
 
-        private bool MethodPredicate(SyntaxNode node, CancellationToken token)
+        private bool ReleaseMethodPredicate(SyntaxNode node, CancellationToken token)
         {
             if (node.IsKind(SyntaxKind.MethodDeclaration))
             {
                 MethodDeclarationSyntax method = (MethodDeclarationSyntax)node;
-                return method.Modifiers.Any(m => m.IsKind(SyntaxKind.ExternKeyword)) && method.AttributeLists.Count > 0;
+                return method.Modifiers.Any(m => m.IsKind(SyntaxKind.ExternKeyword) || m.IsKind(SyntaxKind.PartialKeyword) && method.AttributeLists.Count > 0);
             }
             return false;
         }
 
-        private (string namespaceName, string className, SyntaxList<StatementSyntax> freeCode)? MethodTransformer(GeneratorSyntaxContext context, CancellationToken token)
+        private UsedForReleaseProvidedResult? ReleaseMethodTransformer(GeneratorSyntaxContext context, CancellationToken token)
         {
-            var genAttrSymbol = context.SemanticModel.Compilation.GetTypeByMetadataName($"{AttrNamespace}.{AttrName}");
-            if (genAttrSymbol == null)
+            var setFreeAttrSymbol = context.SemanticModel.Compilation.GetTypeByMetadataName($"{AttrNamespace}.{AttrName}");
+            if (setFreeAttrSymbol == null)
             {
                 return null;
             }
-            var freeMethodSymbol = (IMethodSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node, token)!;
-            var genattr=freeMethodSymbol.GetAttributes().FirstOrDefault(a => a.AttributeClass is not null && a.AttributeClass.Equals(genAttrSymbol, SymbolEqualityComparer.Default));
-            if (genattr!=null)
+            var currentSymbol = context.SemanticModel.GetDeclaredSymbol(context.Node, token)!;
+            if (currentSymbol is not IMethodSymbol freeMethodSymbol)
             {
-                return (freeMethodSymbol.ContainingNamespace.ToDisplayString(), (string)genattr.ConstructorArguments[0].Value!, GetFreeCode(freeMethodSymbol, context.SemanticModel.Compilation));
+                return null;
+            }
+            var attributes = freeMethodSymbol.GetAttributes();
+            var setFreeAttr = attributes.FirstOrDefault((a) => a.AttributeClass is not null && a.AttributeClass.IsGenericType && a.AttributeClass.OriginalDefinition.Equals(setFreeAttrSymbol, SymbolEqualityComparer.Default));
+            if (setFreeAttr is not null)
+            {
+                return new UsedForReleaseProvidedResult(setFreeAttr.AttributeClass!.TypeArguments[0].OriginalDefinition, GetFreeCode(freeMethodSymbol, context.SemanticModel.Compilation));
             }
             return null;
         }
