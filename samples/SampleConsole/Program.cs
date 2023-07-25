@@ -4,18 +4,60 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Linq;
 using MobileDeviceSharp;
-using MobileDeviceSharp.AFC;
 using System.CommandLine;
 using System.Threading;
 using MobileDeviceSharp.DiagnosticsRelay;
 using MobileDeviceSharp.InstallationProxy;
 using System.Collections.Generic;
-using MobileDeviceSharp.HouseArrest;
+using MobileDeviceSharp.PropertyList;
 
 namespace SampleConsole
 {
     static class Program
     {
+        static void Main()
+        {
+            var plistString = """
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Positive integer</key>
+    <integer>42</integer>
+    <key>Negative integer</key>
+    <integer>-42</integer>
+    <key>String</key>
+    <string>Hello World!</string>
+</dict>
+</plist><?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Positive integer</key>
+    <integer>42</integer>
+    <key>Negative integer</key>
+    <integer>-42</integer>
+    <key>String</key>
+    <string>Hello World!</string>
+</dict>
+</plist>
+""";
+            var doc = PlistDocument.FromXmlString(plistString);
+            var dict = (PlistDictionary)doc.RootNode;
+            foreach (var item in dict)
+            {
+                object value = null;
+                if (item.Value is PlistInteger integer)
+                {
+                        value = integer.Value;
+                }
+                else if(item.Value is PlistString str){
+                    value = str.Value;
+                }
+                Console.WriteLine(item.Key, value);
+            }
+        }
+
         static  async Task Main(string[] args)
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
@@ -27,9 +69,9 @@ namespace SampleConsole
                 Console.WriteLine(device.Udid);
                 return Task.CompletedTask;
             }, false), watchOption);
-            var explore = new Command("explore", "Explore device files");
+            /*var explore = new Command("explore", "Explore device files");
             explore.SetHandler((bool watch) => HandlerBase(watch, Explore, true), watchOption);
-            c.Add(explore);
+            c.Add(explore);*/
             var version = new Command("version","Show the OS version");
             var buildNumberOption = new Option<bool>("--build", "Show build number");
             version.AddOption(buildNumberOption);
@@ -111,7 +153,7 @@ namespace SampleConsole
                 }
             }, false), watchOption, appIds);
             c.AddCommand(app);
-            var openApp = new Command("open-app");
+            /*var openApp = new Command("open-app");
             var appId = new Argument<string>("appid", "The Application bundle identifier");
             openApp.AddArgument(appId);
             openApp.SetHandler((bool watch, string appId) => HandlerBase(watch, async (device) =>
@@ -122,7 +164,7 @@ namespace SampleConsole
                 using var afcSession = houseArrest.AFCSession;
                 ProcessItem(afcSession.Documents);
             }, false), watchOption, appId);
-            c.AddCommand(openApp);
+            c.AddCommand(openApp);*/
             await c.InvokeAsync(args);
         }
 
@@ -159,12 +201,12 @@ namespace SampleConsole
             }
         }
 
-        private static Task Explore(IDevice device)
+        /*private static Task Explore(IDevice device)
         {
             var afc = new AFCSession(device);
             ProcessItem(afc.Root);
             return Task.CompletedTask;
-        }
+        }*/
 
         private async static Task Watch(Func<IDevice, Task> task, bool needPair)
         {
@@ -192,7 +234,7 @@ namespace SampleConsole
             await semaphore.WaitAsync();
         }
 
-        private static void ProcessLine(AFCDirectory current, string line)
+        /*private static void ProcessLine(AFCDirectory current, string line)
         {
             if (string.IsNullOrEmpty(line))
             {
@@ -263,6 +305,6 @@ namespace SampleConsole
             {
                 ProcessItem((AFCDirectory)item);
             }
-        }
+        }*/
     }
 }

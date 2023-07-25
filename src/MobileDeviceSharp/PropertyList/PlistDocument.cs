@@ -161,6 +161,9 @@ namespace MobileDeviceSharp.PropertyList
         {
             uint length = (uint)bin.Length;
             Native.PlistHandle handle;
+#if NET7_0_OR_GREATER
+                    plist_from_bin(bin, length, out handle);
+#else
             unsafe
             {
                 fixed (byte* ptr = bin)
@@ -168,6 +171,7 @@ namespace MobileDeviceSharp.PropertyList
                     plist_from_bin(ptr, length, out handle);
                 }
             }
+#endif
             var node = PlistNode.From(handle);
             if (node is not null)
             {
@@ -211,6 +215,7 @@ namespace MobileDeviceSharp.PropertyList
                 {
                     using var ums = new UnmanagedMemoryStream((byte*)ptr, stream.Length, stream.Length, FileAccess.Write);
                     stream.CopyTo(ums);
+
                     plist_from_memory((byte*)ptr, leight, out var handle);
                     var node = PlistNode.From(handle);
                     if (node is not null)
@@ -240,13 +245,21 @@ namespace MobileDeviceSharp.PropertyList
             {
 
                 var length = (uint)buffer.Count;
+#if NET7_0_OR_GREATER
+                plist_from_memory(buffer, length, out var handle);
+#else
                 var ArrayOffset = new ArrayWithOffset(buffer.Array, buffer.Offset);
                 plist_from_memory(ArrayOffset, length, out var handle);
+#endif
                 stream.Seek(length, SeekOrigin.Current);
                 var node = PlistNode.From(handle);
                 if (node is not null)
                 {
+#if NET7_0_OR_GREATER
+                    var format = plist_is_binary(buffer, length) != 0 ? PlistDocumentFormats.Binary : PlistDocumentFormats.XML;
+#else
                     var format = plist_is_binary(ArrayOffset, length) != 0 ? PlistDocumentFormats.Binary : PlistDocumentFormats.XML;
+#endif
                     return new PlistDocument(node, format);
                 }
             }

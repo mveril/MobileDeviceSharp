@@ -36,17 +36,11 @@ namespace MobileDeviceSharp.PropertyList
             public bool MoveNext()
             {
                 plist_dict_next_item(_root.Handle, _iterHandle, out var key, out var currentHandle);
-                if (key == IntPtr.Zero)
+                if (key is null)
                 {
                     return false;
                 }
-                string dicKey = UTF8Marshaler.GetInstance().MarshalNativeToManaged(key);
-                if (dicKey == null)
-                {
-                    throw new NullReferenceException();
-                }
-                _current = new KeyValuePair<string,PlistNode>(dicKey, From(currentHandle));
-                UTF8Marshaler.GetInstance().CleanUpNativeData(key);
+                _current = new KeyValuePair<string,PlistNode>(key, From(currentHandle));
                 return true;
             }
 

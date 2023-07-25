@@ -44,10 +44,14 @@ namespace MobileDeviceSharp.PropertyList
 
         private static unsafe PlistHandle Create(ReadOnlySpan<byte> value)
         {
+#if NET7_0_OR_GREATER
+            return plist_new_data(value, (uint)value.Length);
+#else
             fixed(byte* ptr = value)
             {
                 return plist_new_data(ptr, (uint)value.Length);
             }
+#endif
         }
 
         /// <inheritdoc/>

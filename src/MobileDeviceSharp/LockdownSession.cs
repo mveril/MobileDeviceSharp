@@ -6,6 +6,9 @@ using MobileDeviceSharp.Usbmuxd;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
+#if NET7_0_OR_GREATER
+using System.Runtime.InteropServices.Marshalling;
+#endif
 using System.Threading;
 using System.Threading.Tasks;
 using static MobileDeviceSharp.Native.Lockdown;
@@ -90,7 +93,14 @@ namespace MobileDeviceSharp
             get
             {
                 var privateLockdown = Marshal.PtrToStructure<lockdownd_client_private>(Handle.DangerousGetHandle());
+#if NET7_0_OR_GREATER
+                unsafe
+                {
+                    return Utf8StringMarshaller.ConvertToManaged((byte*)privateLockdown.label);
+                }
+#else
                 return (string)UTF8Marshaler.GetInstance().MarshalNativeToManaged(privateLockdown.label);
+#endif
             }
             set
             {

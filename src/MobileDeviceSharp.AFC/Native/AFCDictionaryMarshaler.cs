@@ -1,4 +1,5 @@
-﻿using MobileDeviceSharp.Native;
+﻿#if !NET7_0_OR_GREATER
+using MobileDeviceSharp.Native;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -27,3 +28,4 @@ namespace MobileDeviceSharp.AFC.Native
         }
     }
 }
+#endif
