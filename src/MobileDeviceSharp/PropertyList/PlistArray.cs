@@ -63,7 +63,19 @@ namespace MobileDeviceSharp.PropertyList
                 plist_array_set_item(Handle, plist_copy_not_owned(value.Handle), (uint)index);
             }
         }
-
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_0_OR_GREATER
+        public PlistNode this[Index index]
+        {
+            get
+            {
+                return this[index.GetOffset(Count)];
+            }
+            set
+            {
+                this[index.GetOffset(Count)] = value;
+            }
+        }
+#endif
         /// <inheritdoc/>
         public override int Count => (int)plist_array_get_size(Handle);
 
@@ -127,6 +139,14 @@ namespace MobileDeviceSharp.PropertyList
         {
             plist_array_insert_item(Handle, item.Clone().Handle, (uint)index);
         }
+
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_0_OR_GREATER
+        public void Insert(Index index, PlistNode item)
+        {
+            Insert(index.GetOffset(Count), item);
+        }
+#endif
+
         /// <inheritdoc/>
         public bool Remove(PlistNode item)
         {
@@ -143,6 +163,13 @@ namespace MobileDeviceSharp.PropertyList
         {
             plist_array_remove_item(Handle, (uint)index);
         }
+
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_0_OR_GREATER
+        public void RemoveAt(Index index)
+        {
+            RemoveAt(index.GetOffset(Count));
+        }
+#endif
         /// <inheritdoc/>
         public IEnumerator<PlistNode> GetEnumerator() => new Enumerator(this);
     }
