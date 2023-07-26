@@ -9,7 +9,12 @@ namespace MobileDeviceSharp.PropertyList
     /// <summary>
     /// Represent a Plist node that contain a real (<see cref="double"/>) value.
     /// </summary>
-    public sealed class PlistReal : PlistValueNode<double>
+    public sealed class PlistReal
+#if NET7_0_OR_GREATER
+        : PlistNumberNode<double>
+#else
+        : PlistValueNode<double>
+#endif
     {
         /// <summary>
         /// Create <see cref="double"/> plist node from an existing handle.

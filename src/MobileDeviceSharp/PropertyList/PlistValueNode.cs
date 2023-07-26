@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.Numerics;
 using System.Text;
+using MobileDeviceSharp.PropertyList;
 using MobileDeviceSharp.PropertyList.Native;
+using static MobileDeviceSharp.PropertyList.Native.Plist;
 
 namespace MobileDeviceSharp.PropertyList
 {
@@ -24,6 +29,10 @@ namespace MobileDeviceSharp.PropertyList
         /// Get or set the value.
         /// </summary>
         public abstract T Value { get; set; }
+        public bool Equals(PlistValueNode<T>? other)
+        {
+            return object.ReferenceEquals(this,other) || Handle.Equals(other?.Handle) || other == null ? false : Equals(other.Value);
+        }
 
         public static explicit operator T(PlistValueNode<T> node) => node.Value;
 
