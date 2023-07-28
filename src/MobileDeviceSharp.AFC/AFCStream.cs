@@ -135,21 +135,29 @@ namespace MobileDeviceSharp.AFC
         }
 #endif
 
-        private unsafe int ReadCore(Span<byte> buffer)
+        private int ReadCore(Span<byte> buffer)
         {
             ValidateHandle();
             if (!CanRead)
             {
                 throw new NotSupportedException("This stream is readonly");
             }
-            AFCError hresult;
+#if NET7_0_OR_GREATER
+            var hresult = afc_file_read(Session.Handle, _fHandle, buffer, (uint)buffer.Length, out var byteread);
+#else
             uint byteread;
-            fixed (byte* b = buffer)
+            AFCError hresult;
+            unsafe
             {
-                hresult = afc_file_read(Session.Handle, _fHandle, b, (uint)buffer.Length, out byteread);
-                if (hresult.IsError())
-                    throw new IOException("Read operation failed.", hresult.GetException());
+                fixed (byte* b = buffer)
+                {
+                    hresult = afc_file_read(Session.Handle, _fHandle, b, (uint)buffer.Length, out byteread);
+                }
+
             }
+#endif
+            if (hresult.IsError())
+                throw new IOException("Read operation failed.", hresult.GetException());
             return (int)byteread;
         }
 
@@ -223,15 +231,20 @@ namespace MobileDeviceSharp.AFC
             {
                 throw new NotSupportedException();
             }
+#if NET7_0_OR_GREATER
+            var hresult = afc_file_write(Session.Handle, _fHandle, buffer, (uint)buffer.Length, out _);
+#else
+            AFCError hresult;
             unsafe
             {
                 fixed (byte* b = buffer)
                 {
-                    var hresult = afc_file_write(Session.Handle, _fHandle, b, (uint)buffer.Length, out _);
-                    if (hresult.IsError())
-                        throw new IOException("Write operation failed.", hresult.GetException());
+                    hresult = afc_file_write(Session.Handle, _fHandle, b, (uint)buffer.Length, out _);
                 }
             }
+#endif
+            if (hresult.IsError())
+                throw new IOException("Write operation failed.", hresult.GetException());
         }
 
         /// <inheritdoc/>

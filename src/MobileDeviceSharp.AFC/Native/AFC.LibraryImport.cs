@@ -80,7 +80,7 @@ namespace MobileDeviceSharp.AFC.Native
         /// AFC_E_SUCCESS on success or an AFC_E_* error value.
         /// </returns>
         [System.Runtime.InteropServices.LibraryImportAttribute(AFC.LibraryName, EntryPoint = "afc_get_device_info", StringMarshalling = StringMarshalling.Utf8)]
-        public static partial AFCError afc_get_device_info(AFCClientHandle client, [MarshalUsingAttribute(ConstantElementCount = -1)] out SameKeyValueTypeReadonlyDictionary<string> deviceInformation);
+        public static partial AFCError afc_get_device_info(AFCClientHandle client, [MarshalUsing(typeof(AFCDictionaryMarshaller))] out ReadOnlyStringDictionary deviceInformation);
 
         /// <summary>
         /// Gets a directory listing of the directory requested.
@@ -100,7 +100,7 @@ namespace MobileDeviceSharp.AFC.Native
         /// AFC_E_SUCCESS on success or an AFC_E_* error value.
         /// </returns>
         [System.Runtime.InteropServices.LibraryImportAttribute(AFC.LibraryName, EntryPoint = "afc_read_directory", StringMarshalling = StringMarshalling.Custom, StringMarshallingCustomType = typeof(UTF8StringDecomposedMarshaller))]
-        public static partial AFCError afc_read_directory(AFCClientHandle client, string path, [MarshalUsing(typeof(NullTerminatedArrayMarshaller<string,IntPtr>),ConstantElementCount = -1)]  out string[] directoryInformation);
+        public static partial AFCError afc_read_directory(AFCClientHandle client, string path, [MarshalUsing(typeof(NullTerminatedUTF8StringDecomposedArrayMarshaller))]  out string[] directoryInformation);
 
         /// <summary>
         /// Gets information about a specific file.
@@ -120,7 +120,7 @@ namespace MobileDeviceSharp.AFC.Native
         /// AFC_E_SUCCESS on success or an AFC_E_* error value.
         /// </returns>
         [System.Runtime.InteropServices.LibraryImportAttribute(AFC.LibraryName, EntryPoint = "afc_get_file_info", StringMarshalling = StringMarshalling.Utf8)]
-        public static partial AFCError afc_get_file_info(AFCClientHandle client, [MarshalUsing(typeof(UTF8StringDecomposedMarshaller))] string path, [MarshalUsing(typeof(NullTerminatedReadonlyDictionaryMarshaller<string?, UIntPtr>), ConstantElementCount =-1)] out SameKeyValueTypeReadonlyDictionary<string> fileInformation);
+        public static partial AFCError afc_get_file_info(AFCClientHandle client, [MarshalUsing(typeof(UTF8StringDecomposedMarshaller))] string path, [MarshalUsing(typeof(AFCDictionaryMarshaller))] out ReadOnlyStringDictionary fileInformation);
 
         /// <summary>
         /// Opens a file on the device.
@@ -219,7 +219,7 @@ namespace MobileDeviceSharp.AFC.Native
         /// AFC_E_SUCCESS on success or an AFC_E_* error value.
         /// </returns>
         [System.Runtime.InteropServices.LibraryImportAttribute(AFC.LibraryName, EntryPoint = "afc_file_write")]
-        public static partial AFCError afc_file_write(AFCClientHandle client, ulong handle, [MarshalUsing(CountElementName = nameof(length))] Span<byte> data, uint length, out uint bytesWritten);
+        public static partial AFCError afc_file_write(AFCClientHandle client, ulong handle, [MarshalUsing(CountElementName = nameof(length))] ReadOnlySpan<byte> data, uint length, out uint bytesWritten);
 
         /// <summary>
         /// Seeks to a given position of a pre-opened file on the device.

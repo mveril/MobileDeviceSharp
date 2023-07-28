@@ -115,7 +115,7 @@ namespace MobileDeviceSharp.NotificationProxy.Native
         /// or an error returned by np_observe_notification.
         /// </returns>
         [LibraryImportAttribute(NotificationProxy.LibraryName, EntryPoint = "np_observe_notifications", StringMarshalling = StringMarshalling.Utf8)]
-        public static partial NotificationProxyError np_observe_notifications(NotificationProxyClientHandle client, [MarshalUsing(typeof(NullTerminatedArrayMarshaller<string, IntPtr>), ConstantElementCount = -1)] string[] notificationSpec);
+        public static partial NotificationProxyError np_observe_notifications(NotificationProxyClientHandle client, [MarshalUsing(typeof(NullTerminatedUTF8StringArrayMarshaller))] string[] notificationSpec);
 
         /// <summary>
         /// This function allows an application to define a callback function that will

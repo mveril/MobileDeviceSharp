@@ -77,7 +77,7 @@ namespace MobileDeviceSharp.Native
         /// network devices in the list, use idevice_get_device_list_extended().
         /// </remarks>
         [LibraryImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_get_device_list", StringMarshalling = StringMarshalling.Utf8)]
-        public static partial IDeviceError idevice_get_device_list([MarshalUsing(typeof(IDeviceListMarshaller<string, IntPtr>),CountElementName = nameof(count))] out string[] devices, out int count);
+        public static partial IDeviceError idevice_get_device_list([MarshalUsing(typeof(IDeviceListMarshaller))] out string[] devices, out int count);
         
         /// <summary>
         /// Free a list of device UDIDs.
@@ -105,7 +105,7 @@ namespace MobileDeviceSharp.Native
         /// IDEVICE_E_SUCCESS on success or an error value when an error occurred.
         /// </returns>
         [LibraryImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_get_device_list_extended", StringMarshalling = StringMarshalling.Utf8)]
-        public static partial IDeviceError idevice_get_device_list_extended([MarshalUsing(typeof(IDeviceListExtendedMarshaller<string,IntPtr>), CountElementName = nameof(count))] out string[] devices, out int count);
+        public static partial IDeviceError idevice_get_device_list_extended([MarshalUsing(typeof(IDeviceListExtendedMarshaller))] out string[] devices, out int count);
 
         /// <summary>
         /// Free an extended device list retrieved through idevice_get_device_list_extended().

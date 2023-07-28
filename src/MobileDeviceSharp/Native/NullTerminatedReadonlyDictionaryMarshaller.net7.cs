@@ -1,68 +1,67 @@
 ﻿#if NET7_0_OR_GREATER
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.Marshalling;
 using System.Text;
 
 namespace MobileDeviceSharp.Native
 {
 
-    [CustomMarshaller(typeof(SameKeyValueTypeReadonlyDictionary<>), MarshalMode.ManagedToUnmanagedOut, typeof(NullTerminatedReadonlyDictionaryMarshaller<,>.UnmanagedToManaged))]
-    [CustomMarshaller(typeof(SameKeyValueTypeReadonlyDictionary<>), MarshalMode.UnmanagedToManagedIn, typeof(NullTerminatedReadonlyDictionaryMarshaller<,>.UnmanagedToManaged))]
-    [ContiguousCollectionMarshaller]
-    public static unsafe class NullTerminatedReadonlyDictionaryMarshaller<T, TUnmanagedElement> where T : notnull where TUnmanagedElement : unmanaged
+    [CustomMarshaller(typeof(ReadOnlyStringDictionary), MarshalMode.Default, typeof(ReadOnlyStringDictionaryMarshaller))]
+    public static unsafe class ReadOnlyStringDictionaryMarshaller
     {
-        public ref struct UnmanagedToManaged
+        public static byte** ConvertToUnmanaged(ReadOnlyStringDictionary managed)
         {
-            NullTerminatedArrayMarshaller<T?, TUnmanagedElement>.UnmanagedToManaged _arrayMarshaller = new();
-
-            public UnmanagedToManaged()
+            var ptr = (byte**)Marshal.AllocCoTaskMem(managed.Count * IntPtr.Size).ToPointer();
+            var span = MarshalUtils.GetNullTerminatedSpan((IntPtr*)ptr);
+            var dicList = (IReadOnlyCollection<KeyValuePair<string, string?>>)managed;
+            int index = -1;
+            foreach ( var kvp in dicList )
             {
-
+                span[index++] = (IntPtr)Utf8StringMarshaller.ConvertToUnmanaged(kvp.Key);
+                span[index++] = (IntPtr)Utf8StringMarshaller.ConvertToUnmanaged(kvp.Value);
             }
+            return ptr;
+        }
 
-            public void FromUnmanaged(TUnmanagedElement* value)
+        public static ReadOnlyStringDictionary ConvertToManaged(byte** unmanaged)
+        {
+            var dic = new Dictionary<string, string?>();
+            var unmanagedArray = MarshalUtils.GetNullTerminatedReadOnlySpan((IntPtr*)unmanaged);
+            if (int.IsOddInteger(unmanagedArray.Length))
             {
-                _arrayMarshaller.FromUnmanaged(value);
+                throw new NotSupportedException();
             }
-
-            public ReadOnlySpan<TUnmanagedElement> GetUnmanagedValuesSource(int numElements)
+            var enumerator = unmanagedArray.GetEnumerator();
+            while (enumerator.MoveNext())
             {
-                return _arrayMarshaller.GetUnmanagedValuesSource(numElements);
-            }
-
-            public Span<T?> GetManagedValuesDestination(int numElements)
-            {
-                return _arrayMarshaller.GetManagedValuesDestination(numElements);
-            }
-
-            public SameKeyValueTypeReadonlyDictionary<T> ToManagedFinally()
-            {
-                var array = _arrayMarshaller.ToManaged();
-                var dic = new Dictionary<T, T?>();
-                var it = array.AsEnumerable().GetEnumerator();
-                while (it.MoveNext())
+                var key = Utf8StringMarshaller.ConvertToManaged((byte*)enumerator.Current);
+                if (key is null)
                 {
-                    var key = it.Current;
-                    if (key is null || !it.MoveNext())
-                    {
-                        throw new NotSupportedException();
-                    }
-                    var value = it.Current;
-                    dic.Add(key, value);
+                    throw new NullReferenceException();
                 }
-                return new SameKeyValueTypeReadonlyDictionary<T>(dic);
+                if (!enumerator.MoveNext())
+                {
+                    throw new NotSupportedException();
+                }
+                var value = Utf8StringMarshaller.ConvertToManaged((byte*)enumerator.Current);
+                dic.Add(key, value);
             }
+            return new ReadOnlyStringDictionary(dic);
+        }
 
-            public Span<TUnmanagedElement> GetUnmanagedValuesDestination()
+        public static void Free(byte** unmanaged)
+        {
+            var ptr = unmanaged;
+            while (*ptr != null)
             {
-                return _arrayMarshaller.GetUnmanagedValuesDestination();
+                Utf8StringMarshaller.Free(*ptr);
+                ptr++;
             }
-
-            public void Free()
-            {
-                _arrayMarshaller.Free();
-            }
+            Marshal.FreeCoTaskMem((IntPtr)ptr);
         }
     }
 }
