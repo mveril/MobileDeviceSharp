@@ -521,7 +521,7 @@ namespace MobileDeviceSharp.Native
         /// LOCKDOWN_E_PLIST_ERROR if the received plist is broken
         /// </returns>
         [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_get_sync_data_classes", CallingConvention = CallingConvention.Cdecl)]
-        public static extern LockdownError lockdownd_get_sync_data_classes(LockdownClientHandle client, out System.IntPtr classes, ref int count);
+        public static extern LockdownError lockdownd_get_sync_data_classes(LockdownClientHandle client, out System.IntPtr classes, out int count);
 
         /// <summary>
         /// Frees memory of an allocated array of data classes as returned by lockdownd_get_sync_data_classes()
@@ -555,7 +555,8 @@ namespace MobileDeviceSharp.Native
         /// A lockdownd error code
         /// </param>
         [DllImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_strerror", CallingConvention = CallingConvention.Cdecl)]
-        public static extern System.IntPtr lockdownd_strerror(LockdownError err);
+        [return: MarshalAsAttribute(UnmanagedType.CustomMarshaler,MarshalTypeRef = typeof(UTF8Marshaler))]
+        public static extern string lockdownd_strerror(LockdownError err);
     }
 }
 #endif

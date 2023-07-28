@@ -235,7 +235,7 @@ namespace MobileDeviceSharp.Native
         /// IDEVICE_E_SUCCESS if ok, otherwise an error code.
         /// </returns>
         [LibraryImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_connection_send")]
-        public static partial IDeviceError idevice_connection_send(IDeviceConnectionHandle connection, Span<byte> data, uint len, ref uint sentBytes);
+        public static partial IDeviceError idevice_connection_send(IDeviceConnectionHandle connection, ReadOnlySpan<byte> data, uint len, out uint sentBytes);
 
         /// <summary>
         /// Receive data from a device via the given connection.
@@ -263,7 +263,7 @@ namespace MobileDeviceSharp.Native
         /// IDEVICE_E_SUCCESS if ok, otherwise an error code.
         /// </returns>
         [LibraryImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_connection_receive_timeout")]
-        public static partial IDeviceError idevice_connection_receive_timeout(IDeviceConnectionHandle connection, Span<Byte> data, uint len, ref uint recvBytes, uint timeout);
+        public static partial IDeviceError idevice_connection_receive_timeout(IDeviceConnectionHandle connection, Span<byte> data, uint len, out uint recvBytes, uint timeout);
 
         /// <summary>
         /// Receive data from a device via the given connection.
@@ -287,7 +287,7 @@ namespace MobileDeviceSharp.Native
         /// IDEVICE_E_SUCCESS if ok, otherwise an error code.
         /// </returns>
         [LibraryImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_connection_receive")]
-        public static partial IDeviceError idevice_connection_receive(IDeviceConnectionHandle connection, Span<Byte> data, uint len, ref uint recvBytes);
+        public static partial IDeviceError idevice_connection_receive(IDeviceConnectionHandle connection, Span<byte> data, uint len, out uint recvBytes);
 
         /// <summary>
         /// Enables SSL for the given connection.
@@ -348,13 +348,13 @@ namespace MobileDeviceSharp.Native
         /// IDEVICE_E_SUCCESS if ok, otherwise an error code.
         /// </returns>
         [LibraryImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_connection_get_fd")]
-        public static partial IDeviceError idevice_connection_get_fd(IDeviceConnectionHandle connection, ref int fd);
+        public static partial IDeviceError idevice_connection_get_fd(IDeviceConnectionHandle connection, out int fd);
 
         /// <summary>
         /// Gets the handle or (usbmux device id) of the device.
         /// </summary>
         [LibraryImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_get_handle")]
-        public static partial IDeviceError idevice_get_handle(IDeviceHandle device, ref uint handle);
+        public static partial IDeviceError idevice_get_handle(IDeviceHandle device, out uint handle);
 
         /// <summary>
         /// Gets the unique id for the device.
@@ -386,7 +386,7 @@ namespace MobileDeviceSharp.Native
         /// 0 on success or negative on error
         /// </returns>
         [LibraryImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_get_socket_type")]
-        public static partial IDeviceError idevice_get_socket_type(ref int value);
+        public static partial IDeviceError idevice_get_socket_type(out int value);
 
         /// <summary>
         /// Sets the TCP endpoint to which libimobiledevice will connect if the socket type is set to
@@ -419,7 +419,7 @@ namespace MobileDeviceSharp.Native
         /// 0 on success or negative on error
         /// </returns>
         [LibraryImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_get_tcp_endpoint")]
-        public static partial IDeviceError idevice_get_tcp_endpoint([MarshalAs(UnmanagedType.LPUTF8Str)] out string host, ref ushort port);
+        public static partial IDeviceError idevice_get_tcp_endpoint([MarshalAs(UnmanagedType.LPUTF8Str)] out string host, out ushort port);
     }
 }
 #endif

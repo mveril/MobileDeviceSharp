@@ -234,7 +234,7 @@ namespace MobileDeviceSharp.Native
         /// IDEVICE_E_SUCCESS if ok, otherwise an error code.
         /// </returns>
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_connection_send", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IDeviceError idevice_connection_send(IDeviceConnectionHandle connection, byte[] data, uint len, ref uint sentBytes);
+        public static extern IDeviceError idevice_connection_send(IDeviceConnectionHandle connection, byte[] data, uint len, out uint sentBytes);
 
         /// <summary>
         /// Receive data from a device via the given connection.
@@ -262,7 +262,7 @@ namespace MobileDeviceSharp.Native
         /// IDEVICE_E_SUCCESS if ok, otherwise an error code.
         /// </returns>
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_connection_receive_timeout", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IDeviceError idevice_connection_receive_timeout(IDeviceConnectionHandle connection, byte[] data, uint len, ref uint recvBytes, uint timeout);
+        public static extern IDeviceError idevice_connection_receive_timeout(IDeviceConnectionHandle connection, byte[] data, uint len, out uint recvBytes, uint timeout);
 
         /// <summary>
         /// Receive data from a device via the given connection.
@@ -286,7 +286,7 @@ namespace MobileDeviceSharp.Native
         /// IDEVICE_E_SUCCESS if ok, otherwise an error code.
         /// </returns>
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_connection_receive", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IDeviceError idevice_connection_receive(IDeviceConnectionHandle connection, byte[] data, uint len, ref uint recvBytes);
+        public static extern IDeviceError idevice_connection_receive(IDeviceConnectionHandle connection, byte[] data, uint len, out uint recvBytes);
 
         /// <summary>
         /// Enables SSL for the given connection.
@@ -348,13 +348,13 @@ namespace MobileDeviceSharp.Native
         /// IDEVICE_E_SUCCESS if ok, otherwise an error code.
         /// </returns>
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_connection_get_fd", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IDeviceError idevice_connection_get_fd(IDeviceConnectionHandle connection, ref int fd);
+        public static extern IDeviceError idevice_connection_get_fd(IDeviceConnectionHandle connection, out int fd);
 
         /// <summary>
         /// Gets the handle or (usbmux device id) of the device.
         /// </summary>
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_get_handle", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IDeviceError idevice_get_handle(IDeviceHandle device, ref uint handle);
+        public static extern IDeviceError idevice_get_handle(IDeviceHandle device, out uint handle);
 
         /// <summary>
         /// Gets the unique id for the device.
@@ -386,7 +386,7 @@ namespace MobileDeviceSharp.Native
         /// 0 on success or negative on error
         /// </returns>
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_get_socket_type", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IDeviceError idevice_get_socket_type(ref int value);
+        public static extern IDeviceError idevice_get_socket_type(out int value);
 
         /// <summary>
         /// Sets the TCP endpoint to which libimobiledevice will connect if the socket type is set to
@@ -419,7 +419,7 @@ namespace MobileDeviceSharp.Native
         /// 0 on success or negative on error
         /// </returns>
         [DllImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_get_tcp_endpoint", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IDeviceError idevice_get_tcp_endpoint([MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(UTF8Marshaler))] out string host, ref ushort port);
+        public static extern IDeviceError idevice_get_tcp_endpoint([MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(UTF8Marshaler))] out string host, out ushort port);
     }
 }
 #endif

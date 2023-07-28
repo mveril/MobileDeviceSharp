@@ -521,7 +521,7 @@ namespace MobileDeviceSharp.Native
         /// LOCKDOWN_E_PLIST_ERROR if the received plist is broken
         /// </returns>
         [LibraryImportAttribute(Lockdown.LibraryName, EntryPoint = "lockdownd_get_sync_data_classes")]
-        public static partial LockdownError lockdownd_get_sync_data_classes(LockdownClientHandle client, out System.IntPtr classes, ref int count);
+        public static partial LockdownError lockdownd_get_sync_data_classes(LockdownClientHandle client, out System.IntPtr classes, out int count);
 
         /// <summary>
         /// Frees memory of an allocated array of data classes as returned by lockdownd_get_sync_data_classes()
