@@ -15,7 +15,7 @@ namespace MobileDeviceSharp.Native
     {
         public static byte** ConvertToUnmanaged(ReadOnlyStringDictionary managed)
         {
-            var ptr = (byte**)Marshal.AllocCoTaskMem(managed.Count * IntPtr.Size).ToPointer();
+            var ptr = (byte**)Marshal.AllocCoTaskMem((managed.Count + 1) * IntPtr.Size).ToPointer();
             var span = MarshalUtils.GetNullTerminatedSpan((IntPtr*)ptr);
             var dicList = (IReadOnlyCollection<KeyValuePair<string, string?>>)managed;
             int index = -1;

@@ -51,19 +51,20 @@ namespace MobileDeviceSharp.Usbmuxd
         /// <param name="udid">Device udid.</param>
         /// <param name="pairRecordPlist">The plist document containing the pair record.</param>
         /// <returns></returns>
-        public static bool TrySavePairRecord(string udid, PlistDocument pairRecordPlist)
+        public static unsafe bool TrySavePairRecord(string udid, PlistDocument pairRecordPlist)
         {
             // I use directly native methods because the length is uint
-            IntPtr plistbin = IntPtr.Zero;
+            byte* plistbin = default;
             bool success;
             try
             {
                 PropertyList.Native.Plist.plist_to_bin(pairRecordPlist.RootNode.Handle, out plistbin, out var length);
+
                 success = usbmuxd_save_pair_record(udid, plistbin, length) == 0;
             }
             finally
             {
-                if (plistbin != IntPtr.Zero)
+                if (plistbin != null)
                 {
                     PropertyList.Native.Plist.plist_to_bin_free(plistbin);
                 }

@@ -1,7 +1,13 @@
 ﻿using System.Runtime.InteropServices;
+#if NET7_0_OR_GREATER
+using System.Runtime.InteropServices.Marshalling;
+#endif
 
 namespace MobileDeviceSharp.Usbmuxd.Native
 {
+#if NET7_0_OR_GREATER
+    [NativeMarshalling(typeof(UsbmuxdDeviceInfoMarshaller))]
+#endif
     [StructLayoutAttribute(LayoutKind.Sequential)]
     public struct UsbmuxdDeviceInfo
     {
@@ -15,7 +21,7 @@ namespace MobileDeviceSharp.Usbmuxd.Native
 
         public IDeviceLookupOptions conn_type;
 
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 200)]
-        public string conn_data;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 200)]
+        public byte[] conn_data;
     }
 }

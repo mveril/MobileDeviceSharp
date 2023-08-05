@@ -18,7 +18,7 @@ namespace MobileDeviceSharp.Native
 
         public static byte** ConvertToUnmanaged(string[] managed)
         {
-            var unmanaged = (byte**)Marshal.AllocCoTaskMem(managed.Length*IntPtr.Size);
+            var unmanaged = (byte**)Marshal.AllocCoTaskMem((managed.Length + 1)*IntPtr.Size);
             var unmanagedView = new Span<IntPtr>(unmanaged, managed.Length);
             for (int i = 0; i < managed.Length; i++)
             {
