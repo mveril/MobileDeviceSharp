@@ -12,55 +12,36 @@ namespace MobileDeviceSharp.Usbmuxd.Native
     [CustomMarshaller(typeof(UsbmuxdEvent),MarshalMode.Default,typeof(UsbmuxdEventMarshaller))]
     internal static unsafe class UsbmuxdEventMarshaller
     {
-
-        private const int SIZE_OF_USBMUXD_DEVICE_INFO = 256;
-
-        [StructLayoutAttribute(LayoutKind.Sequential)]
         internal struct UsbmuxdEventNative
         {
-
             public int @event;
 
-            public fixed byte device[SIZE_OF_USBMUXD_DEVICE_INFO];// sizeof(sizeof(UsbmuxdDeviceInfoMarshaller.UsbmuxdDeviceInfoNative)
+            public UsbmuxdDeviceInfoMarshaller.UsbmuxdDeviceInfoNative device;
         }
 
-#if DEBUG
-        static UsbmuxdEventMarshaller()
+        public static UsbmuxdEventNative ConvertToUnmanaged(UsbmuxdEvent managed)
         {
-            Debug.Assert(sizeof(UsbmuxdDeviceInfoMarshaller.UsbmuxdDeviceInfoNative) == SIZE_OF_USBMUXD_DEVICE_INFO);
-        }
-#endif
-
-        public static nint ConvertToUnmanaged(UsbmuxdEvent managed)
-        {
-            var ptr = Marshal.AllocCoTaskMem(sizeof(UsbmuxdEventType));
             var unmanaged = new UsbmuxdEventNative()
             {
                 @event = (int)managed.@event,
+                device = UsbmuxdDeviceInfoMarshaller.ConvertToUnmanaged(managed.device),
             };
-            var deviceNativePtr = UsbmuxdDeviceInfoMarshaller.ConvertToUnmanaged(managed.device);
-            var deviceNative = Unsafe.AsRef(deviceNativePtr);
-            Unsafe.Copy(ref deviceNative, unmanaged.device);
-            UsbmuxdDeviceInfoMarshaller.Free(deviceNativePtr);
-            Unsafe.Copy(ref unmanaged, (UsbmuxdEventNative*)ptr);
-            return ptr;
+            return unmanaged;
         }
 
-        public static UsbmuxdEvent ConvertToManaged(nint unmanaged)
+        public static UsbmuxdEvent ConvertToManaged(UsbmuxdEventNative unmanaged)
         {
-            var ptr = (UsbmuxdEventNative*)unmanaged;
-            var device = Unsafe.Read<UsbmuxdDeviceInfoMarshaller.UsbmuxdDeviceInfoNative>(ptr->device);
             var managed = new UsbmuxdEvent()
             {
-                device = UsbmuxdDeviceInfoMarshaller.ConvertToManaged(device),
-                @event = (UsbmuxdEventType)ptr->@event,
+                device = UsbmuxdDeviceInfoMarshaller.ConvertToManaged(unmanaged.device),
+                @event = (UsbmuxdEventType)unmanaged.@event,
             };
             return managed;
         }
 
-        public static void Free(nint unmanaged)
+        public static void Free(UsbmuxdEventNative unmanaged)
         {
-            Marshal.FreeCoTaskMem(unmanaged);
+
         }
     }
 }

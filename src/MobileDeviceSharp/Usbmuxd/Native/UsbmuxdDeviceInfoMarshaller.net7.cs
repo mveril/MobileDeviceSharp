@@ -12,18 +12,20 @@ namespace MobileDeviceSharp.Usbmuxd.Native
     [CustomMarshaller(typeof(UsbmuxdDeviceInfo), MarshalMode.Default, typeof(UsbmuxdDeviceInfoMarshaller))]
     internal static unsafe class UsbmuxdDeviceInfoMarshaller
     {
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+        private const int UuidLength = 44;
+        private const int ConnDataLength = 200;
+
         internal struct UsbmuxdDeviceInfoNative
         {
 
             public uint handle;
             public uint product_id;
-            public fixed byte udid[44];
+            public fixed byte udid[UuidLength];
             public int conn_type;
-            public fixed byte conn_data[200];
+            public fixed byte conn_data[ConnDataLength];
         }
 
-        public static IntPtr ConvertToUnmanaged(UsbmuxdDeviceInfo managed)
+        public static UsbmuxdDeviceInfoNative ConvertToUnmanaged(UsbmuxdDeviceInfo managed)
         {
             var result = new UsbmuxdDeviceInfoNative()
             {
@@ -31,32 +33,29 @@ namespace MobileDeviceSharp.Usbmuxd.Native
                 product_id = managed.product_id,
                 conn_type = (int)managed.conn_type,
             };
-            var uuidSpan = new Span<byte>(result.udid, 44);
+            var uuidSpan = new Span<byte>(result.udid, UuidLength);
             Encoding.UTF8.GetBytes(managed.udid, uuidSpan);
-            var connDataSpan = new Span<byte>(result.conn_data, 200);
+            var connDataSpan = new Span<byte>(result.conn_data, ConnDataLength);
             managed.conn_data.CopyTo(connDataSpan);
-            var structPtr = Marshal.AllocCoTaskMem(sizeof(UsbmuxdDeviceInfoNative));
-            Unsafe.Copy(structPtr.ToPointer(), ref result);
-            return structPtr;
+            return result;
         }
 
-        public static UsbmuxdDeviceInfo ConvertToManaged(IntPtr unmanaged)
+        public static UsbmuxdDeviceInfo ConvertToManaged(UsbmuxdDeviceInfoNative unmanaged)
         {
-            var unsafePtr = (UsbmuxdDeviceInfoNative*)unmanaged;
             var value = new UsbmuxdDeviceInfo()
             {
-                handle = unsafePtr->handle,
-                product_id = unsafePtr->product_id,
-                udid = Encoding.UTF8.GetString(unsafePtr->udid, 44),
-                conn_type = (IDeviceLookupOptions)unsafePtr->conn_type,
-                conn_data = new ReadOnlySpan<byte>(unsafePtr->conn_data, 200).ToArray(),
+                handle = unmanaged.handle,
+                product_id = unmanaged.product_id,
+                udid = Encoding.UTF8.GetString(unmanaged.udid, UuidLength),
+                conn_type = (IDeviceLookupOptions)unmanaged.conn_type,
+                conn_data = new ReadOnlySpan<byte>(unmanaged.conn_data, ConnDataLength).ToArray(),
             };
             return value;
         }
 
-        public static void Free(IntPtr unmanaged)
+        public static void Free(UsbmuxdDeviceInfoNative unmanaged)
         {
-            Marshal.FreeCoTaskMem(unmanaged);
+
         }
     }
 }
