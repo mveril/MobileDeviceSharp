@@ -19,7 +19,7 @@ namespace MobileDeviceSharp.Native
         /// The callback which will receive the debug messages. Set to NULL to redirect to stdout.
         /// </param>
         [LibraryImportAttribute(IDevice.LibraryName, EntryPoint = "idevice_set_debug_callback")]
-        public static partial void idevice_set_debug_callback(IDeviceDebugCallBack callback);
+        public static unsafe partial void idevice_set_debug_callback(delegate* unmanaged[Cdecl]<IntPtr,void> callback);
 
         /// <summary>
         /// Set the level of debugging.

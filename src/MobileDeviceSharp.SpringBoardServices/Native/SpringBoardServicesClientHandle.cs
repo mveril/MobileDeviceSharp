@@ -2,7 +2,7 @@
 
 namespace MobileDeviceSharp.SpringBoardServices.Native
 {
-    public partial class SpringBoardServicesClientHandle : IOSHandle
+    public sealed partial class SpringBoardServicesClientHandle : IOSHandle
     {
     }
 }

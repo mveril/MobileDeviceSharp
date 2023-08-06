@@ -35,7 +35,7 @@ namespace MobileDeviceSharp.Usbmuxd.Native
         /// </returns>
         [LibraryImport(Usbmuxd.LibraryName, EntryPoint = "usbmuxd_events_subscribe")]
         [UnmanagedCallConv(CallConvs = new Type[] { typeof(System.Runtime.CompilerServices.CallConvCdecl) })]
-        public static partial int usbmuxd_events_subscribe(out UsbmuxdSubscriptionContextHandle context, UsbmuxdEventCallBack callback, System.IntPtr userData);
+        public static unsafe partial int usbmuxd_events_subscribe(out UsbmuxdSubscriptionContextHandle context, delegate* unmanaged[Cdecl]<UsbmuxdEventMarshaller.UsbmuxdEventNative*, IntPtr, void> callback, System.IntPtr userData);
 
         /// <summary>
         /// Unsubscribe callback function
@@ -69,7 +69,7 @@ namespace MobileDeviceSharp.Usbmuxd.Native
         /// </remarks>
         [LibraryImport(Usbmuxd.LibraryName, EntryPoint = "usbmuxd_subscribe")]
         [UnmanagedCallConv(CallConvs = new Type[] { typeof(System.Runtime.CompilerServices.CallConvCdecl) })]
-        public static partial int usbmuxd_subscribe(UsbmuxdEventCallBack callback, System.IntPtr userData);
+        public static unsafe partial int usbmuxd_subscribe(delegate* unmanaged[Cdecl]<UsbmuxdEventMarshaller.UsbmuxdEventNative*, IntPtr, void> callback, System.IntPtr userData);
 
         /// <summary>
         /// Unsubscribe callback (deprecated)

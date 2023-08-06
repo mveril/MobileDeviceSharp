@@ -147,7 +147,7 @@ namespace MobileDeviceSharp.NotificationProxy.Native
         /// any previously set callback function will be removed automatically.
         /// </remarks>
         [LibraryImportAttribute(NotificationProxy.LibraryName, EntryPoint = "np_set_notify_callback")]
-        public static partial NotificationProxyError np_set_notify_callback(NotificationProxyClientHandle client, NotificationProxyNotifyCallBack notifyCallBack, System.IntPtr userData);
+        public static unsafe partial NotificationProxyError np_set_notify_callback(NotificationProxyClientHandle client, delegate* unmanaged[Cdecl]<byte*,IntPtr,void> notifyCallBack, System.IntPtr userData);
     }
 }
 #endif

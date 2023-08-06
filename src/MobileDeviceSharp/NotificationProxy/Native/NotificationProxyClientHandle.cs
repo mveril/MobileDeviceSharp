@@ -2,7 +2,7 @@
 
 namespace MobileDeviceSharp.NotificationProxy.Native
 {
-    public partial class NotificationProxyClientHandle : IOSHandle
+    public sealed partial class NotificationProxyClientHandle : IOSHandle
     {
     }
 }

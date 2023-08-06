@@ -2,7 +2,7 @@
 
 namespace MobileDeviceSharp.DiagnosticsRelay.Native
 {
-    public partial class DiagnosticsRelayClientHandle : IOSHandle
+    public sealed partial class DiagnosticsRelayClientHandle : IOSHandle
     {
     }
 }

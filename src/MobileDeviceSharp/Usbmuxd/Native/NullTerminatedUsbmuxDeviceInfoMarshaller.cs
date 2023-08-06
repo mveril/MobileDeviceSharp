@@ -12,24 +12,13 @@ namespace MobileDeviceSharp.Usbmuxd.Native
     [CustomMarshaller(typeof(UsbmuxdDeviceInfo[]), MarshalMode.Default, typeof(NullTerminatedUsbmuxDeviceInfoMarshaller))]
     internal static unsafe class NullTerminatedUsbmuxDeviceInfoMarshaller      
     {
-        public static IntPtr ConvertToUnmanaged(UsbmuxdDeviceInfo[] managed)
-        {
-            var ptr = Marshal.AllocCoTaskMem((managed.Length + 1) * IntPtr.Size);
-            var unsafePtr = (IntPtr*)ptr;
-            for (int i = 0; i < managed.Length; i++)
-            {
-                unsafePtr[i] = UsbmuxdDeviceInfoMarshaller.ConvertToUnmanaged(managed[i]);
-            }
-            return ptr;
-        }
-
         public static UsbmuxdDeviceInfo[] ConvertToManaged(IntPtr unmanaged)
         {
-            var unmanagedArray = MarshalUtils.GetNullTerminatedReadOnlySpan((IntPtr*)unmanaged);
+            var unmanagedArray = MarshalUtils.GetNullOrDefaultTerminatedSpan((UsbmuxdDeviceInfoMarshaller.UsbmuxdDeviceInfoNative**)unmanaged);
             var managedArray = new UsbmuxdDeviceInfo[unmanagedArray.Length];
             for (int i = 0; i < unmanagedArray.Length; i++)
             {
-                managedArray[i] = UsbmuxdDeviceInfoMarshaller.ConvertToManaged(unmanagedArray[i]);
+                managedArray[i] = UsbmuxdDeviceInfoMarshaller.ConvertToManaged(*(UsbmuxdDeviceInfoMarshaller.UsbmuxdDeviceInfoNative*)unmanagedArray[i]);
             }
             return managedArray;
         }
@@ -39,7 +28,7 @@ namespace MobileDeviceSharp.Usbmuxd.Native
             var unmanagedArray = MarshalUtils.GetNullTerminatedSpan((IntPtr*)unmanaged);
             foreach (var item in unmanagedArray)
             {
-                UsbmuxdDeviceInfoMarshaller.Free(item);
+                UsbmuxdDeviceInfoMarshaller.Free(*(UsbmuxdDeviceInfoMarshaller.UsbmuxdDeviceInfoNative*)item);
             }
             Marshal.FreeCoTaskMem(unmanaged);
         }

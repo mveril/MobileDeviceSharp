@@ -7,7 +7,7 @@ namespace MobileDeviceSharp.Native
 {
     public abstract class IOSHandle : SafeHandleZeroOrMinusOneIsInvalid
     {
-        protected IOSHandle() : this(IntPtr.Zero)
+        protected IOSHandle() : base(true)
         {
 
         }
@@ -23,7 +23,7 @@ namespace MobileDeviceSharp.Native
             SetHandle(handle);
         }
 
-        protected IOSHandle(bool ownsHandle) : this(IntPtr.Zero, ownsHandle)
+        protected IOSHandle(bool ownsHandle) : base(ownsHandle)
         {
 
         }

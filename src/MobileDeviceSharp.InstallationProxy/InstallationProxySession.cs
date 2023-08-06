@@ -12,6 +12,7 @@ using System.Linq;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Collections.ObjectModel;
+using System.Runtime.CompilerServices;
 #if NETCOREAPP3_0_OR_GREATER
 using System.Threading.Channels;
 #endif
@@ -158,20 +159,34 @@ namespace MobileDeviceSharp.InstallationProxy
         /// <returns>The list of applications.</returns>
         public async IAsyncEnumerable<Application> GetApplicationsAsync(InstalltionProxyLookupOptions? options, bool showHidden)
         {
-            var channel = Channel.CreateUnbounded<PlistNode>(new UnboundedChannelOptions() { SingleWriter = true, SingleReader = true });
-            var gchandle = GCHandle.Alloc(new EnumerateOperationStatusContext(channel.Writer));
-            var ptr = GCHandle.ToIntPtr(gchandle);
-            using var dic = options?.ToDictionary();
-            var hresult = instproxy_browse_with_callback(Handle, dic?.Handle ?? PlistHandle.Zero, s_operationStatusCallback, ptr);
-            if (hresult.IsError())
-                throw hresult.GetException();
-            await foreach (var item in channel.Reader.ReadAllAsync())
+            await foreach (var item in GetApplicationsCoreAsync(options))
             {
                 var app = new Application(Device, (PlistDictionary)item);
                 if(showHidden || AppVisibleOrDispose(app)){
                     yield return app;
                 }
             }
+        }
+
+
+        IAsyncEnumerable<PlistNode> GetApplicationsCoreAsync(InstalltionProxyLookupOptions? options)
+        {
+            var channel = Channel.CreateUnbounded<PlistNode>(new UnboundedChannelOptions() { SingleWriter = true, SingleReader = true });
+            var gchandle = GCHandle.Alloc(new EnumerateOperationStatusContext(channel.Writer));
+            var ptr = GCHandle.ToIntPtr(gchandle);
+            using var dic = options?.ToDictionary();
+#if NET7_0_OR_GREATER
+            InstallationProxyError hresult;
+            unsafe
+            {
+                hresult = instproxy_browse_with_callback(Handle, dic?.Handle ?? PlistHandle.Zero, &OperationStatusCallbackNative, ptr);
+            }
+#else
+            var hresult = instproxy_browse_with_callback(Handle, dic?.Handle ?? PlistHandle.Zero, s_operationStatusCallback, ptr);
+#endif
+            if (hresult.IsError())
+                throw hresult.GetException();
+            return channel.Reader.ReadAllAsync();
         }
 
         /// <summary>
@@ -248,9 +263,23 @@ namespace MobileDeviceSharp.InstallationProxy
             return new CapabilityMatcher(match, capabilities, new HashSet<string>());
         }
 
+#if !NET7_0_OR_GREATER
         private static readonly InstallationProxyStatusCallBack s_operationStatusCallback = OperationStatusCallback;
+#endif
 
-        private static void OperationStatusCallback(PlistHandle command, PlistHandle status, IntPtr userData)
+#if NET7_0_OR_GREATER
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+        private static void OperationStatusCallbackNative(IntPtr command, IntPtr status, IntPtr userData)
+        {
+            var commandPlist = new PlistNotOwnedHandle();
+            Marshal.InitHandle(commandPlist, command);
+            var statusPlist = new PlistNotOwnedHandle();
+            Marshal.InitHandle(statusPlist, status);
+            OperationStatusCallback(commandPlist, statusPlist, userData);
+        }
+#endif
+
+        private static void OperationStatusCallback(PlistNotOwnedHandle command, PlistNotOwnedHandle status, IntPtr userData)
         {
             var gchandle = GCHandle.FromIntPtr(userData);
             var context = (OperationStatusContext)gchandle.Target!;
@@ -309,7 +338,14 @@ namespace MobileDeviceSharp.InstallationProxy
             var tcs = new TaskCompletionSource<object?>();
 #endif
             var handle = GCHandle.Alloc(new TaskWithProgressOperationStatusContext(tcs, progress));
+#if NET7_0_OR_GREATER
+            unsafe
+            {
+                instproxy_install(Handle, path, optDic?.Handle ?? PlistHandle.Zero, &OperationStatusCallbackNative, GCHandle.ToIntPtr(handle));
+            }
+#else
             instproxy_install(Handle, path, optDic?.Handle ?? PlistHandle.Zero, s_operationStatusCallback, GCHandle.ToIntPtr(handle));
+#endif
             return tcs.Task;
         }
 
@@ -349,7 +385,14 @@ namespace MobileDeviceSharp.InstallationProxy
             var tcs = new TaskCompletionSource<object?>();
 #endif
             var handle = GCHandle.Alloc(new TaskWithProgressOperationStatusContext(tcs, progress));
+#if NET7_0
+            unsafe
+            {
+                instproxy_upgrade(Handle, path, PlistHandle.Zero, &OperationStatusCallbackNative, GCHandle.ToIntPtr(handle));
+            }
+#else
             instproxy_upgrade(Handle, path, PlistHandle.Zero, s_operationStatusCallback, GCHandle.ToIntPtr(handle));
+#endif
             return tcs.Task;
         }
 
@@ -377,7 +420,14 @@ namespace MobileDeviceSharp.InstallationProxy
             var tcs = new TaskCompletionSource<object?>();
 #endif
             var handle = GCHandle.Alloc(new TaskWithProgressOperationStatusContext(tcs, progress));
-            instproxy_uninstall(Handle, bundleId, PlistHandle.Zero, s_operationStatusCallback, GCHandle.ToIntPtr(handle));
+#if NET7_0_OR_GREATER
+            unsafe
+            {
+                instproxy_archive(Handle, bundleId, PlistHandle.Zero, &OperationStatusCallbackNative, GCHandle.ToIntPtr(handle));;
+            }
+#else
+            instproxy_archive(Handle, bundleId, PlistHandle.Zero, s_operationStatusCallback, GCHandle.ToIntPtr(handle));
+#endif
             return tcs.Task;
         }
 
@@ -408,7 +458,14 @@ namespace MobileDeviceSharp.InstallationProxy
             var tcs = new TaskCompletionSource<object?>();
 #endif
             var handle = GCHandle.Alloc(new TaskWithProgressOperationStatusContext(tcs, progress));
+#if NET7_0_OR_GREATER
+            unsafe
+            {
+                instproxy_archive(Handle, bundleId, optDic?.Handle ?? PlistHandle.Zero, &OperationStatusCallbackNative, GCHandle.ToIntPtr(handle));
+            }
+#else
             instproxy_archive(Handle, bundleId, optDic?.Handle ?? PlistHandle.Zero, s_operationStatusCallback, GCHandle.ToIntPtr(handle));
+#endif
             return tcs.Task;
         }
 
@@ -457,7 +514,14 @@ namespace MobileDeviceSharp.InstallationProxy
             var tcs = new TaskCompletionSource<object?>();
 #endif
             var handle = GCHandle.Alloc(new TaskWithProgressOperationStatusContext(tcs, progress));
+#if NET7_0_OR_GREATER
+            unsafe
+            {
+                instproxy_restore(Handle, bundleId, PlistHandle.Zero, &OperationStatusCallbackNative, GCHandle.ToIntPtr(handle)); ;
+            }
+#else
             instproxy_restore(Handle, bundleId, PlistHandle.Zero, s_operationStatusCallback, GCHandle.ToIntPtr(handle)); ;
+#endif
             return tcs.Task;
         }
     }

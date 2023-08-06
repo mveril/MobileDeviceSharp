@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MobileDeviceSharp.Native
 {
-    public partial class LockdownPairRecordHandle : IOSHandle
+    public sealed partial class LockdownPairRecordHandle : IOSHandle
     {
     }
 }

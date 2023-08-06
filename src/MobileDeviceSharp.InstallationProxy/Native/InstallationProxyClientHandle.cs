@@ -2,7 +2,7 @@
 
 namespace MobileDeviceSharp.InstallationProxy.Native
 {
-    public partial class InstallationProxyClientHandle : IOSHandle
+    public sealed partial class InstallationProxyClientHandle : IOSHandle
     {
     }
 }

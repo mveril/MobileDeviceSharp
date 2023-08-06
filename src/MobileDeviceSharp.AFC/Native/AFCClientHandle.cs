@@ -2,7 +2,7 @@
 
 namespace MobileDeviceSharp.AFC.Native
 {
-    public partial class AFCClientHandle : IOSHandle
+    public sealed partial class AFCClientHandle : IOSHandle
     {
     }
 }

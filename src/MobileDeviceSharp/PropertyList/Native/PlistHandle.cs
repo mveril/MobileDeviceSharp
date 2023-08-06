@@ -7,7 +7,7 @@ namespace MobileDeviceSharp.PropertyList.Native
 {
     public partial class PlistHandle : IOSHandle
     {
-        internal PlistHandle(IntPtr handle, bool ownsHandle) : base(handle, ownsHandle)
+        protected PlistHandle(bool ownsHandle) : base(ownsHandle)
         {
 
         }

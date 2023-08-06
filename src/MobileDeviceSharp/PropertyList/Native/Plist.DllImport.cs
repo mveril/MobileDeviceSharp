@@ -177,8 +177,7 @@ namespace MobileDeviceSharp.PropertyList.Native
         /// copied plist
         /// </returns>
         [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_copy", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        [return: MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(PlistHandleNotOwnedMarshaler))]
-        public static extern PlistHandle plist_copy_not_owned(PlistHandle node);
+        public static extern PlistNotOwnedHandle plist_copy_not_owned(PlistHandle node);
 
         /// <summary>
         /// Return a copy of passed node and it's children
@@ -216,9 +215,8 @@ namespace MobileDeviceSharp.PropertyList.Native
         /// <returns>
         /// the nth item or NULL if node is not of type #PLIST_ARRAY
         /// </returns>
-        [return: MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(PlistHandleNotOwnedMarshaler))]
         [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_array_get_item", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern PlistHandle plist_array_get_item(PlistHandle node, uint n);
+        public static extern PlistNotOwnedHandle plist_array_get_item(PlistHandle node, uint n);
 
         /// <summary>
         /// Get the index of an item. item must be a member of a #PLIST_ARRAY node.
@@ -399,9 +397,8 @@ namespace MobileDeviceSharp.PropertyList.Native
         /// the item or NULL if node is not of type #PLIST_DICT. The caller should not free
         /// the returned node.
         /// </returns>
-        [return: MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(PlistHandleNotOwnedMarshaler))]
         [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_dict_get_item", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern PlistHandle? plist_dict_get_item(PlistHandle node, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string key);
+        public static extern PlistNotOwnedHandle? plist_dict_get_item(PlistHandle node, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string key);
 
         /// <summary>
         /// Get key node associated to an item. Item must be member of a dictionary.
@@ -412,9 +409,8 @@ namespace MobileDeviceSharp.PropertyList.Native
         /// <returns>
         /// the key node of the given item, or NULL.
         /// </returns>
-        [return: MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(PlistHandleNotOwnedMarshaler))]
         [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_dict_item_get_key", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern PlistHandle plist_dict_item_get_key(PlistHandle node);
+        public static extern PlistNotOwnedHandle plist_dict_item_get_key(PlistHandle node);
 
         /// <summary>
         /// Set item identified by key in a #PLIST_DICT node.
@@ -481,9 +477,8 @@ namespace MobileDeviceSharp.PropertyList.Native
         /// <param name="node">
         /// the parent (NULL if node is root)
         /// </param>
-        [return: MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(PlistHandleNotOwnedMarshaler))]
         [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_get_parent", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern PlistHandle? plist_get_parent(PlistHandle node);
+        public static extern PlistNotOwnedHandle? plist_get_parent(PlistHandle node);
 
         /// <summary>
         /// Get the #PlistHandleype of a node.
@@ -1047,9 +1042,8 @@ namespace MobileDeviceSharp.PropertyList.Native
         /// <returns>
         /// the value to access.
         /// </returns>
-        [return: MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(PlistHandleNotOwnedMarshaler))]
         [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_access_path", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern PlistHandle plist_access_path(PlistHandle plist, uint length);
+        public static extern PlistNotOwnedHandle plist_access_path(PlistHandle plist, uint length);
 
         /// <summary>
         /// Variadic version of #plist_access_path.
@@ -1066,9 +1060,8 @@ namespace MobileDeviceSharp.PropertyList.Native
         /// <returns>
         /// the value to access.
         /// </returns>
-        [return: MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(PlistHandleNotOwnedMarshaler))]
         [System.Runtime.InteropServices.DllImportAttribute(Plist.LibraryName, EntryPoint = "plist_access_pathv", CallingConvention = System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static extern PlistHandle plist_access_pathv(PlistHandle plist, uint length, System.IntPtr v);
+        public static extern PlistNotOwnedHandle plist_access_pathv(PlistHandle plist, uint length, System.IntPtr v);
 
         /// <summary>
         /// Compare two node values

@@ -2,6 +2,8 @@
 using MobileDeviceSharp.Usbmuxd.Native;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace MobileDeviceSharp
@@ -12,8 +14,9 @@ namespace MobileDeviceSharp
     public sealed class DeviceWatcher : IDisposable
     {
         private UsbmuxdSubscriptionContextHandle handle = UsbmuxdSubscriptionContextHandle.Zero;
-        private readonly UsbmuxdEventCallBack _callBack;
-
+#if !NET7_0_OR_GREATER
+        private readonly UsbmuxdEventCallBack _callback;
+#endif
         /// <summary>
         /// Raised when a device is added.
         /// </summary>
@@ -30,13 +33,18 @@ namespace MobileDeviceSharp
         public event EventHandler<DeviceEventArgs>? DevicePaired;
 
         private System.Threading.SynchronizationContext? _context;
+#if NET7_0_OR_GREATER
+        private readonly GCHandle _seflHandle;
+#endif
 
         /// <summary>
         /// Initialise a new instance of <see cref="DeviceWatcher"/>.
         /// </summary>
         public DeviceWatcher() : this(IDeviceLookupOptions.All)
         {
-
+#if NET7_0_OR_GREATER
+            _seflHandle = GCHandle.Alloc(this, GCHandleType.Weak);
+#endif
         }
 
         /// <summary>
@@ -45,8 +53,11 @@ namespace MobileDeviceSharp
         /// <param name="connectionType">The specified connection lookup option.</param>
         public DeviceWatcher(IDeviceLookupOptions connectionType)
         {
-            _callBack = new UsbmuxdEventCallBack(Callback);
+#if !NET7_0_OR_GREATER
+            _callback = new UsbmuxdEventCallBack(Callback);
+#endif
             ConnectionType = connectionType;
+            
         }
 
         /// <summary>
@@ -57,7 +68,14 @@ namespace MobileDeviceSharp
             if (!IsRunning)
             {
                 _context = System.Threading.SynchronizationContext.Current ?? new System.Threading.SynchronizationContext();
-                Usbmuxd.Native.Usbmuxd.usbmuxd_events_subscribe(out handle, _callBack, IntPtr.Zero);
+#if NET7_0_OR_GREATER
+                unsafe
+                {
+                    Usbmuxd.Native.Usbmuxd.usbmuxd_events_subscribe(out handle, &StaticCallbackNative, (IntPtr)_seflHandle);
+                }
+#else
+                Usbmuxd.Native.Usbmuxd.usbmuxd_events_subscribe(out handle, _callback, IntPtr.Zero);
+#endif
             }
         }
 
@@ -83,15 +101,30 @@ namespace MobileDeviceSharp
             }
         }
 
+#if NET7_0_OR_GREATER
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+        private static unsafe void StaticCallbackNative(UsbmuxdEventMarshaller.UsbmuxdEventNative* usbmuxdEventNative, IntPtr userData)
+        {
+            var gcHandle = (GCHandle)userData;
+            if (gcHandle.Target is DeviceWatcher _self)
+            {
+                UsbmuxdEvent usbmuxdEvent = UsbmuxdEventMarshaller.ConvertToManaged(Unsafe.AsRef<UsbmuxdEventMarshaller.UsbmuxdEventNative>(usbmuxdEventNative));
+                _self.Callback(ref usbmuxdEvent);
+            }
+        }
+#endif
 
+#if NET7_0_OR_GREATER
+        private void Callback(ref UsbmuxdEvent @event)
+#else
         private void Callback(ref UsbmuxdEvent @event, IntPtr userData)
+#endif
         {
             if (ConnectionType.HasFlag(@event.device.conn_type))
             {
-                _context?.Post((e) => OnEvent((UsbmuxdEvent)e), @event);
+                _context?.Post((e) => OnEvent((UsbmuxdEvent)e), (this,@event));
             }
         }
-
         private void OnEvent(UsbmuxdEvent @event)
         {
             switch (@event.@event)

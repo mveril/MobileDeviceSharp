@@ -31,6 +31,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MobileDeviceSharp.HouseArre
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MobileDeviceSharp.SpringBoardServices", "src\MobileDeviceSharp.SpringBoardServices\MobileDeviceSharp.SpringBoardServices.csproj", "{16B4F764-EB36-48B8-8073-81A571A3C460}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Éléments de solution", "Éléments de solution", "{3ED3385B-553F-41AC-AD20-A37BCFF9D322}"
+	ProjectSection(SolutionItems) = preProject
+		DisableRuntimeMarshalling.cs = DisableRuntimeMarshalling.cs
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

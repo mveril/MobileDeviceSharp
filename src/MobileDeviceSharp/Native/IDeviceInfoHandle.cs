@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MobileDeviceSharp.Native
 {
-    public partial class IDeviceInfoHandle : IOSHandle
+    public sealed partial class IDeviceInfoHandle : IOSHandle
     {
 
     }

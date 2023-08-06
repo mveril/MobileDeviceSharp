@@ -2,7 +2,7 @@
 
 namespace MobileDeviceSharp.Usbmuxd.Native
 {
-    public partial class UsbmuxdSubscriptionContextHandle : IOSHandle
+    public sealed partial class UsbmuxdSubscriptionContextHandle : IOSHandle
     {
     }
 }

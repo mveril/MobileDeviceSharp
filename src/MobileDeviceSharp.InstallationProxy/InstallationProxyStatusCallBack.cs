@@ -1,8 +1,10 @@
-﻿using System;
+﻿#if !NET7_0_OR_GREATER
+using System;
 using System.Runtime.InteropServices;
 using MobileDeviceSharp.PropertyList.Native;
 
 namespace MobileDeviceSharp.InstallationProxy.Native
 {
-    public delegate void InstallationProxyStatusCallBack([MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(PlistHandleNotOwnedMarshaler))] PlistHandle command, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(PlistHandleNotOwnedMarshaler))] PlistHandle status, IntPtr userData);
+    public delegate void InstallationProxyStatusCallBack(PlistNotOwnedHandle command, PlistNotOwnedHandle status, IntPtr userData);
 }
+#endif

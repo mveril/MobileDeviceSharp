@@ -5,7 +5,7 @@ using MobileDeviceSharp.Native;
 
 namespace MobileDeviceSharp.PropertyList
 {
-    public partial class PlistArrayIterHandle : IOSHandle
+    public sealed partial class PlistArrayIterHandle : IOSHandle
     {
     }
 }

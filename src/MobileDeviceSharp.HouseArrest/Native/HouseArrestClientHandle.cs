@@ -2,7 +2,7 @@
 
 namespace MobileDeviceSharp.HouseArrest.Native
 {
-    public partial class HouseArrestClientHandle : IOSHandle
+    public sealed partial class HouseArrestClientHandle : IOSHandle
     {
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace MobileDeviceSharp.Native
 {
-    public partial class IDeviceConnectionHandle : IOSHandle
+    public sealed partial class IDeviceConnectionHandle : IOSHandle
     {
 
     }

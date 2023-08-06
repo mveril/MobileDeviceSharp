@@ -1,6 +1,6 @@
 ﻿namespace MobileDeviceSharp.Native
 {
-    public partial class LockdownServiceDescriptorHandle : IOSHandle
+    public sealed partial class LockdownServiceDescriptorHandle : IOSHandle
     {
     }
 }

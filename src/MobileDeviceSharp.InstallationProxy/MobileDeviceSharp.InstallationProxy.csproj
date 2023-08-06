@@ -12,6 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="..\..\DisableRuntimeMarshalling.cs" Link="Native\DisableRuntimeMarshalling.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\MobileDeviceSharp.SourceGenerator\MobileDeviceSharp.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\MobileDeviceSharp\MobileDeviceSharp.csproj" />
   </ItemGroup>

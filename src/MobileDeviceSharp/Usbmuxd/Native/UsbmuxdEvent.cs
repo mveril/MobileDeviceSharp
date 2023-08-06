@@ -9,7 +9,7 @@ namespace MobileDeviceSharp.Usbmuxd.Native
     [NativeMarshalling(typeof(UsbmuxdEventMarshaller))]
 #endif
     [StructLayoutAttribute(LayoutKind.Sequential)]
-    internal struct UsbmuxdEvent
+    public struct UsbmuxdEvent
     {
 
         public UsbmuxdEventType @event;

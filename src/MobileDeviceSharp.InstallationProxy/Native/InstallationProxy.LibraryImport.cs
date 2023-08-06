@@ -122,7 +122,7 @@ namespace MobileDeviceSharp.InstallationProxy.Native
         /// an error occurred.
         /// </returns>
         [System.Runtime.InteropServices.LibraryImportAttribute(InstallationProxy.LibraryName, EntryPoint = "instproxy_browse_with_callback")]
-        public static partial InstallationProxyError instproxy_browse_with_callback(InstallationProxyClientHandle client, PlistHandle clientOptions, InstallationProxyStatusCallBack statusCallBack, System.IntPtr userData);
+        public static unsafe partial InstallationProxyError instproxy_browse_with_callback(InstallationProxyClientHandle client, PlistHandle clientOptions, delegate* unmanaged[Cdecl]<IntPtr, IntPtr, IntPtr,void> statusCallBack, System.IntPtr userData);
 
         /// <summary>
         /// Lookup information about specific applications from the device.
@@ -185,7 +185,7 @@ namespace MobileDeviceSharp.InstallationProxy.Native
         /// handled inside the specified callback function.
         /// </remarks>
         [System.Runtime.InteropServices.LibraryImportAttribute(InstallationProxy.LibraryName, EntryPoint = "instproxy_install")]
-        public static partial InstallationProxyError instproxy_install(InstallationProxyClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string pkgPath, PlistHandle clientOptions, InstallationProxyStatusCallBack statusCallBack, System.IntPtr userData);
+        public static unsafe partial InstallationProxyError instproxy_install(InstallationProxyClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string pkgPath, PlistHandle clientOptions, delegate* unmanaged[Cdecl]<IntPtr, IntPtr, IntPtr, void> statusCallBack, System.IntPtr userData);
 
         /// <summary>
         /// Upgrade an application on the device. This function is nearly the same as
@@ -225,7 +225,7 @@ namespace MobileDeviceSharp.InstallationProxy.Native
         /// handled inside the specified callback function.
         /// </remarks>
         [System.Runtime.InteropServices.LibraryImportAttribute(InstallationProxy.LibraryName, EntryPoint = "instproxy_upgrade")]
-        public static partial InstallationProxyError instproxy_upgrade(InstallationProxyClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string pkgPath, PlistHandle clientOptions, InstallationProxyStatusCallBack statusCallBack, System.IntPtr userData);
+        public static unsafe partial InstallationProxyError instproxy_upgrade(InstallationProxyClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string pkgPath, PlistHandle clientOptions, delegate* unmanaged[Cdecl]<IntPtr, IntPtr, IntPtr, void> statusCallBack, System.IntPtr userData);
 
         /// <summary>
         /// Uninstall an application from the device.
@@ -258,7 +258,7 @@ namespace MobileDeviceSharp.InstallationProxy.Native
         /// handled inside the specified callback function.
         /// </remarks>
         [System.Runtime.InteropServices.LibraryImportAttribute(InstallationProxy.LibraryName, EntryPoint = "instproxy_uninstall")]
-        public static partial InstallationProxyError instproxy_uninstall(InstallationProxyClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string appid, PlistHandle clientOptions, InstallationProxyStatusCallBack statusCallBack, System.IntPtr userData);
+        public static unsafe partial InstallationProxyError instproxy_uninstall(InstallationProxyClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string appid, PlistHandle clientOptions, delegate* unmanaged[Cdecl]<IntPtr, IntPtr, IntPtr, void> statusCallBack, System.IntPtr userData);
 
         /// <summary>
         /// List archived applications. This function runs synchronously.
@@ -317,7 +317,7 @@ namespace MobileDeviceSharp.InstallationProxy.Native
         /// handled inside the specified callback function.
         /// </remarks>
         [System.Runtime.InteropServices.LibraryImportAttribute(InstallationProxy.LibraryName, EntryPoint = "instproxy_archive")]
-        public static partial InstallationProxyError instproxy_archive(InstallationProxyClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string appid, PlistHandle clientOptions, InstallationProxyStatusCallBack statusCallBack, System.IntPtr userData);
+        public static unsafe partial InstallationProxyError instproxy_archive(InstallationProxyClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string appid, PlistHandle clientOptions, delegate* unmanaged[Cdecl]<IntPtr, IntPtr, IntPtr, void> statusCallBack, System.IntPtr userData);
 
         /// <summary>
         /// Restore a previously archived application on the device.
@@ -352,7 +352,7 @@ namespace MobileDeviceSharp.InstallationProxy.Native
         /// handled inside the specified callback function.
         /// </remarks>
         [System.Runtime.InteropServices.LibraryImportAttribute(InstallationProxy.LibraryName, EntryPoint = "instproxy_restore")]
-        public static partial InstallationProxyError instproxy_restore(InstallationProxyClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string appid, PlistHandle clientOptions, InstallationProxyStatusCallBack statusCallBack, System.IntPtr userData);
+        public static unsafe partial InstallationProxyError instproxy_restore(InstallationProxyClientHandle client, [System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)] string appid, PlistHandle clientOptions, delegate* unmanaged[Cdecl]<IntPtr, IntPtr, IntPtr, void> statusCallBack, System.IntPtr userData);
 
 
         [System.Runtime.InteropServices.LibraryImportAttribute(InstallationProxy.LibraryName, EntryPoint = "instproxy_check_capabilities_match")]

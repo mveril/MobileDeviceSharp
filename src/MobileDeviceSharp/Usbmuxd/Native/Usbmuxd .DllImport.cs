@@ -33,9 +33,7 @@ namespace MobileDeviceSharp.Usbmuxd.Native
         /// 0 on success or a negative errno value.
         /// </returns>
         [DllImportAttribute(Usbmuxd.LibraryName, EntryPoint = "usbmuxd_events_subscribe", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int usbmuxd_events_subscribe(out UsbmuxdSubscriptionContextHandle context, 
-        
-        callback, System.IntPtr userData);
+        public static extern int usbmuxd_events_subscribe(out UsbmuxdSubscriptionContextHandle context, UsbmuxdEventCallBack callback, System.IntPtr userData);
 
         /// <summary>
         /// Unsubscribe callback function
