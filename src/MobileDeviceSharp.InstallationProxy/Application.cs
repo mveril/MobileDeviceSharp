@@ -70,6 +70,42 @@ namespace MobileDeviceSharp.InstallationProxy
                 }
             }
         }
+
+        public bool GetIsVisible(InstallationProxySession? externalSession = null)
+        {
+            if (Type == ApplicationType.Hidden)
+            {
+                return false;
+            }
+#if NET5_0_OR_GREATER
+            var tags = SBAppTags;
+#else
+            var tags = new HashSet<string>(SBAppTags);
+#endif
+            if (tags.Count == 0)
+            {
+                return true;
+            }
+            else
+            {
+                InstallationProxySession session = externalSession ?? new InstallationProxySession(Device);
+                try
+                {
+                    var matcher = session.CheckCapabilityMatch(tags);
+                    return matcher.Match;
+                }
+                finally
+                {
+                    // Dispose of the session only if it was created internally
+                    if (externalSession == null)
+                    {
+                        externalSession?.Dispose();
+                    }
+                }
+            }
+        }
+
+
         /// <summary>
         /// Get a value which indicate if this application is visible on the home screen.
         /// </summary>
@@ -77,26 +113,7 @@ namespace MobileDeviceSharp.InstallationProxy
         {
             get
             {
-                if (Type == ApplicationType.Hidden)
-                {
-                    return false;
-                }
-#if NET5_0_OR_GREATER
-                var tags = SBAppTags;
-#else
-                var tags = new HashSet<string>(SBAppTags);
-#endif
-                if (tags.Count == 0)
-                {
-                    return true;
-                }
-                else
-                {
-                    using var session = new InstallationProxySession(Device);
-                    var matcher = session.CheckCapabilityMatch(tags);
-
-                    return matcher.Match;
-                }
+                return GetIsVisible();
             }
         }
 

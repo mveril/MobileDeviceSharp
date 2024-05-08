@@ -34,12 +34,12 @@ namespace MobileDeviceSharp.InstallationProxy
 
         }
 
-        private static bool AppVisibleOrDispose(Application app)
+        private bool AppVisibleOrDispose(Application app)
         {
             bool isVisible;
             try
             {
-                isVisible = app.IsVisible;
+                isVisible = app.GetIsVisible(this);
             }
             catch (Exception)
             {
@@ -69,7 +69,7 @@ namespace MobileDeviceSharp.InstallationProxy
             foreach (var item in appsPlist)
             {
                 var app = new Application(Device, (PlistDictionary)item.Clone());
-                if (showHidden || AppVisibleOrDispose(app))
+                if (showHidden || this.AppVisibleOrDispose(app))
                 {
                     yield return app;
                 }
@@ -165,13 +165,28 @@ namespace MobileDeviceSharp.InstallationProxy
             var hresult = instproxy_browse_with_callback(Handle, dic?.Handle ?? PlistHandle.Zero, s_operationStatusCallback, ptr);
             if (hresult.IsError())
                 throw hresult.GetException();
-            await foreach (var item in channel.Reader.ReadAllAsync())
+
+            InstallationProxySession? matcherSession = null;
+            if (!showHidden)
             {
-                var app = new Application(Device, (PlistDictionary)item);
-                if(showHidden || AppVisibleOrDispose(app)){
-                    yield return app;
+                matcherSession = new InstallationProxySession(Device);
+            }
+            try
+            {
+                await foreach (var item in channel.Reader.ReadAllAsync())
+                {
+                    var app = new Application(Device, (PlistDictionary)item);
+                    if (showHidden || matcherSession!.AppVisibleOrDispose(app))
+                    {
+                        yield return app;
+                    }
                 }
             }
+            finally
+            {
+                matcherSession?.Dispose();
+            }
+
         }
 
         /// <summary>
