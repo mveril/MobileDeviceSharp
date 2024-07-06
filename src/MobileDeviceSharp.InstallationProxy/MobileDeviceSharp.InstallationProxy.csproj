@@ -5,15 +5,18 @@
     <RuntimeIdentifiers>win-x64;win-x86;osx-x64;linux-x64</RuntimeIdentifiers>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard20' Or '$(TargetFramework)' == 'netstandard21' Or '$(TargetFramework)' == 'netcoreapp2.0' Or '$(TargetFramework)' == 'netcoreapp2.1'">
-    <None Include="EnumerateOperationStatusContext.cs" />
-    <Compile Remove="EnumerateOperationStatusContext.cs" />
-  </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\MobileDeviceSharp.SourceGenerator\MobileDeviceSharp.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\MobileDeviceSharp.CompilerServices\MobileDeviceSharp.CompilerServices.csproj" />
     <ProjectReference Include="..\MobileDeviceSharp\MobileDeviceSharp.csproj" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="IsExternalInit" Version="1.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <PropertyGroup>

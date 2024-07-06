@@ -12,6 +12,9 @@ using System.Linq;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Collections.ObjectModel;
+using System.Runtime.CompilerServices;
+using MobileDeviceSharp.InstallationProxy.AsyncAdapter;
+
 #if NETCOREAPP3_0_OR_GREATER
 using System.Threading.Channels;
 #endif
@@ -158,14 +161,6 @@ namespace MobileDeviceSharp.InstallationProxy
         /// <returns>The list of applications.</returns>
         public async IAsyncEnumerable<Application> GetApplicationsAsync(InstalltionProxyLookupOptions? options, bool showHidden)
         {
-            var channel = Channel.CreateUnbounded<PlistNode>(new UnboundedChannelOptions() { SingleWriter = true, SingleReader = true });
-            var gchandle = GCHandle.Alloc(new EnumerateOperationStatusContext(channel.Writer));
-            var ptr = GCHandle.ToIntPtr(gchandle);
-            using var dic = options?.ToDictionary();
-            var hresult = instproxy_browse_with_callback(Handle, dic?.Handle ?? PlistHandle.Zero, s_operationStatusCallback, ptr);
-            if (hresult.IsError())
-                throw hresult.GetException();
-
             InstallationProxySession? matcherSession = null;
             if (!showHidden)
             {
@@ -173,7 +168,8 @@ namespace MobileDeviceSharp.InstallationProxy
             }
             try
             {
-                await foreach (var item in channel.Reader.ReadAllAsync())
+                var appsPlistNodes = InstallationProxyOperationAsyncEnumerableAdapter.BrowseAsync(this, options);
+                await foreach (var item in appsPlistNodes)
                 {
                     var app = new Application(Device, (PlistDictionary)item);
                     if (showHidden || matcherSession!.AppVisibleOrDispose(app))
@@ -186,7 +182,6 @@ namespace MobileDeviceSharp.InstallationProxy
             {
                 matcherSession?.Dispose();
             }
-
         }
 
         /// <summary>
@@ -263,19 +258,6 @@ namespace MobileDeviceSharp.InstallationProxy
             return new CapabilityMatcher(match, capabilities, new HashSet<string>());
         }
 
-        private static readonly InstallationProxyStatusCallBack s_operationStatusCallback = OperationStatusCallback;
-
-        private static void OperationStatusCallback(PlistHandle command, PlistHandle status, IntPtr userData)
-        {
-            var gchandle = GCHandle.FromIntPtr(userData);
-            var context = (OperationStatusContext)gchandle.Target!;
-            context.ReportProgress(command, status);
-            if (OperationStatusContext.IsComplete(status))
-            {
-                gchandle.Free();
-            }
-        }
-
         /// <summary>
         /// Install the application stored in the computer.
         /// </summary>
@@ -315,17 +297,9 @@ namespace MobileDeviceSharp.InstallationProxy
         /// <param name="options">Options used to specify the way of installing.</param>
         /// <param name="progress">A <see cref="IProgress{Int32}"/> used to report the progress percentage.</param>
         /// <returns></returns>
-        public Task InstallAsync(string path, InstallationProxyInstallOptions? options, IProgress<int>? progress)
+        public async Task InstallAsync(string path, InstallationProxyInstallOptions? options, IProgress<int>? progress)
         {
-            using var optDic = options?.ToDictionary();
-#if NET5_0_OR_GREATER
-            var tcs = new TaskCompletionSource();
-#else
-            var tcs = new TaskCompletionSource<object?>();
-#endif
-            var handle = GCHandle.Alloc(new TaskWithProgressOperationStatusContext(tcs, progress));
-            instproxy_install(Handle, path, optDic?.Handle ?? PlistHandle.Zero, s_operationStatusCallback, GCHandle.ToIntPtr(handle));
-            return tcs.Task;
+            await new InstallOperationTaskAdapter(this, path, progress, options);
         }
 
         /// <summary>
@@ -356,16 +330,9 @@ namespace MobileDeviceSharp.InstallationProxy
         /// <param name="options">Options used to specify the way of installing.</param>
         /// <param name="progress">An <see cref="IProgress{Int32}"/> used to report the progress percentage.</param>
         /// <returns></returns>
-        public Task UpgradeAsync(string path, InstallationProxyInstallOptions? options, IProgress<int>? progress)
+        public async Task UpgradeAsync(string path, InstallationProxyInstallOptions? options, IProgress<int>? progress)
         {
-#if NET5_0_OR_GREATER
-            var tcs = new TaskCompletionSource();
-#else
-            var tcs = new TaskCompletionSource<object?>();
-#endif
-            var handle = GCHandle.Alloc(new TaskWithProgressOperationStatusContext(tcs, progress));
-            instproxy_upgrade(Handle, path, PlistHandle.Zero, s_operationStatusCallback, GCHandle.ToIntPtr(handle));
-            return tcs.Task;
+            await new UpgradeOperationTaskAdapter(this, path, progress)
         }
 
         /// <summary>
@@ -384,16 +351,9 @@ namespace MobileDeviceSharp.InstallationProxy
         /// <param name="bundleId">The Bundle identifier of the application to uninstall.</param>
         /// <param name="progress">An <see cref="IProgress{Int32}"/> used to report the progress percentage.</param>
         /// <returns></returns>
-        public Task UninstallAsync(string bundleId, IProgress<int>? progress)
+        public async Task UninstallAsync(string bundleId, IProgress<int>? progress)
         {
-#if NET5_0_OR_GREATER
-            var tcs = new TaskCompletionSource();
-#else
-            var tcs = new TaskCompletionSource<object?>();
-#endif
-            var handle = GCHandle.Alloc(new TaskWithProgressOperationStatusContext(tcs, progress));
-            instproxy_uninstall(Handle, bundleId, PlistHandle.Zero, s_operationStatusCallback, GCHandle.ToIntPtr(handle));
-            return tcs.Task;
+            await new UninstallOperationTaskAdapter(this, bundleId, progress);
         }
 
         /// <summary>
@@ -414,17 +374,9 @@ namespace MobileDeviceSharp.InstallationProxy
         /// <param name="options">Options used to specify the way of archiving.</param>
         /// <param name="progress">An <see cref="IProgress{Int32}"/> used to report the progress percentage.</param>
         /// <returns></returns>
-        public Task ArchiveAsync(string bundleId, InstallationProxyArchiveOptions? options, IProgress<int>? progress)
+        public async Task ArchiveAsync(string bundleId, InstallationProxyArchiveOptions? options, IProgress<int>? progress)
         {
-            using var optDic = options?.ToDictionary();
-#if NET5_0_OR_GREATER
-            var tcs = new TaskCompletionSource();
-#else
-            var tcs = new TaskCompletionSource<object?>();
-#endif
-            var handle = GCHandle.Alloc(new TaskWithProgressOperationStatusContext(tcs, progress));
-            instproxy_archive(Handle, bundleId, optDic?.Handle ?? PlistHandle.Zero, s_operationStatusCallback, GCHandle.ToIntPtr(handle));
-            return tcs.Task;
+            await new ArchiveOperationTaskAdapter(this, bundleId, progress, options);
         }
 
         /// <summary>
@@ -464,16 +416,9 @@ namespace MobileDeviceSharp.InstallationProxy
         /// <param name="bundleId">The Bundle identifier of the application to restore.</param>
         /// <param name="progress">An <see cref="IProgress{Int32}"/> used to report the progress percentage.</param>
         /// <returns></returns>
-        public Task RestoreAsync(string bundleId, IProgress<int>? progress)
+        public async Task RestoreAsync(string bundleId, IProgress<int>? progress)
         {
-#if NET5_0_OR_GREATER
-            var tcs = new TaskCompletionSource();
-#else
-            var tcs = new TaskCompletionSource<object?>();
-#endif
-            var handle = GCHandle.Alloc(new TaskWithProgressOperationStatusContext(tcs, progress));
-            instproxy_restore(Handle, bundleId, PlistHandle.Zero, s_operationStatusCallback, GCHandle.ToIntPtr(handle)); ;
-            return tcs.Task;
+            await new RestoreOperationTaskAdapter(this, bundleId, progress);
         }
     }
 }

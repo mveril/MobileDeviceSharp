@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SampleConsole": {
+        "commandName": "Project",
+        "commandLineArgs": "list-apps --only-visible"
+    }
+  }
+}
